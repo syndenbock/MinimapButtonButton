@@ -184,6 +184,7 @@ local function isMinimapButton (frame)
   local patterns = {
     'LibDBIcon10_',
     'MinimapButton',
+    '-Minimap',
   };
 
   for _, pattern in ipairs(patterns) do
@@ -225,7 +226,11 @@ local function collectMinimapButtons ()
   end
 end
 
-events.PLAYER_LOGIN = collectMinimapButtons;
+events.PLAYER_LOGIN = function ()
+  --[[ executing on next frame to wait for addons that create minimap buttons
+       on PLAYER_LOGIN ]]
+  _G.C_Timer.After(0, collectMinimapButtons);
+end
 
 --##############################################################################
 -- stored data handling
