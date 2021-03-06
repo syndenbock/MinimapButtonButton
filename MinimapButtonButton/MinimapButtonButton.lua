@@ -174,6 +174,15 @@ initFrames();
 -- minimap button collecting
 --##############################################################################
 
+local function collectMinimapButton (button)
+  -- print('collecting button:', button:GetName());
+
+  button:SetParent(buttonContainer);
+  button:SetFrameStrata(FRAME_STRATA);
+  button:SetScript('OnDragStart', nil);
+  button:SetScript('OnDragStop', nil);
+end
+
 local function isMinimapButton (frame)
   local frameName = frame.GetName and frame:GetName();
 
@@ -196,7 +205,7 @@ local function isMinimapButton (frame)
   return false;
 end
 
-local function findMinimapButtons ()
+local function scanMinimapChildren ()
   local tinsert = _G.tinsert;
   local buttonList = {};
 
@@ -209,17 +218,38 @@ local function findMinimapButtons ()
   return buttonList;
 end
 
-local function collectMinimapButton (button)
-  -- print('collecting button:', button:GetName());
+local function findSpecificButtons ()
+  local tinsert = _G.tinsert;
+  local buttonNames = {
+    'ZygorGuidesViewerMapIcon',
+  };
+  local buttons = {};
 
-  button:SetParent(buttonContainer);
-  button:SetFrameStrata(FRAME_STRATA);
-  button:SetScript('OnDragStart', nil);
-  button:SetScript('OnDragStop', nil);
+  for _, buttonName in ipairs(buttonNames) do
+    local button = _G[buttonName];
+
+    if (button ~= nil) then
+      tinsert(buttons, button);
+    end
+  end
+
+  return buttons;
+end
+
+local function getAllMinimapButtons ()
+  local tinsert = _G.tinsert;
+  local buttons = scanMinimapChildren();
+  local specificButtons = findSpecificButtons();
+
+  for _, button in ipairs(specificButtons) do
+    tinsert(buttons, button);
+  end
+
+  return buttons;
 end
 
 local function collectMinimapButtons ()
-  collectedButtons = findMinimapButtons();
+  collectedButtons = getAllMinimapButtons();
 
   for _, button in ipairs(collectedButtons) do
     collectMinimapButton(button);
