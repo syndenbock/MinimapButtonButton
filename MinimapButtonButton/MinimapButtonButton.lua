@@ -1,10 +1,13 @@
 local addonName, addon = ...;
 
+local mod = _G.mod;
+local min = _G.min;
+local max = _G.max;
+local ceil = _G.ceil;
+
 local CENTER = 'CENTER';
-local RIGHT = 'RIGHT';
-local LEFT = 'LEFT';
+local TOPRIGHT = 'TOPRIGHT';
 local LEFTBUTTON = 'LeftButton';
-local RIGHTBUTTON = 'RightButton';
 local MIDDLEBUTTON = 'MiddleButton';
 
 local FRAME_STRATA = 'MEDIUM';
@@ -13,7 +16,9 @@ local BUTTON_EDGE_SIZE = 16;
 local BUTTON_HEIGHT = 42;
 local BUTTON_WIDTH = 33;
 local EDGE_OFFSET = 4;
-local BUTTON_SPACING = EDGE_OFFSET;
+
+local BUTTONS_PER_ROW = 10;
+local BUTTON_SPACING = 2;
 
 local mainFrame = _G.CreateFrame('Frame', addonName .. 'Frame');
 local buttonContainer = _G.CreateFrame('Frame', nil, _G.UIParent,
@@ -38,46 +43,100 @@ end
 -- main button setup
 --##############################################################################
 
-local function setButtonContainerWidth ()
-  local width = EDGE_OFFSET + mainButton:GetWidth() + BUTTON_SPACING;
+local function isButtonDisplayed (button)
+  return button.IsShown and button:IsShown();
+end
 
-  for _, child in ipairs({buttonContainer:GetChildren()}) do
-    if (child:IsShown()) then
-      width = width + BUTTON_SPACING + child:GetWidth();
+local function getShownChildrenCount (parent)
+  local count = 0;
+
+  for _, child in ipairs({parent:GetChildren()}) do
+    if (isButtonDisplayed(child)) then
+      count = count + 1;
     end
   end
 
-  buttonContainer:SetWidth(width);
+  return count;
 end
 
-local function setMinimapButtonPosition (button, anchorFrame)
+local function calculateXOffset (buttonWidth, columnCount)
+  return mainButton:GetWidth() + BUTTON_SPACING +
+      (buttonWidth + BUTTON_SPACING) * columnCount;
+end
+
+local function calculateYOffset (buttonHeight, rowCount)
+  return EDGE_OFFSET + BUTTON_SPACING +
+      (buttonHeight + BUTTON_SPACING) * rowCount;
+end
+
+local function anchorButton (button, rowIndex, columnIndex, buttonWidth, buttonHeight)
+  local xOffset = calculateXOffset(buttonWidth, columnIndex);
+  local yOffset = calculateYOffset(buttonHeight, rowIndex);
+
   button:ClearAllPoints();
-
-  if (anchorFrame) then
-    button:SetPoint(LEFT, anchorFrame, RIGHT, BUTTON_SPACING, 0);
-  else
-    button:SetPoint(LEFT, buttonContainer, LEFT,
-        EDGE_OFFSET + BUTTON_SPACING, 0);
-  end
+  button:SetPoint(TOPRIGHT, buttonContainer, TOPRIGHT, -xOffset, -yOffset);
 end
 
-local function reflowCollectedButtons ()
-  local lastButton = nil;
+local function reflowCollectedButtons (buttonWidth, buttonHeight)
+  local rowIndex = 0;
+  local columnIndex = 0;
+  local index = 0;
 
   for _, button in ipairs(collectedButtons) do
-    if (button:IsShown()) then
-      setMinimapButtonPosition(button, lastButton);
-      lastButton = button;
+    if (isButtonDisplayed(button)) then
+      anchorButton(button, rowIndex, columnIndex, buttonWidth, buttonHeight);
+
+      if (mod(index + 1, BUTTONS_PER_ROW) == 0) then
+        columnIndex = 0;
+        rowIndex = rowIndex + 1;
+      else
+        columnIndex = columnIndex + 1;
+      end
+
+      index = index + 1;
     end
   end
+end
+
+local function calculateContainerWidth (buttonWidth, columnCount)
+  return calculateXOffset(buttonWidth, columnCount) + EDGE_OFFSET;
+end
+
+local function calculateContainerHeight (buttonHeight, rowCount)
+    return calculateYOffset(buttonHeight, rowCount) + EDGE_OFFSET / 2;
+end
+
+local function setButtonContainerSize (buttonWidth, buttonHeight)
+  local buttonCount = getShownChildrenCount(buttonContainer);
+  local columnCount = min(buttonCount, BUTTONS_PER_ROW);
+  local rowCount = ceil(buttonCount / BUTTONS_PER_ROW);
+
+  buttonContainer:SetSize(calculateContainerWidth(buttonWidth, columnCount),
+      calculateContainerHeight(buttonHeight, rowCount));
+end
+
+local function getMaximumButtonDimensions ()
+  local maxWidth = 0;
+  local maxHeight = 0;
+
+  for _, button in ipairs(collectedButtons) do
+    if (isButtonDisplayed(button)) then
+      maxWidth = max(maxWidth, button:GetWidth());
+      maxHeight = max(maxHeight, button:GetHeight());
+    end
+  end
+
+  return maxWidth, maxHeight;
 end
 
 local function toggleButtons ()
   if (buttonContainer:IsShown()) then
     buttonContainer:Hide();
   else
-    setButtonContainerWidth();
-    reflowCollectedButtons();
+    local buttonWidth, buttonHeight = getMaximumButtonDimensions();
+
+    setButtonContainerSize(buttonWidth, buttonHeight);
+    reflowCollectedButtons(buttonWidth, buttonHeight);
     buttonContainer:Show();
   end
 end
@@ -116,7 +175,7 @@ end
 local function initButtonContainer ()
   buttonContainer:SetParent(mainFrame);
   buttonContainer:SetSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-  buttonContainer:SetPoint(RIGHT, mainFrame, RIGHT, 0, 0);
+  buttonContainer:SetPoint(TOPRIGHT, mainFrame, TOPRIGHT, 0, 0);
   buttonContainer:Hide();
 
   buttonContainer:SetBackdrop({
@@ -136,7 +195,7 @@ end
 local function initMainButton ()
   mainButton:SetParent(mainFrame);
   mainButton:SetSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-  mainButton:SetPoint(RIGHT, mainFrame, RIGHT, 0, 0);
+  mainButton:SetPoint(TOPRIGHT, mainFrame, TOPRIGHT, 0, 0);
   mainButton:Show();
 
   mainButton:SetBackdrop({
