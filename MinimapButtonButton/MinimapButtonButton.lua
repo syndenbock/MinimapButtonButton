@@ -309,8 +309,15 @@ local function getAllMinimapButtons ()
   return buttons;
 end
 
+local function sortButtons (buttons)
+  _G.sort(buttons, function (a, b)
+    return a:GetName() < b:GetName();
+  end);
+end
+
 local function collectMinimapButtons ()
   collectedButtons = getAllMinimapButtons();
+  sortButtons(collectedButtons);
 
   for _, button in ipairs(collectedButtons) do
     collectMinimapButton(button);
