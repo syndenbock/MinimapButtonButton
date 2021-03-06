@@ -70,8 +70,10 @@ local function calculateYOffset (buttonHeight, rowCount)
 end
 
 local function anchorButton (button, rowIndex, columnIndex, buttonWidth, buttonHeight)
-  local xOffset = calculateXOffset(buttonWidth, columnIndex);
-  local yOffset = calculateYOffset(buttonHeight, rowIndex);
+  local xOffset = calculateXOffset(buttonWidth, columnIndex) +
+      (buttonWidth - button:GetWidth()) / 2;
+  local yOffset = calculateYOffset(buttonHeight, rowIndex) +
+      (buttonHeight - button:GetHeight()) / 2;
 
   button:ClearAllPoints();
   button:SetPoint(TOPRIGHT, buttonContainer, TOPRIGHT, -xOffset, -yOffset);
