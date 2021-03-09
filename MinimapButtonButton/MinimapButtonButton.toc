@@ -1,6 +1,6 @@
 ## Interface: 90002/11305
 ## Title: MinimapButtonButton
-## Version: 1.0.2
+## Version: 1.0.3
 ## Author: syndenbock
 ## Notes: Creates a button that collects all minimap buttons
 ## SavedVariables: MinimapButtonButtonOptions
