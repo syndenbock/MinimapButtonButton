@@ -4,6 +4,8 @@ local mod = _G.mod;
 local min = _G.min;
 local max = _G.max;
 local ceil = _G.ceil;
+local tinsert = _G.tinsert;
+local tContains = _G.tContains;
 
 local CENTER = 'CENTER';
 local TOPRIGHT = 'TOPRIGHT';
@@ -242,6 +244,10 @@ local function collectMinimapButton (button)
   button:SetFrameStrata(FRAME_STRATA);
   button:SetScript('OnDragStart', nil);
   button:SetScript('OnDragStop', nil);
+
+  if (not tContains(collectedButtons, button)) then
+    tinsert(collectedButtons, button);
+  end
 end
 
 local function isMinimapButton (frame)
@@ -267,61 +273,50 @@ local function isMinimapButton (frame)
 end
 
 local function scanMinimapChildren ()
-  local tinsert = _G.tinsert;
-  local buttonList = {};
-
   for _, child in ipairs({_G.Minimap:GetChildren()}) do
     if (isMinimapButton(child)) then
-      tinsert(buttonList, child);
+      collectMinimapButton(child);
     end
   end
-
-  return buttonList;
 end
 
-local function findSpecificButtons ()
-  local tinsert = _G.tinsert;
+local function scanButtonByName (buttonName)
+  local button = _G[buttonName];
+
+  if (button ~= nil) then
+    collectMinimapButton(button);
+  end
+end
+
+local function scanSpecificButtons ()
   local buttonNames = {
     'ZygorGuidesViewerMapIcon',
   };
-  local buttons = {};
 
   for _, buttonName in ipairs(buttonNames) do
-    local button = _G[buttonName];
-
-    if (button ~= nil) then
-      tinsert(buttons, button);
-    end
+    scanButtonByName(buttonName);
   end
-
-  return buttons;
 end
 
-local function getAllMinimapButtons ()
-  local tinsert = _G.tinsert;
-  local buttons = scanMinimapChildren();
-  local specificButtons = findSpecificButtons();
-
-  for _, button in ipairs(specificButtons) do
-    tinsert(buttons, button);
-  end
-
-  return buttons;
+local function scanCovenantButton ()
+  scanButtonByName('GarrisonLandingPageMinimapButton');
 end
 
-local function sortButtons (buttons)
-  _G.sort(buttons, function (a, b)
+local function sortCollectedButtons ()
+  _G.sort(collectedButtons, function (a, b)
     return a:GetName() < b:GetName();
   end);
 end
 
 local function collectMinimapButtons ()
-  collectedButtons = getAllMinimapButtons();
-  sortButtons(collectedButtons);
+  scanMinimapChildren();
+  scanSpecificButtons();
 
-  for _, button in ipairs(collectedButtons) do
-    collectMinimapButton(button);
+  if (options.collectCovenantButton == true) then
+    scanCovenantButton();
   end
+
+  sortCollectedButtons();
 end
 
 events.PLAYER_LOGIN = function ()
@@ -369,3 +364,30 @@ end);
 for event in pairs(events) do
   eventFrame:RegisterEvent(event);
 end
+
+--##############################################################################
+-- slash commands
+--##############################################################################
+
+addon.addSlashHandlerName('mbb');
+
+addon.slash('covenant', function (state)
+  if (state == nil) then
+    if (options.collectCovenantButton == true) then
+      print(addonName .. ': Covenant button is currently being collected');
+    else
+      print('Covenant button is currently not being collected');
+    end
+  elseif (state == 'on') then
+    options.collectCovenantButton = true;
+    scanCovenantButton();
+    sortCollectedButtons();
+    print(addonName .. ': Covenant button is now being collected');
+  elseif (state == 'off') then
+    options.collectCovenantButton = false;
+    print(addonName .. ': Covenant button is no longer being collected \n' ..
+      'This requires a /reload for this to take effect');
+  else
+    print('unknown setting:', state);
+  end
+end);

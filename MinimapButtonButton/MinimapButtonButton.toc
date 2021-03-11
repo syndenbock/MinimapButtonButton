@@ -6,4 +6,5 @@
 ## SavedVariables: MinimapButtonButtonOptions
 ## SavedVariablesPerCharacter:
 
+SlashCommands.lua
 MinimapButtonButton.lua
