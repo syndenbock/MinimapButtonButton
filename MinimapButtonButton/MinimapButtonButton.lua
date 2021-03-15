@@ -15,7 +15,7 @@ local MIDDLEBUTTON = 'MiddleButton';
 local FRAME_STRATA = 'MEDIUM';
 local FRAME_LEVEL = 7;
 local BUTTON_EDGE_SIZE = 16;
-local BUTTON_HEIGHT = 42;
+local BUTTON_HEIGHT = 41;
 local BUTTON_WIDTH = 33;
 local EDGE_OFFSET = 4;
 
@@ -260,6 +260,7 @@ local function isMinimapButton (frame)
   local patterns = {
     'LibDBIcon10_',
     'MinimapButton',
+    'MinimapFrame',
     '-Minimap',
   };
 
