@@ -261,6 +261,7 @@ local function isMinimapButton (frame)
     'LibDBIcon10_',
     'MinimapButton',
     'MinimapFrame',
+    'MinimapIcon',
     '-Minimap',
   };
 
