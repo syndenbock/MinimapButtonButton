@@ -294,6 +294,7 @@ local function scanSpecificButtons ()
   local buttonNames = {
     'ZygorGuidesViewerMapIcon',
     'TrinketMenu_IconFrame',
+    'CodexBrowserIcon',
   };
 
   for _, buttonName in ipairs(buttonNames) do
