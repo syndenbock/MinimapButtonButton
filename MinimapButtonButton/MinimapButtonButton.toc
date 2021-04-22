@@ -8,3 +8,4 @@
 
 SlashCommands.lua
 MinimapButtonButton.lua
+Skins\ElvUI.lua
