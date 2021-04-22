@@ -112,11 +112,13 @@ local function reflowCollectedButtons (buttonWidth, buttonHeight)
 end
 
 local function calculateContainerWidth (buttonWidth, columnCount)
-  return calculateXOffset(buttonWidth, columnCount) + EDGE_OFFSET;
+  return max(calculateXOffset(buttonWidth, columnCount) + EDGE_OFFSET,
+      BUTTON_WIDTH * 2 - EDGE_OFFSET);
 end
 
 local function calculateContainerHeight (buttonHeight, rowCount)
-    return calculateYOffset(buttonHeight, rowCount) + EDGE_OFFSET / 2;
+  return max(calculateYOffset(buttonHeight, rowCount) + EDGE_OFFSET / 2,
+      BUTTON_HEIGHT);
 end
 
 local function setButtonContainerSize (buttonWidth, buttonHeight)
