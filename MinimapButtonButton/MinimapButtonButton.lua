@@ -217,6 +217,19 @@ local function initButtonContainer ()
   buttonContainer:SetBackdropColor(0, 0, 0, 1);
 end
 
+local function initLogo ()
+  local logo = mainButton:CreateTexture(nil, FRAME_STRATA);
+  local size = min(mainButton:GetSize()) - EDGE_OFFSET * 4;
+
+  logo:SetTexture('Interface\\AddOns\\' .. addonName ..
+      '\\Media\\Logo.blp');
+  logo:SetVertexColor(0, 0, 0, 1);
+  logo:SetPoint(CENTER, mainButton, CENTER, 0, 0);
+  logo:SetSize(size, size);
+
+  addon.shared.logo = logo;
+end
+
 local function initMainButton ()
   mainButton:SetParent(mainFrame);
   mainButton:SetSize(BUTTON_WIDTH, BUTTON_HEIGHT);
@@ -250,6 +263,7 @@ local function initFrames ()
   initMainFrame();
   initButtonContainer();
   initMainButton();
+  initLogo();
 end
 
 initFrames();

@@ -2,6 +2,8 @@ if (not _G.IsAddOnLoaded('ElvUI')) then return end
 
 local _, addon = ...;
 
+local min = _G.min;
+
 local ENGINE = _G.ElvUI[1];
 
 local function applySkin ()
@@ -24,8 +26,17 @@ local function applySkin ()
     frame:SetBackdropBorderColor(unpack(media.bordercolor));
   end
 
+  local function updateLogo ()
+    local logo = addon.shared.logo;
+    local size = min(addon.shared.mainButton:GetSize()) - 10;
+
+    logo:SetVertexColor(unpack(media.rgbvaluecolor));
+    logo:SetSize(size, size);
+  end
+
   skinFrame(addon.shared.buttonContainer);
   skinFrame(addon.shared.mainButton);
+  updateLogo();
 end
 
 ENGINE.valueColorUpdateFuncs[applySkin] = true;
