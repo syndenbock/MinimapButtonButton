@@ -2,12 +2,13 @@ if (not _G.IsAddOnLoaded('ElvUI')) then return end
 
 local _, addon = ...;
 
-local MEDIA = _G.ElvUI[1].media;
+local ENGINE = _G.ElvUI[1];
 
 local function applySkin ()
+  local media = ENGINE.media;
   local backdrop = {
-    bgFile = MEDIA.glossTex,
-    edgeFile = MEDIA.blankTex,
+    bgFile = media.glossTex,
+    edgeFile = media.blankTex,
     edgeSize = 1,
     insets = {
       left = 1,
@@ -19,12 +20,12 @@ local function applySkin ()
 
   local function skinFrame (frame)
     frame:SetBackdrop(backdrop);
-    frame:SetBackdropColor(unpack(MEDIA.backdropcolor));
-    frame:SetBackdropBorderColor(unpack(MEDIA.bordercolor));
+    frame:SetBackdropColor(unpack(media.backdropcolor));
+    frame:SetBackdropBorderColor(unpack(media.bordercolor));
   end
 
   skinFrame(addon.shared.buttonContainer);
   skinFrame(addon.shared.mainButton);
 end
 
-applySkin();
+ENGINE.valueColorUpdateFuncs[applySkin] = true;
