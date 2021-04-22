@@ -144,15 +144,25 @@ local function getMaximumButtonDimensions ()
   return maxWidth, maxHeight;
 end
 
+local function hideButtons ()
+  buttonContainer:Hide();
+end
+
+local function showButtons ()
+  local buttonWidth, buttonHeight = getMaximumButtonDimensions();
+
+  setButtonContainerSize(buttonWidth, buttonHeight);
+  reflowCollectedButtons(buttonWidth, buttonHeight);
+  buttonContainer:Show();
+end
+
 local function toggleButtons ()
   if (buttonContainer:IsShown()) then
-    buttonContainer:Hide();
+    options.buttonsShown = false;
+    hideButtons();
   else
-    local buttonWidth, buttonHeight = getMaximumButtonDimensions();
-
-    setButtonContainerSize(buttonWidth, buttonHeight);
-    reflowCollectedButtons(buttonWidth, buttonHeight);
-    buttonContainer:Show();
+    options.buttonsShown = true;
+    showButtons();
   end
 end
 
@@ -334,22 +344,35 @@ local function collectMinimapButtons ()
   sortCollectedButtons();
 end
 
-events.PLAYER_LOGIN = function ()
-  --[[ executing on next frame to wait for addons that create minimap buttons
-       on PLAYER_LOGIN ]]
-  _G.C_Timer.After(0, collectMinimapButtons);
-end
-
---##############################################################################
--- stored data handling
---##############################################################################
-
 local function restoreOptions ()
   if (options.position ~= nil) then
     mainFrame:ClearAllPoints();
     mainFrame:SetPoint(unpack(options.position));
   end
+
+  if (options.buttonsShown == true) then
+    showButtons();
+  end
 end
+
+local function init ()
+  restoreOptions();
+  collectMinimapButtons();
+
+  if (options.buttonsShown == true) then
+    showButtons();
+  end
+end
+
+events.PLAYER_LOGIN = function ()
+  --[[ executing on next frame to wait for addons that create minimap buttons
+       on PLAYER_LOGIN ]]
+  _G.C_Timer.After(0, init);
+end
+
+--##############################################################################
+-- stored data handling
+--##############################################################################
 
 function events.ADDON_LOADED (loadedAddon)
   if (loadedAddon ~= addonName) then
@@ -358,7 +381,6 @@ function events.ADDON_LOADED (loadedAddon)
 
   if (type(_G.MinimapButtonButtonOptions) == type(options)) then
     options = _G.MinimapButtonButtonOptions;
-    restoreOptions();
   end
 end
 
