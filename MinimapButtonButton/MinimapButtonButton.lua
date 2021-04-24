@@ -16,7 +16,7 @@ local FRAME_STRATA = 'MEDIUM';
 local FRAME_LEVEL = 7;
 local BUTTON_EDGE_SIZE = 16;
 local BUTTON_HEIGHT = 42;
-local BUTTON_WIDTH = 33;
+local BUTTON_WIDTH = 34;
 local EDGE_OFFSET = 4;
 
 local BUTTONS_PER_ROW = 10;
@@ -219,13 +219,12 @@ end
 
 local function initLogo ()
   local logo = mainButton:CreateTexture(nil, FRAME_STRATA);
-  local size = min(mainButton:GetSize()) - EDGE_OFFSET * 4;
 
   logo:SetTexture('Interface\\AddOns\\' .. addonName ..
       '\\Media\\Logo.blp');
   logo:SetVertexColor(0, 0, 0, 1);
   logo:SetPoint(CENTER, mainButton, CENTER, 0, 0);
-  logo:SetSize(size, size);
+  logo:SetSize(16, 16);
 
   addon.shared.logo = logo;
 end

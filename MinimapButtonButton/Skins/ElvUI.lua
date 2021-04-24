@@ -26,17 +26,9 @@ local function applySkin ()
     frame:SetBackdropBorderColor(unpack(media.bordercolor));
   end
 
-  local function updateLogo ()
-    local logo = addon.shared.logo;
-    local size = min(addon.shared.mainButton:GetSize()) - 10;
-
-    logo:SetVertexColor(unpack(media.rgbvaluecolor));
-    logo:SetSize(size, size);
-  end
-
   skinFrame(addon.shared.buttonContainer);
   skinFrame(addon.shared.mainButton);
-  updateLogo();
+  addon.shared.logo:SetVertexColor(unpack(media.rgbvaluecolor));
 end
 
 ENGINE.valueColorUpdateFuncs[applySkin] = true;
