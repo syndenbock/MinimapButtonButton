@@ -3,6 +3,7 @@
 ## Version: 1.1.4
 ## Author: syndenbock
 ## Notes: Creates a button that collects all minimap buttons
+## OptionalDeps: ElvUI
 ## SavedVariables: MinimapButtonButtonOptions
 ## SavedVariablesPerCharacter:
 
