@@ -8,5 +8,6 @@
 ## SavedVariablesPerCharacter:
 
 SlashCommands.lua
+Events.lua
 MinimapButtonButton.lua
 Skins\ElvUI.lua

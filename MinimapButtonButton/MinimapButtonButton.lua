@@ -27,7 +27,6 @@ local buttonContainer = _G.CreateFrame('Frame', nil, _G.UIParent,
     _G.BackdropTemplateMixin and 'BackdropTemplate');
 local mainButton = _G.CreateFrame('Frame', addonName .. 'Button', _G.UIParent,
     _G.BackdropTemplateMixin and 'BackdropTemplate');
-local events = {};
 local options = {};
 local collectedButtons = {};
 
@@ -377,17 +376,19 @@ local function init ()
   end
 end
 
-events.PLAYER_LOGIN = function ()
+addon.registerEvent('PLAYER_LOGIN', function ()
   --[[ executing on next frame to wait for addons that create minimap buttons
        on PLAYER_LOGIN ]]
   _G.C_Timer.After(0, init);
-end
+
+  return true;
+end);
 
 --##############################################################################
 -- stored data handling
 --##############################################################################
 
-function events.ADDON_LOADED (loadedAddon)
+addon.registerEvent('ADDON_LOADED', function (loadedAddon)
   if (loadedAddon ~= addonName) then
     return;
   end
@@ -395,25 +396,13 @@ function events.ADDON_LOADED (loadedAddon)
   if (type(_G.MinimapButtonButtonOptions) == type(options)) then
     options = _G.MinimapButtonButtonOptions;
   end
-end
 
-function events.PLAYER_LOGOUT ()
-  _G.MinimapButtonButtonOptions = options;
-end
-
---##############################################################################
--- event handling
---##############################################################################
-
-local eventFrame = _G.CreateFrame('Frame');
-
-eventFrame:SetScript('OnEvent', function (_, event, ...)
-  events[event](...);
+  return true;
 end);
 
-for event in pairs(events) do
-  eventFrame:RegisterEvent(event);
-end
+addon.registerEvent('PLAYER_LOGOUT', function ()
+  _G.MinimapButtonButtonOptions = options;
+end);
 
 --##############################################################################
 -- slash commands
