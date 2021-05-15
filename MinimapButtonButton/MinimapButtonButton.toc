@@ -1,4 +1,4 @@
-## Interface: 90005/11306
+## Interface: 90005/11307
 ## Title: MinimapButtonButton
 ## Version: 1.1.4
 ## Author: syndenbock
