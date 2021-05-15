@@ -269,8 +269,12 @@ initFrames();
 --##############################################################################
 -- minimap button collecting
 --##############################################################################
-
 local function collectMinimapButton (button)
+  if options.filteredButtonNames[button:GetName()] then
+    -- on blacklist, skip
+    return
+  end
+
   -- print('collecting button:', button:GetName());
 
   button:SetParent(buttonContainer);
@@ -397,6 +401,11 @@ addon.registerEvent('ADDON_LOADED', function (loadedAddon)
     options = _G.MinimapButtonButtonOptions;
   end
 
+  -- initialize ignore list if nonexistent, should gracefully upgrade SavedVar from before this feature was supported
+  if not options.filteredButtonNames then
+    options.filteredButtonNames = {}
+  end
+
   return true;
 end);
 
@@ -429,4 +438,40 @@ addon.slash('covenant', function (state)
   else
     print('unknown setting:', state);
   end
+end);
+
+addon.slash('list', function ()
+  print(addonName .. ': Buttons currently being collected:')
+  for k, v in pairs(collectedButtons) do
+    print("|cff00aa00  " .. v:GetName() .. "|r")
+  end
+
+  -- Horrible hacky way to check if hashtable is empty using next()
+  if next(options.filteredButtonNames) then
+    print("List of buttons being ignored:\n")
+    for k, v in pairs(options.filteredButtonNames) do
+      print("|cffaa0000  " .. k .. "|r")
+    end
+  end
+end);
+
+addon.slash('ignore', function(buttonName)
+  if _G[buttonName] then
+    options.filteredButtonNames[buttonName] = true
+    print(string.format("%s: Button '%s' now being ignored\nThis requires a /reload", addonName, buttonName))
+  end
+end);
+
+addon.slash('allow', function(buttonName)
+  if options.filteredButtonNames[buttonName] then
+    options.filteredButtonNames[buttonName] = nil
+    print(string.format("%s: Button '%s' will no longer be ignored\nThis requires a /reload", addonName, buttonName))
+  else
+    print(string.format("%s: No button called '%s' currently being ignored", addonName, buttonName))
+  end
+end);
+
+addon.slash('clear', function()
+  wipe(options.filteredButtonNames)
+  print(addonName .. ': Button ignore list has been wiped')
 end);
