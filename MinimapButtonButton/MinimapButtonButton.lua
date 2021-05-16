@@ -498,6 +498,11 @@ addon.slash('unignore', function (buttonName)
 end);
 
 addon.slash('unignoreall', function ()
+  if (next(options.blacklistedButtonNames) == nil) then
+    printAddonMessage('No buttons are currently being ignored.');
+    return;
+  end
+
   options.blacklistedButtonNames = {};
   printReloadMessage('No more buttons are being ignored.');
 end);
