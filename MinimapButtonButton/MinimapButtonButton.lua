@@ -482,5 +482,12 @@ addon.slash('unignore', function (buttonName)
   end
 
   options.blacklistedButtonNames[buttonName] = nil;
-  print(format('%s: Button "%s" is no longer being ignored.', addonName, buttonName));
+  print(format('%s: Button "%s" is no longer being ignored.\n' ..
+    'This requires a /reload to take effect.', addonName, buttonName));
+end);
+
+addon.slash('unignoreall', function (buttonName)
+  options.blacklistedButtonNames = {};
+  print('addonName' .. ': No more buttons are being ignored.\n' ..
+      'This requires a /reload to take effect.');
 end);
