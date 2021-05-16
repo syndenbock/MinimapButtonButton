@@ -470,6 +470,12 @@ addon.slash('list', function ()
 end);
 
 addon.slash('ignore', function (buttonName)
+  if (_G[buttonName] == nil) then
+    print(format('%s: Could not find button named "%s"',
+        addonName, buttonName));
+    return;
+  end
+
   options.blacklistedButtonNames[buttonName] = true;
   print(format('%s: Button "%s" is now being ignored.\n' ..
       'This requires a /reload to take effect.', addonName, buttonName));
