@@ -432,36 +432,43 @@ end);
 
 addon.addSlashHandlerName('mbb');
 
+local function printAddonMessage (message)
+  print(addonName .. ': ' .. message);
+end
+
+local function printReloadMessage (message)
+  printAddonMessage(message .. '\nThis requires a /reload to take effect.');
+end
+
 addon.slash('covenant', function (state)
   if (state == nil) then
     if (options.collectCovenantButton == true) then
-      print(addonName .. ': Covenant button is currently being collected');
+      printAddonMessage('Covenant button is currently being collected');
     else
-      print('Covenant button is currently not being collected');
+      printAddonMessage('Covenant button is currently not being collected');
     end
   elseif (state == 'on') then
     options.collectCovenantButton = true;
     scanCovenantButton();
     sortCollectedButtons();
-    print(addonName .. ': Covenant button is now being collected');
+    printReloadMessage('Covenant button is now being collected.');
   elseif (state == 'off') then
     options.collectCovenantButton = false;
-    print(addonName .. ': Covenant button is no longer being collected.\n' ..
-      'This requires a /reload for this to take effect.');
+    printReloadMessage('Covenant button is no longer being collected.');
   else
     print('unknown setting:', state);
   end
 end);
 
 addon.slash('list', function ()
-  print(addonName .. ': Buttons currently being collected:');
+  printAddonMessage('Buttons currently being collected:');
 
   for _, button in ipairs(collectedButtons) do
     print(button:GetName());
   end
 
   if (next(options.blacklistedButtonNames) ~= nil) then
-    print(addonName .. ': Buttons currently being ignored:');
+    printAddonMessage('Buttons currently being ignored:');
 
     for buttonName in pairs(options.blacklistedButtonNames) do
       print(buttonName);
@@ -471,29 +478,26 @@ end);
 
 addon.slash('ignore', function (buttonName)
   if (_G[buttonName] == nil) then
-    print(format('%s: Could not find button named "%s"',
-        addonName, buttonName));
+    printAddonMessage(format('Could not find button named "%s"', buttonName));
     return;
   end
 
   options.blacklistedButtonNames[buttonName] = true;
-  print(format('%s: Button "%s" is now being ignored.\n' ..
-      'This requires a /reload to take effect.', addonName, buttonName));
+  printReloadMessage(format('Button "%s" is now being ignored.', buttonName));
 end);
 
 addon.slash('unignore', function (buttonName)
   if (options.blacklistedButtonNames[buttonName] == nil) then
-    print(format('%s: Button "%s" is not being ignored.', addonName, buttonName));
+    printAddonMessage(format('Button "%s" is not being ignored.', buttonName));
     return;
   end
 
   options.blacklistedButtonNames[buttonName] = nil;
-  print(format('%s: Button "%s" is no longer being ignored.\n' ..
-    'This requires a /reload to take effect.', addonName, buttonName));
+  printReloadMessage(format('Button "%s" is no longer being ignored.',
+      buttonName));
 end);
 
-addon.slash('unignoreall', function (buttonName)
+addon.slash('unignoreall', function ()
   options.blacklistedButtonNames = {};
-  print('addonName' .. ': No more buttons are being ignored.\n' ..
-      'This requires a /reload to take effect.');
+  printReloadMessage('No more buttons are being ignored.');
 end);
