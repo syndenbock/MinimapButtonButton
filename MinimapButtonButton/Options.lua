@@ -26,6 +26,14 @@ addon.registerEvent('ADDON_LOADED', function (loadedAddon)
     };
   end
 
+  if (options.collectCovenantButton ~= nil) then
+    if (options.collectCovenantButton == true) then
+      options.whitelist['GarrisonLandingPageMinimapButton'] = true;
+    end
+
+    options.collectCovenantButton = nil;
+  end
+
   addon.registerEvent('PLAYER_LOGOUT', function ()
     _G.MinimapButtonButtonOptions = options;
   end);

@@ -339,10 +339,6 @@ local function collectWhitelistedButtons ()
   end
 end
 
-local function scanCovenantButton ()
-  scanButtonByName('GarrisonLandingPageMinimapButton');
-end
-
 local function sortCollectedButtons ()
   _G.sort(collectedButtons, function (a, b)
     return a:GetName() < b:GetName();
@@ -352,11 +348,6 @@ end
 local function collectMinimapButtons ()
   scanMinimapChildren();
   collectWhitelistedButtons();
-
-  if (addon.options.collectCovenantButton == true) then
-    scanCovenantButton();
-  end
-
   sortCollectedButtons();
 end
 
@@ -394,23 +385,3 @@ end);
 --##############################################################################
 
 addon.addSlashHandlerName('mbb');
-
-addon.slash('covenant', function (state)
-  if (state == nil) then
-    if (addon.options.collectCovenantButton == true) then
-      addon.printAddonMessage('Covenant button is currently being collected');
-    else
-      addon.printAddonMessage('Covenant button is currently not being collected');
-    end
-  elseif (state == 'on') then
-    addon.options.collectCovenantButton = true;
-    scanCovenantButton();
-    sortCollectedButtons();
-    addon.printReloadMessage('Covenant button is now being collected.');
-  elseif (state == 'off') then
-    addon.options.collectCovenantButton = false;
-    addon.printReloadMessage('Covenant button is no longer being collected.');
-  else
-    addon.printAddonMessage('unknown setting:', state);
-  end
-end);
