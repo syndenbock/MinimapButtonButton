@@ -9,7 +9,7 @@ addon.slash('include', function (buttonName)
   end
 
   addon.options.whitelist[buttonName] = true;
-  addon.printReloadMesage(format('Button "%s" is now manually being collected.',
+  addon.printReloadMessage(format('Button "%s" is now manually being collected.',
       buttonName));
 end);
 
