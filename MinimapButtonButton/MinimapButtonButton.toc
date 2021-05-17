@@ -9,5 +9,8 @@
 
 SlashCommands.lua
 Events.lua
+Utils.lua
+Options.lua
+Blacklist.lua
 MinimapButtonButton.lua
 Skins\ElvUI.lua

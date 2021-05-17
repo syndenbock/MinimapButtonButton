@@ -6,7 +6,6 @@ local max = _G.max;
 local ceil = _G.ceil;
 local tinsert = _G.tinsert;
 local tContains = _G.tContains;
-local format = _G.format;
 
 local CENTER = 'CENTER';
 local TOPRIGHT = 'TOPRIGHT';
@@ -28,7 +27,6 @@ local buttonContainer = _G.CreateFrame('Frame', nil, _G.UIParent,
     _G.BackdropTemplateMixin and 'BackdropTemplate');
 local mainButton = _G.CreateFrame('Frame', addonName .. 'Button', _G.UIParent,
     _G.BackdropTemplateMixin and 'BackdropTemplate');
-local options;
 local collectedButtons = {};
 
 --##############################################################################
@@ -38,6 +36,7 @@ local collectedButtons = {};
 addon.shared = {
   buttonContainer = buttonContainer,
   mainButton = mainButton,
+  collectedButtons = collectedButtons,
 };
 
 --##############################################################################
@@ -158,16 +157,16 @@ end
 
 local function toggleButtons ()
   if (buttonContainer:IsShown()) then
-    options.buttonsShown = false;
+    addon.options.buttonsShown = false;
     hideButtons();
   else
-    options.buttonsShown = true;
+    addon.options.buttonsShown = true;
     showButtons();
   end
 end
 
 local function storeMainFramePosition ()
-  options.position = {mainFrame:GetPoint()};
+  addon.options.position = {mainFrame:GetPoint()};
 end
 
 local function stopMovingMainFrame ()
@@ -284,12 +283,8 @@ local function collectMinimapButton (button)
   end
 end
 
-local function getFrameName (frame)
-  return frame.GetName and frame:GetName();
-end
-
 local function isMinimapButton (frame)
-  local frameName = getFrameName(frame);
+  local frameName = addon.getFrameName(frame);
 
   if (not frameName) then
     return false;
@@ -312,20 +307,9 @@ local function isMinimapButton (frame)
   return false;
 end
 
-local function isBlacklisted (frame)
-  if (options.blacklistedButtonNames == nil) then
-    return false;
-  end
-
-  local frameName = getFrameName(frame);
-
-  return (frameName ~= nil and
-      options.blacklistedButtonNames[frameName] == true);
-end
-
 local function scanMinimapChildren ()
   for _, child in ipairs({_G.Minimap:GetChildren()}) do
-    if (not isBlacklisted(child) and isMinimapButton(child)) then
+    if (not addon.isBlacklisted(child) and isMinimapButton(child)) then
       collectMinimapButton(child);
     end
   end
@@ -365,7 +349,7 @@ local function collectMinimapButtons ()
   scanMinimapChildren();
   scanSpecificButtons();
 
-  if (options.collectCovenantButton == true) then
+  if (addon.options.collectCovenantButton == true) then
     scanCovenantButton();
   end
 
@@ -373,12 +357,12 @@ local function collectMinimapButtons ()
 end
 
 local function restoreOptions ()
-  if (options.position ~= nil) then
+  if (addon.options.position ~= nil) then
     mainFrame:ClearAllPoints();
-    mainFrame:SetPoint(unpack(options.position));
+    mainFrame:SetPoint(unpack(addon.options.position));
   end
 
-  if (options.buttonsShown == true) then
+  if (addon.options.buttonsShown == true) then
     showButtons();
   end
 end
@@ -387,7 +371,7 @@ local function init ()
   restoreOptions();
   collectMinimapButtons();
 
-  if (options.buttonsShown == true) then
+  if (addon.options.buttonsShown == true) then
     showButtons();
   end
 end
@@ -400,31 +384,6 @@ addon.registerEvent('PLAYER_LOGIN', function ()
   return true;
 end);
 
---##############################################################################
--- stored data handling
---##############################################################################
-
-addon.registerEvent('ADDON_LOADED', function (loadedAddon)
-  if (loadedAddon ~= addonName) then
-    return;
-  end
-
-  if (type(_G.MinimapButtonButtonOptions) == 'table') then
-    options = _G.MinimapButtonButtonOptions;
-  else
-    options = {};
-  end
-
-  if (type(options.blacklistedButtonNames) ~= 'table') then
-    options.blacklistedButtonNames = {};
-  end
-
-  addon.registerEvent('PLAYER_LOGOUT', function ()
-    _G.MinimapButtonButtonOptions = options;
-  end);
-
-  return true;
-end);
 
 --##############################################################################
 -- slash commands
@@ -432,77 +391,22 @@ end);
 
 addon.addSlashHandlerName('mbb');
 
-local function printAddonMessage (message)
-  print(addonName .. ': ' .. message);
-end
-
-local function printReloadMessage (message)
-  printAddonMessage(message .. '\nThis requires a /reload to take effect.');
-end
-
 addon.slash('covenant', function (state)
   if (state == nil) then
-    if (options.collectCovenantButton == true) then
-      printAddonMessage('Covenant button is currently being collected');
+    if (addon.options.collectCovenantButton == true) then
+      addon.printAddonMessage('Covenant button is currently being collected');
     else
-      printAddonMessage('Covenant button is currently not being collected');
+      addon.printAddonMessage('Covenant button is currently not being collected');
     end
   elseif (state == 'on') then
-    options.collectCovenantButton = true;
+    addon.options.collectCovenantButton = true;
     scanCovenantButton();
     sortCollectedButtons();
-    printReloadMessage('Covenant button is now being collected.');
+    addon.printReloadMessage('Covenant button is now being collected.');
   elseif (state == 'off') then
-    options.collectCovenantButton = false;
-    printReloadMessage('Covenant button is no longer being collected.');
+    addon.options.collectCovenantButton = false;
+    addon.printReloadMessage('Covenant button is no longer being collected.');
   else
-    print('unknown setting:', state);
+    addon.printAddonMessage('unknown setting:', state);
   end
-end);
-
-addon.slash('list', function ()
-  printAddonMessage('Buttons currently being collected:');
-
-  for _, button in ipairs(collectedButtons) do
-    print(button:GetName());
-  end
-
-  if (next(options.blacklistedButtonNames) ~= nil) then
-    printAddonMessage('Buttons currently being ignored:');
-
-    for buttonName in pairs(options.blacklistedButtonNames) do
-      print(buttonName);
-    end
-  end
-end);
-
-addon.slash('ignore', function (buttonName)
-  if (_G[buttonName] == nil) then
-    printAddonMessage(format('Could not find button named "%s"', buttonName));
-    return;
-  end
-
-  options.blacklistedButtonNames[buttonName] = true;
-  printReloadMessage(format('Button "%s" is now being ignored.', buttonName));
-end);
-
-addon.slash('unignore', function (buttonName)
-  if (options.blacklistedButtonNames[buttonName] == nil) then
-    printAddonMessage(format('Button "%s" is not being ignored.', buttonName));
-    return;
-  end
-
-  options.blacklistedButtonNames[buttonName] = nil;
-  printReloadMessage(format('Button "%s" is no longer being ignored.',
-      buttonName));
-end);
-
-addon.slash('unignoreall', function ()
-  if (next(options.blacklistedButtonNames) == nil) then
-    printAddonMessage('No buttons are currently being ignored.');
-    return;
-  end
-
-  options.blacklistedButtonNames = {};
-  printReloadMessage('No more buttons are being ignored.');
 end);
