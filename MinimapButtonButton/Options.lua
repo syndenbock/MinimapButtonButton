@@ -13,8 +13,8 @@ addon.registerEvent('ADDON_LOADED', function (loadedAddon)
     options = {};
   end
 
-  if (type(options.blacklistedButtonNames) ~= 'table') then
-    options.blacklistedButtonNames = {};
+  if (type(options.blacklist) ~= 'table') then
+    options.blacklist = {};
   end
 
   if (type(options.whitelist) ~= 'table') then
