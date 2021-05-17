@@ -69,8 +69,21 @@ local function getShownChildrenCount (parent)
   return count;
 end
 
+local function getFrameEffectiveWidth (frame)
+  return frame:GetWidth() * frame:GetScale();
+end
+
+local function getFrameEffectiveHeight (frame)
+  return frame:GetHeight() * frame:GetScale();
+end
+
+local function setFrameEffectiveAnchor (frame, anchor, parent, parentAnchor, x, y)
+  frame:ClearAllPoints();
+  frame:SetPoint(anchor, parent, parentAnchor, x / frame:GetScale(), y / frame:GetScale());
+end
+
 local function calculateXOffset (buttonWidth, columnCount)
-  return mainButton:GetWidth() + BUTTON_SPACING +
+  return getFrameEffectiveWidth(mainButton) + BUTTON_SPACING +
       (buttonWidth + BUTTON_SPACING) * columnCount;
 end
 
@@ -80,13 +93,10 @@ local function calculateYOffset (buttonHeight, rowCount)
 end
 
 local function anchorButton (button, rowIndex, columnIndex, buttonWidth, buttonHeight)
-  local xOffset = calculateXOffset(buttonWidth, columnIndex) +
-      (buttonWidth - button:GetWidth()) / 2;
-  local yOffset = calculateYOffset(buttonHeight, rowIndex) +
-      (buttonHeight - button:GetHeight()) / 2;
+  local xOffset = (calculateXOffset(buttonWidth, columnIndex) + buttonWidth / 2);
+  local yOffset = (calculateYOffset(buttonHeight, rowIndex) + buttonHeight / 2);
 
-  button:ClearAllPoints();
-  button:SetPoint(TOPRIGHT, buttonContainer, TOPRIGHT, -xOffset, -yOffset);
+  setFrameEffectiveAnchor(button, CENTER, buttonContainer, TOPRIGHT, -xOffset, -yOffset);
 end
 
 local function reflowCollectedButtons (buttonWidth, buttonHeight)
@@ -135,8 +145,8 @@ local function getMaximumButtonDimensions ()
 
   for _, button in ipairs(collectedButtons) do
     if (isButtonDisplayed(button)) then
-      maxWidth = max(maxWidth, button:GetWidth());
-      maxHeight = max(maxHeight, button:GetHeight());
+      maxWidth = max(maxWidth, getFrameEffectiveWidth(button));
+      maxHeight = max(maxHeight, getFrameEffectiveHeight(button));
     end
   end
 
