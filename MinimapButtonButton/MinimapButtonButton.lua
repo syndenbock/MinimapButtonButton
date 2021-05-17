@@ -323,14 +323,8 @@ local function scanButtonByName (buttonName)
   end
 end
 
-local function scanSpecificButtons ()
-  local buttonNames = {
-    'ZygorGuidesViewerMapIcon',
-    'TrinketMenu_IconFrame',
-    'CodexBrowserIcon',
-  };
-
-  for _, buttonName in ipairs(buttonNames) do
+local function collectWhitelistedButtons ()
+  for buttonName in pairs(addon.options.whitelist) do
     scanButtonByName(buttonName);
   end
 end
@@ -347,7 +341,7 @@ end
 
 local function collectMinimapButtons ()
   scanMinimapChildren();
-  scanSpecificButtons();
+  collectWhitelistedButtons();
 
   if (addon.options.collectCovenantButton == true) then
     scanCovenantButton();

@@ -12,5 +12,6 @@ Events.lua
 Utils.lua
 Options.lua
 Blacklist.lua
+Whitelist.lua
 MinimapButtonButton.lua
 Skins\ElvUI.lua

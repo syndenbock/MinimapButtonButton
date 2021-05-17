@@ -17,6 +17,15 @@ addon.registerEvent('ADDON_LOADED', function (loadedAddon)
     options.blacklistedButtonNames = {};
   end
 
+  if (type(options.whitelist) ~= 'table') then
+    -- addding some known special buttons as default
+    options.whitelist = {
+      ZygorGuidesViewerMapIcon = true,
+      TrinketMenu_IconFrame = true,
+      CodexBrowserIcon = true,
+    };
+  end
+
   addon.registerEvent('PLAYER_LOGOUT', function ()
     _G.MinimapButtonButtonOptions = options;
   end);
