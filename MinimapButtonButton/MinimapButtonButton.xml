@@ -1,0 +1,10 @@
+<UI>
+  <script file="SlashCommands.lua"/>
+  <script file="Events.lua"/>
+  <script file="Utils.lua"/>
+  <script file="Options.lua"/>
+  <script file="Blacklist.lua"/>
+  <script file="Whitelist.lua"/>
+  <script file="MinimapButtonButton.lua"/>
+  <script file="Skins\ElvUI.lua"/>
+</UI>
