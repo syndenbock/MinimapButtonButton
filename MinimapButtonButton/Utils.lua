@@ -7,7 +7,8 @@ local function printAddonMessage (message)
 end
 
 local function printReloadMessage (message)
-  printAddonMessage(message .. '\nThis requires a /reload to take effect.');
+  printAddonMessage(message);
+  print('This requires a /reload to take effect.');
 end
 
 local function getFrameName (frame)
