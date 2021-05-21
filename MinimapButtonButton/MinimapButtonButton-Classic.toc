@@ -1,6 +1,6 @@
 ## Interface: 11307
 ## Title: MinimapButtonButton
-## Version: 1.2
+## Version: 1.3
 ## Author: syndenbock
 ## Notes: Creates a button that collects all minimap buttons
 ## OptionalDeps: ElvUI
