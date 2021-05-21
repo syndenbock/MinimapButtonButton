@@ -379,9 +379,32 @@ addon.registerEvent('PLAYER_LOGIN', function ()
   return true;
 end);
 
-
 --##############################################################################
 -- slash commands
 --##############################################################################
 
 addon.addSlashHandlerName('mbb');
+
+addon.slash('list', function ()
+  addon.printAddonMessage('Buttons currently being collected:');
+
+  for _, button in ipairs(addon.shared.collectedButtons) do
+    print(button:GetName());
+  end
+
+  if (next(addon.options.whitelist) ~= nil) then
+    addon.printAddonMessage('Buttons currently being manually collected:');
+
+    for buttonName in pairs(addon.options.whitelist) do
+      print(buttonName);
+    end
+  end
+
+  if (next(addon.options.blacklist) ~= nil) then
+    addon.printAddonMessage('Buttons currently being ignored:');
+
+    for buttonName in pairs(addon.options.blacklist) do
+      print(buttonName);
+    end
+  end
+end);

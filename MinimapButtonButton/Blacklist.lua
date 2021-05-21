@@ -9,22 +9,6 @@ function addon.isBlacklisted (frame)
       addon.options.blacklist[frameName] == true);
 end
 
-addon.slash('list', function ()
-  addon.printAddonMessage('Buttons currently being collected:');
-
-  for _, button in ipairs(addon.shared.collectedButtons) do
-    print(button:GetName());
-  end
-
-  if (next(addon.options.blacklist) ~= nil) then
-    addon.printAddonMessage('Buttons currently being ignored:');
-
-    for buttonName in pairs(addon.options.blacklist) do
-      print(buttonName);
-    end
-  end
-end);
-
 addon.slash('ignore', function (buttonName)
   if (_G[buttonName] == nil) then
     addon.printAddonMessage(format('No frame named "%s" was found.', buttonName));
