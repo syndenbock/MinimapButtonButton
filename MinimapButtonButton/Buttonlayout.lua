@@ -59,7 +59,7 @@ local function calculateXOffset (buttonWidth, columnCount)
 end
 
 local function calculateYOffset (buttonHeight, rowCount)
-  return config.BUTTON_SPACING + (buttonHeight + config.BUTTON_SPACING) * rowCount;
+  return config.BUTTON_SPACING + config.EDGE_OFFSET + (buttonHeight + config.BUTTON_SPACING) * rowCount;
 end
 
 local function calculateContainerWidth (buttonWidth, columnCount)
