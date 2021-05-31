@@ -5,6 +5,7 @@
   <script file="Options.lua"/>
   <script file="Blacklist.lua"/>
   <script file="Whitelist.lua"/>
+  <script file="Constants.lua"/>
   <script file="Config.lua"/>
   <script file="MinimapButtonButton.lua"/>
   <script file="Buttonlayout.lua"/>

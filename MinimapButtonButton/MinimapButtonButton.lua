@@ -94,7 +94,6 @@ end
 local function initButtonContainer ()
   buttonContainer:SetParent(mainFrame);
   buttonContainer:SetSize(config.BUTTON_WIDTH, config.BUTTON_HEIGHT);
-  buttonContainer:SetPoint(TOPRIGHT, mainFrame, TOPRIGHT, 0, 0);
   buttonContainer:Hide();
 
   buttonContainer:SetBackdrop({
