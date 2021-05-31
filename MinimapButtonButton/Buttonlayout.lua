@@ -135,7 +135,8 @@ local function anchorButton (button, rowIndex, columnIndex, anchorInfo)
   end
 
   setFrameEffectiveAnchor(button, anchors.CENTER, shared.mainButton,
-    anchorInfo.anchor, xOffset, yOffset);
+    anchorInfo.anchor, xOffset + constants.BUTTON_OFFSET_X,
+        yOffset + constants.BUTTON_OFFSET_Y);
 end
 
 local function reflowCollectedButtons (anchorInfo)

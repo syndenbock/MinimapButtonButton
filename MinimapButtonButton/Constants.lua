@@ -26,4 +26,6 @@ addon.constants = {
   EDGE_OFFSET = 4,
   BUTTONS_PER_ROW = 10,
   BUTTON_SPACING = 2,
+  BUTTON_OFFSET_X = 1,
+  BUTTON_OFFSET_Y = -1,
 };
