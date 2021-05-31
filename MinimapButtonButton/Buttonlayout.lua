@@ -97,8 +97,8 @@ end
 local function setButtonContainerSize (anchorInfo)
   local buttonContainer = shared.buttonContainer;
   local buttonCount = getShownChildrenCount(buttonContainer);
-  local columnCount = min(buttonCount, constants.BUTTONS_PER_ROW);
-  local rowCount = ceil(buttonCount / constants.BUTTONS_PER_ROW);
+  local columnCount = min(buttonCount, addon.options.buttonsPerRow);
+  local rowCount = ceil(buttonCount / addon.options.buttonsPerRow);
 
   if (anchorInfo.isHorizontalLayout) then
     buttonContainer:SetSize(calculateContainerWidth(anchorInfo.width, columnCount),
@@ -140,6 +140,7 @@ local function anchorButton (button, rowIndex, columnIndex, anchorInfo)
 end
 
 local function reflowCollectedButtons (anchorInfo)
+  local buttonsPerRow = addon.options.buttonsPerRow;
   local rowIndex = 0;
   local columnIndex = 0;
   local index = 0;
@@ -152,7 +153,7 @@ local function reflowCollectedButtons (anchorInfo)
         anchorButton(button, columnIndex, rowIndex, anchorInfo);
       end
 
-      if (mod(index + 1, constants.BUTTONS_PER_ROW) == 0) then
+      if (mod(index + 1, buttonsPerRow) == 0) then
         columnIndex = 0;
         rowIndex = rowIndex + 1;
       else
@@ -212,4 +213,10 @@ function addon.updateLayout ()
 
   setButtonContainerSize(anchorInfo);
   reflowCollectedButtons(anchorInfo);
+end
+
+function addon.updateLayoutIfShown ()
+  if (addon.shared.buttonContainer:IsShown()) then
+    addon.updateLayout();
+  end
 end

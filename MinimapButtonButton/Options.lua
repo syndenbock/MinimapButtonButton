@@ -20,6 +20,7 @@ local function setDefaultValues (options)
     },
     majorDirection = addon.constants.directions.LEFT,
     minorDirection = addon.constants.directions.DOWN,
+    buttonsPerRow = 10,
   };
 
   if (type(options) ~= type(defaults)) then

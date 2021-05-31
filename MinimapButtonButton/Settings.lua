@@ -2,6 +2,7 @@ local _, addon = ...;
 
 local strlower = _G.strlower;
 local format = _G.format;
+local floor = _G.floor;
 
 local handlers = {};
 
@@ -10,7 +11,7 @@ local function printSettingValue (setting, value)
 end
 
 local function printInvalidSettingValue (setting, value)
-  addon.printAddonMessage(format('%s is no valid value for setting %s', value, setting));
+  addon.printAddonMessage(format('%s is not a valid value for setting %s', value, setting));
 end
 
 local function printSettingWasSet (setting, value)
@@ -71,12 +72,25 @@ function handlers.direction (setting, value)
 
   addon.options.majorDirection = directions.major;
   addon.options.minorDirection = directions.minor;
+  addon.updateLayoutIfShown();
+  printSettingWasSet(setting, value);
+end
 
-  if (addon.shared.buttonContainer:IsShown()) then
-    addon.updateLayout();
+function handlers.buttonsperrow (setting, value)
+  if (value == nil) then
+    return printSettingValue(setting, addon.options.buttonsPerRow);
   end
 
-  printSettingWasSet(setting, value);
+  local numberValue = tonumber(value);
+
+  if (numberValue == nil) then
+    return printInvalidSettingValue(setting, value);
+  end
+
+  numberValue = floor(numberValue);
+  addon.options.buttonsPerRow = numberValue;
+  addon.updateLayoutIfShown();
+  printSettingWasSet(setting, numberValue);
 end
 
 local function printAvailableSettings ()
