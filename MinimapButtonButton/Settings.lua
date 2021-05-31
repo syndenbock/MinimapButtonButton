@@ -13,6 +13,10 @@ local function printInvalidSettingValue (setting, value)
   addon.printAddonMessage(format('%s is no valid value for setting %s', value, setting));
 end
 
+local function printSettingWasSet (setting, value)
+  addon.printAddonMessage(format('setting %s was set to %s', setting, value));
+end
+
 local function getValidDirections ()
   local directions = addon.constants.directions;
 
@@ -71,6 +75,8 @@ function handlers.direction (setting, value)
   if (addon.shared.buttonContainer:IsShown()) then
     addon.updateLayout();
   end
+
+  printSettingWasSet(setting, value);
 end
 
 local function printAvailableSettings ()
