@@ -55,11 +55,13 @@ local function getShownChildrenCount (parent)
 end
 
 local function calculateXOffset (buttonWidth, columnCount)
-  return config.BUTTON_SPACING + (buttonWidth + config.BUTTON_SPACING) * columnCount;
+  return config.BUTTON_SPACING + config.EDGE_OFFSET +
+      (buttonWidth + config.BUTTON_SPACING) * columnCount;
 end
 
 local function calculateYOffset (buttonHeight, rowCount)
-  return config.BUTTON_SPACING + config.EDGE_OFFSET + (buttonHeight + config.BUTTON_SPACING) * rowCount;
+  return config.BUTTON_SPACING + config.EDGE_OFFSET +
+      (buttonHeight + config.BUTTON_SPACING) * rowCount;
 end
 
 local function calculateContainerWidth (buttonWidth, columnCount)
@@ -89,7 +91,7 @@ local function calculateContainerHeight (buttonHeight, rowCount)
   end
 
   return overlap + calculateYOffset(buttonHeight, rowCount) +
-      config.EDGE_OFFSET;
+      config.EDGE_OFFSET / 2;
 end
 
 local function setButtonContainerSize (anchorInfo)
