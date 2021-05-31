@@ -5,11 +5,11 @@ local min = _G.min;
 local max = _G.max;
 local ceil = _G.ceil;
 
-local config = addon.config;
+local constants = addon.constants;
 local shared = addon.shared;
 
-local directions = addon.enums.DIRECTIONS;
-local anchors = addon.constants.ANCHORS;
+local directions = constants.directions;
+local anchors = constants.anchors;
 
 local function isButtonDisplayed (button)
   return button.IsShown and button:IsShown();
@@ -55,50 +55,50 @@ local function getShownChildrenCount (parent)
 end
 
 local function calculateXOffset (buttonWidth, columnCount)
-  return config.BUTTON_SPACING + config.EDGE_OFFSET +
-      (buttonWidth + config.BUTTON_SPACING) * columnCount;
+  return constants.BUTTON_SPACING + constants.EDGE_OFFSET +
+      (buttonWidth + constants.BUTTON_SPACING) * columnCount;
 end
 
 local function calculateYOffset (buttonHeight, rowCount)
-  return config.BUTTON_SPACING + config.EDGE_OFFSET +
-      (buttonHeight + config.BUTTON_SPACING) * rowCount;
+  return constants.BUTTON_SPACING + constants.EDGE_OFFSET +
+      (buttonHeight + constants.BUTTON_SPACING) * rowCount;
 end
 
 local function calculateContainerWidth (buttonWidth, columnCount)
   if (columnCount == 0) then
-    return config.BUTTON_WIDTH;
+    return constants.BUTTON_WIDTH;
   end
 
   local overlap = 0;
 
   if (isHorizontalLayout()) then
-    overlap = config.BUTTON_WIDTH;
+    overlap = constants.BUTTON_WIDTH;
   end
 
   return overlap + calculateXOffset(buttonWidth, columnCount) +
-      config.EDGE_OFFSET;
+      constants.EDGE_OFFSET;
 end
 
 local function calculateContainerHeight (buttonHeight, rowCount)
   if (rowCount == 0) then
-    return config.BUTTON_HEIGHT;
+    return constants.BUTTON_HEIGHT;
   end
 
   local overlap = 0;
 
   if (not isHorizontalLayout()) then
-    overlap = config.BUTTON_HEIGHT;
+    overlap = constants.BUTTON_HEIGHT;
   end
 
   return overlap + calculateYOffset(buttonHeight, rowCount) +
-      config.EDGE_OFFSET;
+      constants.EDGE_OFFSET;
 end
 
 local function setButtonContainerSize (anchorInfo)
   local buttonContainer = shared.buttonContainer;
   local buttonCount = getShownChildrenCount(buttonContainer);
-  local columnCount = min(buttonCount, config.BUTTONS_PER_ROW);
-  local rowCount = ceil(buttonCount / config.BUTTONS_PER_ROW);
+  local columnCount = min(buttonCount, constants.BUTTONS_PER_ROW);
+  local rowCount = ceil(buttonCount / constants.BUTTONS_PER_ROW);
 
   if (anchorInfo.isHorizontalLayout) then
     buttonContainer:SetSize(calculateContainerWidth(anchorInfo.width, columnCount),
@@ -151,7 +151,7 @@ local function reflowCollectedButtons (anchorInfo)
         anchorButton(button, columnIndex, rowIndex, anchorInfo);
       end
 
-      if (mod(index + 1, config.BUTTONS_PER_ROW) == 0) then
+      if (mod(index + 1, constants.BUTTONS_PER_ROW) == 0) then
         columnIndex = 0;
         rowIndex = rowIndex + 1;
       else

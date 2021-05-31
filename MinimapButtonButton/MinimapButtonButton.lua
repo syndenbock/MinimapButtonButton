@@ -8,7 +8,7 @@ local TOPRIGHT = 'TOPRIGHT';
 local LEFTBUTTON = 'LeftButton';
 local MIDDLEBUTTON = 'MiddleButton';
 
-local config = addon.config;
+local constants = addon.constants;
 
 local mainFrame;
 local buttonContainer;
@@ -74,9 +74,9 @@ end
 local function initMainFrame ()
   mainFrame = _G.CreateFrame('Frame', addonName .. 'Frame');
   mainFrame:SetParent(_G.UIParent);
-  mainFrame:SetFrameStrata(config.FRAME_STRATA);
-  mainFrame:SetFrameLevel(config.FRAME_LEVEL);
-  mainFrame:SetSize(config.BUTTON_WIDTH, config.BUTTON_HEIGHT);
+  mainFrame:SetFrameStrata(constants.FRAME_STRATA);
+  mainFrame:SetFrameLevel(constants.FRAME_LEVEL);
+  mainFrame:SetSize(constants.BUTTON_WIDTH, constants.BUTTON_HEIGHT);
   mainFrame:SetPoint(CENTER, _G.UIParent, CENTER, 0, 0);
   mainFrame:SetClampedToScreen(true);
 end
@@ -85,18 +85,18 @@ local function initButtonContainer ()
   buttonContainer = _G.CreateFrame('Frame', nil, _G.UIParent,
     _G.BackdropTemplateMixin and 'BackdropTemplate');
   buttonContainer:SetParent(mainFrame);
-  buttonContainer:SetSize(config.BUTTON_WIDTH, config.BUTTON_HEIGHT);
+  buttonContainer:SetSize(constants.BUTTON_WIDTH, constants.BUTTON_HEIGHT);
   buttonContainer:Hide();
 
   buttonContainer:SetBackdrop({
     bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
     edgeFile = 'Interface/Tooltips/UI-Tooltip-Border',
-    edgeSize = config.BUTTON_EDGE_SIZE,
+    edgeSize = constants.BUTTON_EDGE_SIZE,
     insets = {
-      left = config.EDGE_OFFSET,
-      right = config.EDGE_OFFSET,
-      top = config.EDGE_OFFSET,
-      bottom = config.EDGE_OFFSET
+      left = constants.EDGE_OFFSET,
+      right = constants.EDGE_OFFSET,
+      top = constants.EDGE_OFFSET,
+      bottom = constants.EDGE_OFFSET
     },
   });
   buttonContainer:SetBackdropColor(0, 0, 0, 1);
@@ -106,19 +106,19 @@ local function initMainButton ()
   mainButton = _G.CreateFrame('Frame', addonName .. 'Button', _G.UIParent,
       _G.BackdropTemplateMixin and 'BackdropTemplate');
   mainButton:SetParent(mainFrame);
-  mainButton:SetSize(config.BUTTON_WIDTH, config.BUTTON_HEIGHT);
+  mainButton:SetSize(constants.BUTTON_WIDTH, constants.BUTTON_HEIGHT);
   mainButton:SetPoint(TOPRIGHT, mainFrame, TOPRIGHT, 0, 0);
   mainButton:Show();
 
   mainButton:SetBackdrop({
     bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
     edgeFile = 'Interface/Tooltips/UI-Tooltip-Border',
-    edgeSize = config.BUTTON_EDGE_SIZE,
+    edgeSize = constants.BUTTON_EDGE_SIZE,
     insets = {
-      left = config.EDGE_OFFSET,
-      right = config.EDGE_OFFSET,
-      top = config.EDGE_OFFSET,
-      bottom = config.EDGE_OFFSET
+      left = constants.EDGE_OFFSET,
+      right = constants.EDGE_OFFSET,
+      top = constants.EDGE_OFFSET,
+      bottom = constants.EDGE_OFFSET
     },
   });
 
@@ -134,7 +134,7 @@ local function initMainButton ()
 end
 
 local function initLogo ()
-  logo = mainButton:CreateTexture(nil, config.FRAME_STRATA);
+  logo = mainButton:CreateTexture(nil, constants.FRAME_STRATA);
   logo:SetTexture('Interface\\AddOns\\' .. addonName ..
       '\\Media\\Logo.blp');
   logo:SetVertexColor(0, 0, 0, 1);
@@ -159,7 +159,7 @@ local function collectMinimapButton (button)
   -- print('collecting button:', button:GetName());
 
   button:SetParent(buttonContainer);
-  button:SetFrameStrata(config.FRAME_STRATA);
+  button:SetFrameStrata(constants.FRAME_STRATA);
   button:SetScript('OnDragStart', nil);
   button:SetScript('OnDragStop', nil);
 

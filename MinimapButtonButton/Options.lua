@@ -18,8 +18,8 @@ local function setDefaultValues (options)
       TrinketMenu_IconFrame = true,
       CodexBrowserIcon = true,
     },
-    majorDirection = addon.enums.DIRECTIONS.LEFT,
-    minorDirection = addon.enums.DIRECTIONS.DOWN,
+    majorDirection = addon.constants.directions.LEFT,
+    minorDirection = addon.constants.directions.DOWN,
   };
 
   if (type(options) ~= type(defaults)) then

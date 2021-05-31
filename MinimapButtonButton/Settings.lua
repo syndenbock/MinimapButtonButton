@@ -14,7 +14,7 @@ local function printInvalidSettingValue (setting, value)
 end
 
 local function getValidDirections ()
-  local directions = addon.enums.DIRECTIONS;
+  local directions = addon.constants.directions;
 
   return {
     leftdown = {
