@@ -1,31 +1,6 @@
 local addonName, addon = ...;
 
-addon.registerEvent('ADDON_LOADED', function (loadedAddon)
-  if (loadedAddon ~= addonName) then
-    return;
-  end
-
-  local options;
-
-  if (type(_G.MinimapButtonButtonOptions) == 'table') then
-    options = _G.MinimapButtonButtonOptions;
-  else
-    options = {};
-  end
-
-  if (type(options.blacklist) ~= 'table') then
-    options.blacklist = {};
-  end
-
-  if (type(options.whitelist) ~= 'table') then
-    -- addding some known special buttons as default
-    options.whitelist = {
-      ZygorGuidesViewerMapIcon = true,
-      TrinketMenu_IconFrame = true,
-      CodexBrowserIcon = true,
-    };
-  end
-
+local function migrateOptions (options)
   if (options.collectCovenantButton ~= nil) then
     if (options.collectCovenantButton == true) then
       options.whitelist['GarrisonLandingPageMinimapButton'] = true;
@@ -33,6 +8,41 @@ addon.registerEvent('ADDON_LOADED', function (loadedAddon)
 
     options.collectCovenantButton = nil;
   end
+end
+
+local function setDefaultValues (options)
+  local defaults = {
+    blacklist = {},
+    whitelist = {
+      ZygorGuidesViewerMapIcon = true,
+      TrinketMenu_IconFrame = true,
+      CodexBrowserIcon = true,
+    },
+    majorDirection = addon.enums.DIRECTIONS.LEFT,
+    minorDirection = addon.enums.DIRECTIONS.DOWN,
+  };
+
+  if (type(options) ~= type(defaults)) then
+    return defaults;
+  end
+
+  for setting, value in pairs(defaults) do
+    if (type(options[setting]) ~= type(value)) then
+      options[setting] = value;
+    end
+  end
+
+  return options;
+end
+
+addon.registerEvent('ADDON_LOADED', function (loadedAddon)
+  if (loadedAddon ~= addonName) then
+    return;
+  end
+
+  local options = setDefaultValues(_G.MinimapButtonButtonOptions);
+
+  migrateOptions(options);
 
   addon.registerEvent('PLAYER_LOGOUT', function ()
     _G.MinimapButtonButtonOptions = options;

@@ -1,13 +1,13 @@
 local addonName, addon = ...;
 
-local ADDON_MESSAGE_PREFIX = '|cff00ffff' .. addonName .. '|r' .. ': ';
+local ADDON_MESSAGE_PREFIX = '|cff00ffff' .. addonName .. '|r';
 
-local function printAddonMessage (message)
-  print(ADDON_MESSAGE_PREFIX .. message);
+local function printAddonMessage (...)
+  print(ADDON_MESSAGE_PREFIX, ...);
 end
 
-local function printReloadMessage (message)
-  printAddonMessage(message);
+local function printReloadMessage (...)
+  printAddonMessage(...);
   print('This requires a /reload to take effect.');
 end
 

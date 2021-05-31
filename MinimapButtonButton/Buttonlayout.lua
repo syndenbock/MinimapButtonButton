@@ -24,8 +24,8 @@ local function getFrameEffectiveHeight (frame)
 end
 
 local function isHorizontalLayout ()
-  return (config.DIRECTION_MAJOR == directions.LEFT or
-      config.DIRECTION_MAJOR == directions.RIGHT);
+  return (addon.options.majorDirection == directions.LEFT or
+      addon.options.majorDirection == directions.RIGHT);
 end
 
 local function getMaximumButtonDimensions ()
@@ -91,7 +91,7 @@ local function calculateContainerHeight (buttonHeight, rowCount)
   end
 
   return overlap + calculateYOffset(buttonHeight, rowCount) +
-      config.EDGE_OFFSET / 2;
+      config.EDGE_OFFSET;
 end
 
 local function setButtonContainerSize (anchorInfo)
@@ -124,13 +124,13 @@ local function anchorButton (button, rowIndex, columnIndex, anchorInfo)
   local yOffset = (calculateYOffset(anchorInfo.height, rowIndex) +
       anchorInfo.height / 2);
 
-  if (config.DIRECTION_MAJOR == directions.LEFT or
-      config.DIRECTION_MINOR == directions.LEFT) then
+  if (addon.options.majorDirection == directions.LEFT or
+      addon.options.minorDirection == directions.LEFT) then
     xOffset = - xOffset;
   end
 
-  if (config.DIRECTION_MAJOR == directions.DOWN or
-      config.DIRECTION_MINOR == directions.DOWN) then
+  if (addon.options.majorDirection == directions.DOWN or
+      addon.options.minorDirection == directions.DOWN) then
     yOffset = -yOffset;
   end
 
@@ -164,34 +164,37 @@ local function reflowCollectedButtons (anchorInfo)
 end
 
 local function getAnchors ()
-  if (config.DIRECTION_MAJOR == directions.LEFT) then
-    if (config.DIRECTION_MINOR == directions.DOWN) then
+  local majorDirection = addon.options.majorDirection;
+  local minorDirection = addon.options.minorDirection;
+
+  if (majorDirection == directions.LEFT) then
+    if (minorDirection == directions.DOWN) then
       return anchors.TOPLEFT, anchors.TOPRIGHT;
-    elseif (config.DIRECTION_MINOR == directions.UP) then
+    elseif (minorDirection == directions.UP) then
       return anchors.BOTTOMLEFT, anchors.BOTTOMRIGHT;
     end
-  elseif (config.DIRECTION_MAJOR == directions.RIGHT) then
-    if (config.DIRECTION_MINOR == directions.DOWN) then
+  elseif (majorDirection == directions.RIGHT) then
+    if (minorDirection == directions.DOWN) then
       return anchors.TOPRIGHT, anchors.TOPLEFT;
-    elseif (config.DIRECTION_MINOR == directions.UP) then
+    elseif (minorDirection == directions.UP) then
       return anchors.TOPLEFT, anchors.TOPRIGHT;
     end
-  elseif (config.DIRECTION_MAJOR == directions.UP) then
-    if (config.DIRECTION_MINOR == directions.LEFT) then
+  elseif (majorDirection == directions.UP) then
+    if (minorDirection == directions.LEFT) then
       return anchors.TOPRIGHT, anchors.BOTTOMRIGHT;
-    elseif (config.DIRECTION_MINOR == directions.RIGHT) then
+    elseif (minorDirection == directions.RIGHT) then
       return anchors.TOPLEFT, anchors.BOTTOMLEFT;
     end
-  elseif (config.DIRECTION_MAJOR == directions.DOWN) then
-    if (config.DIRECTION_MINOR == directions.LEFT) then
+  elseif (majorDirection == directions.DOWN) then
+    if (minorDirection == directions.LEFT) then
       return anchors.BOTTOMRIGHT, anchors.TOPRIGHT;
-    elseif (config.DIRECTION_MINOR == directions.RIGHT) then
+    elseif (minorDirection == directions.RIGHT) then
       return anchors.BOTTOMLEFT, anchors.TOPLEFT;
     end
   end
 
   addon.printAddonMessage('invalid growth direction:',
-      config.DIRECTION_MAJOR .. config.DIRECTION_MINOR);
+      majorDirection .. minorDirection);
   return anchors.TOPLEFT, anchors.TOPRIGHT;
 end
 
