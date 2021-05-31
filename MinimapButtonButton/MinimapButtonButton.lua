@@ -10,22 +10,11 @@ local MIDDLEBUTTON = 'MiddleButton';
 
 local config = addon.config;
 
-local mainFrame = _G.CreateFrame('Frame', addonName .. 'Frame');
-local buttonContainer = _G.CreateFrame('Frame', nil, _G.UIParent,
-    _G.BackdropTemplateMixin and 'BackdropTemplate');
-local mainButton = _G.CreateFrame('Frame', addonName .. 'Button', _G.UIParent,
-    _G.BackdropTemplateMixin and 'BackdropTemplate');
+local mainFrame;
+local buttonContainer;
+local mainButton;
+local logo;
 local collectedButtons = {};
-
---##############################################################################
--- shared data
---##############################################################################
-
-addon.shared = {
-  buttonContainer = buttonContainer,
-  mainButton = mainButton,
-  collectedButtons = collectedButtons,
-};
 
 --##############################################################################
 -- utility functions
@@ -83,6 +72,7 @@ local function moveMainFrame ()
 end
 
 local function initMainFrame ()
+  mainFrame = _G.CreateFrame('Frame', addonName .. 'Frame');
   mainFrame:SetParent(_G.UIParent);
   mainFrame:SetFrameStrata(config.FRAME_STRATA);
   mainFrame:SetFrameLevel(config.FRAME_LEVEL);
@@ -92,6 +82,8 @@ local function initMainFrame ()
 end
 
 local function initButtonContainer ()
+  buttonContainer = _G.CreateFrame('Frame', nil, _G.UIParent,
+    _G.BackdropTemplateMixin and 'BackdropTemplate');
   buttonContainer:SetParent(mainFrame);
   buttonContainer:SetSize(config.BUTTON_WIDTH, config.BUTTON_HEIGHT);
   buttonContainer:Hide();
@@ -111,6 +103,8 @@ local function initButtonContainer ()
 end
 
 local function initMainButton ()
+  mainButton = _G.CreateFrame('Frame', addonName .. 'Button', _G.UIParent,
+      _G.BackdropTemplateMixin and 'BackdropTemplate');
   mainButton:SetParent(mainFrame);
   mainButton:SetSize(config.BUTTON_WIDTH, config.BUTTON_HEIGHT);
   mainButton:SetPoint(TOPRIGHT, mainFrame, TOPRIGHT, 0, 0);
@@ -140,15 +134,12 @@ local function initMainButton ()
 end
 
 local function initLogo ()
-  local logo = mainButton:CreateTexture(nil, config.FRAME_STRATA);
-
+  logo = mainButton:CreateTexture(nil, config.FRAME_STRATA);
   logo:SetTexture('Interface\\AddOns\\' .. addonName ..
       '\\Media\\Logo.blp');
   logo:SetVertexColor(0, 0, 0, 1);
   logo:SetPoint(CENTER, mainButton, CENTER, 0, 0);
   logo:SetSize(16, 16);
-
-  addon.shared.logo = logo;
 end
 
 local function initFrames ()
@@ -292,3 +283,14 @@ addon.slash('list', function ()
     end
   end
 end);
+
+--##############################################################################
+-- shared data
+--##############################################################################
+
+addon.shared = {
+  buttonContainer = buttonContainer,
+  mainButton = mainButton,
+  logo = logo,
+  collectedButtons = collectedButtons,
+};
