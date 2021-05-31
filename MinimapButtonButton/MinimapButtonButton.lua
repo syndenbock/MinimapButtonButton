@@ -1,9 +1,5 @@
 local addonName, addon = ...;
 
-local mod = _G.mod;
-local min = _G.min;
-local max = _G.max;
-local ceil = _G.ceil;
 local tinsert = _G.tinsert;
 local tContains = _G.tContains;
 
@@ -12,32 +8,13 @@ local TOPRIGHT = 'TOPRIGHT';
 local LEFTBUTTON = 'LeftButton';
 local MIDDLEBUTTON = 'MiddleButton';
 
-local FRAME_STRATA = 'MEDIUM';
-local FRAME_LEVEL = 7;
-local BUTTON_EDGE_SIZE = 16;
-local BUTTON_HEIGHT = 42;
-local BUTTON_WIDTH = 34;
-local EDGE_OFFSET = 4;
+local constants = addon.constants;
 
-local BUTTONS_PER_ROW = 10;
-local BUTTON_SPACING = 2;
-
-local mainFrame = _G.CreateFrame('Frame', addonName .. 'Frame');
-local buttonContainer = _G.CreateFrame('Frame', nil, _G.UIParent,
-    _G.BackdropTemplateMixin and 'BackdropTemplate');
-local mainButton = _G.CreateFrame('Frame', addonName .. 'Button', _G.UIParent,
-    _G.BackdropTemplateMixin and 'BackdropTemplate');
+local mainFrame;
+local buttonContainer;
+local mainButton;
+local logo;
 local collectedButtons = {};
-
---##############################################################################
--- shared data
---##############################################################################
-
-addon.shared = {
-  buttonContainer = buttonContainer,
-  mainButton = mainButton,
-  collectedButtons = collectedButtons,
-};
 
 --##############################################################################
 -- utility functions
@@ -53,115 +30,12 @@ end
 -- main button setup
 --##############################################################################
 
-local function isButtonDisplayed (button)
-  return button.IsShown and button:IsShown();
-end
-
-local function getShownChildrenCount (parent)
-  local count = 0;
-
-  for _, child in ipairs({parent:GetChildren()}) do
-    if (isButtonDisplayed(child)) then
-      count = count + 1;
-    end
-  end
-
-  return count;
-end
-
-local function getFrameEffectiveWidth (frame)
-  return frame:GetWidth() * frame:GetScale();
-end
-
-local function getFrameEffectiveHeight (frame)
-  return frame:GetHeight() * frame:GetScale();
-end
-
-local function setFrameEffectiveAnchor (frame, anchor, parent, parentAnchor, x, y)
-  frame:ClearAllPoints();
-  frame:SetPoint(anchor, parent, parentAnchor, x / frame:GetScale(), y / frame:GetScale());
-end
-
-local function calculateXOffset (buttonWidth, columnCount)
-  return getFrameEffectiveWidth(mainButton) + BUTTON_SPACING +
-      (buttonWidth + BUTTON_SPACING) * columnCount;
-end
-
-local function calculateYOffset (buttonHeight, rowCount)
-  return EDGE_OFFSET + BUTTON_SPACING +
-      (buttonHeight + BUTTON_SPACING) * rowCount;
-end
-
-local function anchorButton (button, rowIndex, columnIndex, buttonWidth, buttonHeight)
-  local xOffset = (calculateXOffset(buttonWidth, columnIndex) + buttonWidth / 2);
-  local yOffset = (calculateYOffset(buttonHeight, rowIndex) + buttonHeight / 2);
-
-  setFrameEffectiveAnchor(button, CENTER, buttonContainer, TOPRIGHT, -xOffset, -yOffset);
-end
-
-local function reflowCollectedButtons (buttonWidth, buttonHeight)
-  local rowIndex = 0;
-  local columnIndex = 0;
-  local index = 0;
-
-  for _, button in ipairs(collectedButtons) do
-    if (isButtonDisplayed(button)) then
-      anchorButton(button, rowIndex, columnIndex, buttonWidth, buttonHeight);
-
-      if (mod(index + 1, BUTTONS_PER_ROW) == 0) then
-        columnIndex = 0;
-        rowIndex = rowIndex + 1;
-      else
-        columnIndex = columnIndex + 1;
-      end
-
-      index = index + 1;
-    end
-  end
-end
-
-local function calculateContainerWidth (buttonWidth, columnCount)
-  return max(calculateXOffset(buttonWidth, columnCount) + EDGE_OFFSET,
-      BUTTON_WIDTH * 2 - EDGE_OFFSET);
-end
-
-local function calculateContainerHeight (buttonHeight, rowCount)
-  return max(calculateYOffset(buttonHeight, rowCount) + EDGE_OFFSET / 2,
-      BUTTON_HEIGHT);
-end
-
-local function setButtonContainerSize (buttonWidth, buttonHeight)
-  local buttonCount = getShownChildrenCount(buttonContainer);
-  local columnCount = min(buttonCount, BUTTONS_PER_ROW);
-  local rowCount = ceil(buttonCount / BUTTONS_PER_ROW);
-
-  buttonContainer:SetSize(calculateContainerWidth(buttonWidth, columnCount),
-      calculateContainerHeight(buttonHeight, rowCount));
-end
-
-local function getMaximumButtonDimensions ()
-  local maxWidth = 0;
-  local maxHeight = 0;
-
-  for _, button in ipairs(collectedButtons) do
-    if (isButtonDisplayed(button)) then
-      maxWidth = max(maxWidth, getFrameEffectiveWidth(button));
-      maxHeight = max(maxHeight, getFrameEffectiveHeight(button));
-    end
-  end
-
-  return maxWidth, maxHeight;
-end
-
 local function hideButtons ()
   buttonContainer:Hide();
 end
 
 local function showButtons ()
-  local buttonWidth, buttonHeight = getMaximumButtonDimensions();
-
-  setButtonContainerSize(buttonWidth, buttonHeight);
-  reflowCollectedButtons(buttonWidth, buttonHeight);
+  addon.updateLayout();
   buttonContainer:Show();
 end
 
@@ -198,61 +72,53 @@ local function moveMainFrame ()
 end
 
 local function initMainFrame ()
+  mainFrame = _G.CreateFrame('Frame', addonName .. 'Frame');
   mainFrame:SetParent(_G.UIParent);
-  mainFrame:SetFrameStrata(FRAME_STRATA);
-  mainFrame:SetFrameLevel(FRAME_LEVEL);
-  mainFrame:SetSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+  mainFrame:SetFrameStrata(constants.FRAME_STRATA);
+  mainFrame:SetFrameLevel(constants.FRAME_LEVEL);
+  mainFrame:SetSize(constants.BUTTON_WIDTH, constants.BUTTON_HEIGHT);
   mainFrame:SetPoint(CENTER, _G.UIParent, CENTER, 0, 0);
   mainFrame:SetClampedToScreen(true);
 end
 
 local function initButtonContainer ()
+  buttonContainer = _G.CreateFrame('Frame', nil, _G.UIParent,
+    _G.BackdropTemplateMixin and 'BackdropTemplate');
   buttonContainer:SetParent(mainFrame);
-  buttonContainer:SetSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-  buttonContainer:SetPoint(TOPRIGHT, mainFrame, TOPRIGHT, 0, 0);
+  buttonContainer:SetSize(constants.BUTTON_WIDTH, constants.BUTTON_HEIGHT);
   buttonContainer:Hide();
 
   buttonContainer:SetBackdrop({
     bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
     edgeFile = 'Interface/Tooltips/UI-Tooltip-Border',
-    edgeSize = BUTTON_EDGE_SIZE,
+    edgeSize = constants.BUTTON_EDGE_SIZE,
     insets = {
-      left = EDGE_OFFSET,
-      right = EDGE_OFFSET,
-      top = EDGE_OFFSET,
-      bottom = EDGE_OFFSET
+      left = constants.EDGE_OFFSET,
+      right = constants.EDGE_OFFSET,
+      top = constants.EDGE_OFFSET,
+      bottom = constants.EDGE_OFFSET
     },
   });
   buttonContainer:SetBackdropColor(0, 0, 0, 1);
 end
 
-local function initLogo ()
-  local logo = mainButton:CreateTexture(nil, FRAME_STRATA);
-
-  logo:SetTexture('Interface\\AddOns\\' .. addonName ..
-      '\\Media\\Logo.blp');
-  logo:SetVertexColor(0, 0, 0, 1);
-  logo:SetPoint(CENTER, mainButton, CENTER, 0, 0);
-  logo:SetSize(16, 16);
-
-  addon.shared.logo = logo;
-end
-
 local function initMainButton ()
+  mainButton = _G.CreateFrame('Frame', addonName .. 'Button', _G.UIParent,
+      _G.BackdropTemplateMixin and 'BackdropTemplate');
   mainButton:SetParent(mainFrame);
-  mainButton:SetSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+  mainButton:SetSize(constants.BUTTON_WIDTH, constants.BUTTON_HEIGHT);
   mainButton:SetPoint(TOPRIGHT, mainFrame, TOPRIGHT, 0, 0);
   mainButton:Show();
 
   mainButton:SetBackdrop({
     bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
     edgeFile = 'Interface/Tooltips/UI-Tooltip-Border',
-    edgeSize = BUTTON_EDGE_SIZE,
+    edgeSize = constants.BUTTON_EDGE_SIZE,
     insets = {
-      left = EDGE_OFFSET,
-      right = EDGE_OFFSET,
-      top = EDGE_OFFSET,
-      bottom = EDGE_OFFSET
+      left = constants.EDGE_OFFSET,
+      right = constants.EDGE_OFFSET,
+      top = constants.EDGE_OFFSET,
+      bottom = constants.EDGE_OFFSET
     },
   });
 
@@ -265,6 +131,15 @@ local function initMainButton ()
       moveMainFrame();
     end
   end);
+end
+
+local function initLogo ()
+  logo = mainButton:CreateTexture(nil, constants.FRAME_STRATA);
+  logo:SetTexture('Interface\\AddOns\\' .. addonName ..
+      '\\Media\\Logo.blp');
+  logo:SetVertexColor(0, 0, 0, 1);
+  logo:SetPoint(CENTER, mainButton, CENTER, 0, 0);
+  logo:SetSize(16, 16);
 end
 
 local function initFrames ()
@@ -284,7 +159,7 @@ local function collectMinimapButton (button)
   -- print('collecting button:', button:GetName());
 
   button:SetParent(buttonContainer);
-  button:SetFrameStrata(FRAME_STRATA);
+  button:SetFrameStrata(constants.FRAME_STRATA);
   button:SetScript('OnDragStart', nil);
   button:SetScript('OnDragStop', nil);
 
@@ -408,3 +283,14 @@ addon.slash('list', function ()
     end
   end
 end);
+
+--##############################################################################
+-- shared data
+--##############################################################################
+
+addon.shared = {
+  buttonContainer = buttonContainer,
+  mainButton = mainButton,
+  logo = logo,
+  collectedButtons = collectedButtons,
+};
