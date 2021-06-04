@@ -34,7 +34,7 @@ local function hideButtons ()
 end
 
 local function showButtons ()
-  addon.reflowButtons();
+  addon.updateLayout();
   buttonContainer:Show();
 end
 
@@ -238,10 +238,6 @@ local function init ()
   restoreOptions();
   collectMinimapButtons();
   addon.updateLayout();
-
-  if (addon.options.buttonsShown == true) then
-    showButtons();
-  end
 end
 
 addon.registerEvent('PLAYER_LOGIN', function ()

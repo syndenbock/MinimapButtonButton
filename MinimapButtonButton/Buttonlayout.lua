@@ -282,7 +282,3 @@ function addon.updateLayout ()
   setButtonContainerSize(anchorInfo);
   reflowCollectedButtons(anchorInfo);
 end
-
-function addon.reflowButtons ()
-  reflowCollectedButtons(getAnchorInfo());
-end
