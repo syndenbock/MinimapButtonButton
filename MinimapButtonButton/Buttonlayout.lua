@@ -23,11 +23,6 @@ local function getFrameEffectiveHeight (frame)
   return frame:GetHeight() * frame:GetScale();
 end
 
-local function isHorizontalLayout ()
-  return (addon.options.majorDirection == directions.LEFT or
-      addon.options.majorDirection == directions.RIGHT);
-end
-
 local function getShownChildrenCount (parent)
   local count = 0;
 
@@ -48,13 +43,13 @@ local function calculateYOffset (buttonHeight, rowCount)
   return (buttonHeight + constants.BUTTON_SPACING) * rowCount;
 end
 
-local function calculateButtonAreaWidth (anchorInfo, columnCount)
-  return calculateXOffset(anchorInfo.width, max(columnCount, 1)) +
+local function calculateButtonAreaWidth (layoutInfo, columnCount)
+  return calculateXOffset(layoutInfo.buttonWidth, max(columnCount, 1)) +
       constants.EDGE_OFFSET * 2;
 end
 
-local function calculateButtonAreaHeight (anchorInfo, rowCount)
-  return calculateYOffset(anchorInfo.height, max(rowCount, 1)) +
+local function calculateButtonAreaHeight (layoutInfo, rowCount)
+  return calculateYOffset(layoutInfo.buttonHeight, max(rowCount, 1)) +
     constants.EDGE_OFFSET * 2;
 end
 
@@ -67,62 +62,69 @@ local function enforceMainButtonBoundaries (dimension)
   return dimension;
 end
 
-local function setMainButtonSize (anchorInfo)
-  shared.mainFrame:SetSize(anchorInfo.mainButtonWidth,
-      anchorInfo.mainButtonHeight);
-  shared.mainButton:SetSize(anchorInfo.mainButtonWidth,
-      anchorInfo.mainButtonHeight);
+local function updateMainButton (layoutInfo)
+  shared.mainFrame:SetSize(layoutInfo.mainButtonWidth,
+      layoutInfo.mainButtonHeight);
+  shared.mainButton:SetSize(layoutInfo.mainButtonWidth,
+      layoutInfo.mainButtonHeight);
 end
 
-local function calculateContainerWidth (anchorInfo, columnCount)
+local function calculateContainerWidth (layoutInfo, columnCount)
   local width;
 
   if (columnCount == 0) then
-    width = anchorInfo.mainButtonWidth;
+    width = layoutInfo.mainButtonWidth;
   else
-    width = calculateButtonAreaWidth(anchorInfo, columnCount);
+    width = calculateButtonAreaWidth(layoutInfo, columnCount);
   end
 
-  if (anchorInfo.isHorizontalLayout) then
-    width = width + anchorInfo.mainButtonWidth;
+  if (layoutInfo.isHorizontalLayout) then
+    width = width + layoutInfo.mainButtonWidth;
   end
 
   return width;
 end
 
-local function calculateContainerHeight (anchorInfo, rowCount)
+local function calculateContainerHeight (layoutInfo, rowCount)
   local height;
 
   if (rowCount == 0) then
-    height = anchorInfo.mainButtonHeight;
+    height = layoutInfo.mainButtonHeight;
   else
-    height = calculateButtonAreaHeight(anchorInfo, rowCount);
+    height = calculateButtonAreaHeight(layoutInfo, rowCount);
   end
 
-  if (not anchorInfo.isHorizontalLayout) then
-    height = height + anchorInfo.mainButtonHeight;
+  if (not layoutInfo.isHorizontalLayout) then
+    height = height + layoutInfo.mainButtonHeight;
   end
 
   return height;
 end
 
-local function setButtonContainerSize (anchorInfo)
+local function setButtonContainerSize (layoutInfo)
   local buttonContainer = shared.buttonContainer;
   local buttonCount = getShownChildrenCount(buttonContainer);
   local columnCount = min(buttonCount, addon.options.buttonsPerRow);
   local rowCount = ceil(buttonCount / addon.options.buttonsPerRow);
 
-  if (anchorInfo.isHorizontalLayout) then
-    buttonContainer:SetSize(calculateContainerWidth(anchorInfo, columnCount),
-        calculateContainerHeight(anchorInfo, rowCount));
+  if (layoutInfo.isHorizontalLayout) then
+    buttonContainer:SetSize(calculateContainerWidth(layoutInfo, columnCount),
+        calculateContainerHeight(layoutInfo, rowCount));
   else
-    buttonContainer:SetSize(calculateContainerWidth(anchorInfo, rowCount),
-        calculateContainerHeight(anchorInfo, columnCount));
+    buttonContainer:SetSize(calculateContainerWidth(layoutInfo, rowCount),
+        calculateContainerHeight(layoutInfo, columnCount));
   end
+end
 
-  buttonContainer:ClearAllPoints();
-  buttonContainer:SetPoint(anchorInfo.relativeAnchor, shared.mainButton,
-      anchorInfo.relativeAnchor, 0, 0);
+local function anchorButtonContainer (layoutInfo)
+  shared.buttonContainer:ClearAllPoints();
+  shared.buttonContainer:SetPoint(layoutInfo.relativeAnchor, shared.mainButton,
+      layoutInfo.relativeAnchor, 0, 0);
+end
+
+local function updateButtonContainer (layoutInfo)
+  setButtonContainerSize(layoutInfo);
+  anchorButtonContainer(layoutInfo);
 end
 
 local function setFrameEffectiveAnchor (frame, anchor, parent, parentAnchor, x, y)
@@ -130,11 +132,11 @@ local function setFrameEffectiveAnchor (frame, anchor, parent, parentAnchor, x, 
   frame:SetPoint(anchor, parent, parentAnchor, x / frame:GetScale(), y / frame:GetScale());
 end
 
-local function anchorButton (button, rowIndex, columnIndex, anchorInfo)
-  local xOffset = (calculateXOffset(anchorInfo.width, columnIndex) +
-      anchorInfo.width / 2) + constants.EDGE_OFFSET;
-  local yOffset = (calculateYOffset(anchorInfo.height, rowIndex) +
-      anchorInfo.height / 2) + constants.EDGE_OFFSET;
+local function anchorButton (button, rowIndex, columnIndex, layoutInfo)
+  local xOffset = (calculateXOffset(layoutInfo.buttonWidth, columnIndex) +
+      layoutInfo.buttonWidth / 2) + constants.EDGE_OFFSET;
+  local yOffset = (calculateYOffset(layoutInfo.buttonHeight, rowIndex) +
+      layoutInfo.buttonHeight / 2) + constants.EDGE_OFFSET;
 
   if (addon.options.majorDirection == directions.LEFT or
       addon.options.minorDirection == directions.LEFT) then
@@ -147,11 +149,11 @@ local function anchorButton (button, rowIndex, columnIndex, anchorInfo)
   end
 
   setFrameEffectiveAnchor(button, anchors.CENTER, shared.mainButton,
-    anchorInfo.anchor, xOffset + constants.BUTTON_OFFSET_X,
+    layoutInfo.anchor, xOffset + constants.BUTTON_OFFSET_X,
         yOffset + constants.BUTTON_OFFSET_Y);
 end
 
-local function reflowCollectedButtons (anchorInfo)
+local function reflowCollectedButtons (layoutInfo)
   local buttonsPerRow = addon.options.buttonsPerRow;
   local rowIndex = 0;
   local columnIndex = 0;
@@ -159,10 +161,10 @@ local function reflowCollectedButtons (anchorInfo)
 
   for _, button in ipairs(shared.collectedButtons) do
     if (isButtonDisplayed(button)) then
-      if (anchorInfo.isHorizontalLayout) then
-        anchorButton(button, rowIndex, columnIndex, anchorInfo);
+      if (layoutInfo.isHorizontalLayout) then
+        anchorButton(button, rowIndex, columnIndex, layoutInfo);
       else
-        anchorButton(button, columnIndex, rowIndex, anchorInfo);
+        anchorButton(button, columnIndex, rowIndex, layoutInfo);
       end
 
       if (mod(index + 1, buttonsPerRow) == 0) then
@@ -177,18 +179,9 @@ local function reflowCollectedButtons (anchorInfo)
   end
 end
 
-local function getMaximumButtonDimensions ()
-  local maxWidth = 0;
-  local maxHeight = 0;
-
-  for _, button in ipairs(shared.collectedButtons) do
-    if (isButtonDisplayed(button)) then
-      maxWidth = max(maxWidth, getFrameEffectiveWidth(button));
-      maxHeight = max(maxHeight, getFrameEffectiveHeight(button));
-    end
-  end
-
-  return maxWidth, maxHeight;
+local function isHorizontalLayout ()
+  return (addon.options.majorDirection == directions.LEFT or
+      addon.options.majorDirection == directions.RIGHT);
 end
 
 local function getAnchors ()
@@ -223,62 +216,66 @@ local function getAnchors ()
 
   addon.printAddonMessage('invalid growth direction:',
       majorDirection .. minorDirection);
+
   return anchors.TOPLEFT, anchors.TOPRIGHT;
 end
 
-local function getAnchorInfo ()
-  local buttonWidth, buttonHeight = getMaximumButtonDimensions();
-  local anchor, relativeAnchor = getAnchors();
+local function getMaximumButtonDimensions ()
+  local maxWidth = 0;
+  local maxHeight = 0;
 
-  return {
-    width = buttonWidth,
-    height = buttonHeight,
-    anchor = anchor,
-    relativeAnchor = relativeAnchor,
-    isHorizontalLayout = isHorizontalLayout(),
-  };
+  for _, button in ipairs(shared.collectedButtons) do
+    if (isButtonDisplayed(button)) then
+      maxWidth = max(maxWidth, getFrameEffectiveWidth(button));
+      maxHeight = max(maxHeight, getFrameEffectiveHeight(button));
+    end
+  end
+
+  return maxWidth, maxHeight;
 end
 
-local function calculateMainButtonHeight (anchorInfo)
-  return enforceMainButtonBoundaries(calculateButtonAreaHeight(anchorInfo, 1));
+local function calculateMainButtonHeight (layoutInfo)
+  return enforceMainButtonBoundaries(calculateButtonAreaHeight(layoutInfo, 1));
 end
 
-local function calculateMainButtonWidth (anchorInfo)
-  return enforceMainButtonBoundaries(calculateButtonAreaWidth(anchorInfo, 1));
+local function calculateMainButtonWidth (layoutInfo)
+  return enforceMainButtonBoundaries(calculateButtonAreaWidth(layoutInfo, 1));
 end
 
 local function calculateMainButtonRatioDimension (dimension)
   return dimension * 5 / 6;
 end
 
-local function calculateMainButtonSize (anchorInfo)
+local function calculateMainButtonSize (layoutInfo)
   local width, height;
 
-  if (anchorInfo.isHorizontalLayout == true) then
-    height = calculateMainButtonHeight(anchorInfo);
+  if (layoutInfo.isHorizontalLayout) then
+    height = calculateMainButtonHeight(layoutInfo);
     width = calculateMainButtonRatioDimension(height);
   else
-    width = calculateMainButtonWidth(anchorInfo);
+    width = calculateMainButtonWidth(layoutInfo);
     height = calculateMainButtonRatioDimension(width);
   end
 
   return width, height;
 end
 
-local function getAnchorAndMainButtonInfo ()
-  local anchorInfo = getAnchorInfo();
-  local buttonWidth, buttonHeight = calculateMainButtonSize(anchorInfo);
+local function getLayoutInfo ()
+  local layoutInfo = {};
 
-  anchorInfo.mainButtonWidth = buttonWidth;
-  anchorInfo.mainButtonHeight = buttonHeight;
+  layoutInfo.isHorizontalLayout = isHorizontalLayout();
+  layoutInfo.anchor, layoutInfo.relativeAnchor = getAnchors();
+  layoutInfo.buttonWidth, layoutInfo.buttonHeight = getMaximumButtonDimensions();
+  layoutInfo.mainButtonWidth, layoutInfo.mainButtonHeight =
+      calculateMainButtonSize(layoutInfo);
 
-  return anchorInfo;
+  return layoutInfo;
 end
 
 function addon.updateLayout ()
-  local anchorInfo = getAnchorAndMainButtonInfo();
+  local layoutInfo = getLayoutInfo();
 
-  setMainButtonSize(anchorInfo);
-  setButtonContainerSize(anchorInfo);
-  reflowCollectedButtons(anchorInfo);
+  updateMainButton(layoutInfo);
+  updateButtonContainer(layoutInfo);
+  reflowCollectedButtons(layoutInfo);
 end
