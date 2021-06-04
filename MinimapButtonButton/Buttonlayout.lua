@@ -41,13 +41,11 @@ local function getShownChildrenCount (parent)
 end
 
 local function calculateXOffset (buttonWidth, columnCount)
-  return (buttonWidth + constants.BUTTON_SPACING) * columnCount +
-      constants.BUTTON_SPACING;
+  return (buttonWidth + constants.BUTTON_SPACING) * columnCount;
 end
 
 local function calculateYOffset (buttonHeight, rowCount)
-  return (buttonHeight + constants.BUTTON_SPACING) * rowCount +
-      constants.BUTTON_SPACING;
+  return (buttonHeight + constants.BUTTON_SPACING) * rowCount;
 end
 
 local function calculateButtonAreaWidth (anchorInfo, columnCount)
