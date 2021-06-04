@@ -72,7 +72,7 @@ function handlers.direction (setting, value)
 
   addon.options.majorDirection = directions.major;
   addon.options.minorDirection = directions.minor;
-  addon.updateLayoutIfShown();
+  addon.updateLayout();
   printSettingWasSet(setting, value);
 end
 
@@ -89,7 +89,7 @@ function handlers.buttonsperrow (setting, value)
 
   numberValue = floor(numberValue);
   addon.options.buttonsPerRow = numberValue;
-  addon.updateLayoutIfShown();
+  addon.updateLayout();
   printSettingWasSet(setting, numberValue);
 end
 

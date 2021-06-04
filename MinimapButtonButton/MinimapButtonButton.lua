@@ -3,12 +3,11 @@ local addonName, addon = ...;
 local tinsert = _G.tinsert;
 local tContains = _G.tContains;
 
-local CENTER = 'CENTER';
-local TOPRIGHT = 'TOPRIGHT';
 local LEFTBUTTON = 'LeftButton';
 local MIDDLEBUTTON = 'MiddleButton';
 
 local constants = addon.constants;
+local anchors = constants.anchors;
 
 local mainFrame;
 local buttonContainer;
@@ -35,7 +34,7 @@ local function hideButtons ()
 end
 
 local function showButtons ()
-  addon.updateLayout();
+  addon.reflowButtons();
   buttonContainer:Show();
 end
 
@@ -76,8 +75,8 @@ local function initMainFrame ()
   mainFrame:SetParent(_G.UIParent);
   mainFrame:SetFrameStrata(constants.FRAME_STRATA);
   mainFrame:SetFrameLevel(constants.FRAME_LEVEL);
-  mainFrame:SetSize(constants.BUTTON_WIDTH, constants.BUTTON_HEIGHT);
-  mainFrame:SetPoint(CENTER, _G.UIParent, CENTER, 0, 0);
+  mainFrame:SetSize(1, 1);
+  mainFrame:SetPoint(anchors.CENTER, _G.UIParent, anchors.CENTER, 0, 0);
   mainFrame:SetClampedToScreen(true);
 end
 
@@ -85,7 +84,6 @@ local function initButtonContainer ()
   buttonContainer = _G.CreateFrame('Frame', nil, _G.UIParent,
     _G.BackdropTemplateMixin and 'BackdropTemplate');
   buttonContainer:SetParent(mainFrame);
-  buttonContainer:SetSize(constants.BUTTON_WIDTH, constants.BUTTON_HEIGHT);
   buttonContainer:Hide();
 
   buttonContainer:SetBackdrop({
@@ -106,8 +104,7 @@ local function initMainButton ()
   mainButton = _G.CreateFrame('Frame', addonName .. 'Button', _G.UIParent,
       _G.BackdropTemplateMixin and 'BackdropTemplate');
   mainButton:SetParent(mainFrame);
-  mainButton:SetSize(constants.BUTTON_WIDTH, constants.BUTTON_HEIGHT);
-  mainButton:SetPoint(TOPRIGHT, mainFrame, TOPRIGHT, 0, 0);
+  mainButton:SetPoint(anchors.CENTER, mainFrame, anchors.CENTER, 0, 0);
   mainButton:Show();
 
   mainButton:SetBackdrop({
@@ -138,7 +135,7 @@ local function initLogo ()
   logo:SetTexture('Interface\\AddOns\\' .. addonName ..
       '\\Media\\Logo.blp');
   logo:SetVertexColor(0, 0, 0, 1);
-  logo:SetPoint(CENTER, mainButton, CENTER, 0, 0);
+  logo:SetPoint(anchors.CENTER, mainButton, anchors.CENTER, 0, 0);
   logo:SetSize(16, 16);
 end
 
@@ -240,6 +237,7 @@ end
 local function init ()
   restoreOptions();
   collectMinimapButtons();
+  addon.updateLayout();
 
   if (addon.options.buttonsShown == true) then
     showButtons();
@@ -289,6 +287,7 @@ end);
 --##############################################################################
 
 addon.shared = {
+  mainFrame = mainFrame,
   buttonContainer = buttonContainer,
   mainButton = mainButton,
   logo = logo,
