@@ -83,7 +83,7 @@ function handlers.buttonsperrow (setting, value)
 
   local numberValue = tonumber(value);
 
-  if (numberValue == nil) then
+  if (numberValue == nil or numberValue <= 0) then
     return printInvalidSettingValue(setting, value);
   end
 
