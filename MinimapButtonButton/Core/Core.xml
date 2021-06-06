@@ -1,0 +1,5 @@
+<UI>
+  <script file="Events.lua"/>
+  <script file="SlashCommands.lua"/>
+  <script file="Utils.lua"/>
+</UI>
