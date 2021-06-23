@@ -27,21 +27,21 @@ jobs:
     steps:
       # we first have to clone the AddOn project, this is a required step
       - name: Clone project
-        uses: actions/checkout@v2  # note: checkout@v2 breaks git history, so generating a changelog and
+        uses: actions/checkout@v1  # note: checkout@v2 breaks git history, so generating a changelog and
                                    # file naming for non-tagged builds will not work properly
 
       # Release retail
       - name: Release Retail
-        uses: BigWigsMods/packager@v1
+        uses: BigWigsMods/packager@master
         
       # Release Classic
       - name: Release Classic
-        uses: BigWigsMods/packager@v1
+        uses: BigWigsMods/packager@master
         with:
           args: -g classic
       
       # Release BCC
       - name: Release BCC
-        uses: BigWigsMods/packager@v1
+        uses: BigWigsMods/packager@master
         with:
           args: -g bcc
