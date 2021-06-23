@@ -1,0 +1,12 @@
+package-as: MinimapButtonButton
+
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
+
+ignore:
+  - Media
+  - .gitignore
+
+move-folders:
+  MinimapButtonButton/MinimapButtonButton: MinimapButtonButton
