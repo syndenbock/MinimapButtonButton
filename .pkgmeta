@@ -7,7 +7,7 @@ manual-changelog:
 ignore:
   - Media
   - .gitignore
-  - CHANGELOG.md
+  - MinimapButtonButton/CHANGELOG.md
 
 move-folders:
   MinimapButtonButton/MinimapButtonButton: MinimapButtonButton
