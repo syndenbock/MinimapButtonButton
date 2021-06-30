@@ -136,7 +136,7 @@ local function initLogo ()
       '\\Media\\Logo.blp');
   logo:SetVertexColor(0, 0, 0, 1);
   logo:SetPoint(anchors.CENTER, mainButton, anchors.CENTER, 0, 0);
-  logo:SetSize(16, 16);
+  logo:SetSize(constants.LOGO_SIZE, constants.LOGO_SIZE);
 end
 
 local function initFrames ()
