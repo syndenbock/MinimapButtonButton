@@ -2,11 +2,13 @@ local _, addon = ...;
 
 local format = _G.format;
 
-addon.slash('include', function (buttonName)
-  if (buttonName == nil) then
+addon.slash('include', function (...)
+  if (... == nil) then
     addon.printAddonMessage('Please add a button name');
     return;
   end
+
+  local buttonName = addon.concatButtonName(...);
 
   if (_G[buttonName] == nil) then
     addon.printAddonMessage(format('No frame named "%s" was found.', buttonName));
@@ -18,11 +20,13 @@ addon.slash('include', function (buttonName)
       buttonName));
 end);
 
-addon.slash('uninclude', function (buttonName)
-  if (buttonName == nil) then
+addon.slash('uninclude', function (...)
+  if (... == nil) then
     addon.printAddonMessage('Please add a button name');
     return;
   end
+
+  local buttonName = addon.concatButtonName(...);
 
   if (addon.options.whitelist[buttonName] == nil) then
     addon.printAddonMessage(format(

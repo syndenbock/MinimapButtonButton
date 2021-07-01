@@ -9,11 +9,13 @@ function addon.isBlacklisted (frame)
       addon.options.blacklist[frameName] == true);
 end
 
-addon.slash('ignore', function (buttonName)
-  if (buttonName == nil) then
+addon.slash('ignore', function (...)
+  if (... == nil) then
     addon.printAddonMessage('Please add a button name');
     return;
   end
+
+  local buttonName = addon.concatButtonName(...);
 
   if (_G[buttonName] == nil) then
     addon.printAddonMessage(format('No frame named "%s" was found.', buttonName));
@@ -24,11 +26,13 @@ addon.slash('ignore', function (buttonName)
   addon.printReloadMessage(format('Button "%s" is now being ignored.', buttonName));
 end);
 
-addon.slash('unignore', function (buttonName)
-  if (buttonName == nil) then
+addon.slash('unignore', function (...)
+  if (... == nil) then
     addon.printAddonMessage('Please add a button name');
     return;
   end
+
+  local buttonName = addon.concatButtonName(...);
 
   if (addon.options.blacklist[buttonName] == nil) then
     addon.printAddonMessage(format('Button "%s" is not being ignored.', buttonName));
