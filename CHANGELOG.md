@@ -1,0 +1,1 @@
+- Spaces in frame names when using slash commands are now being handled
