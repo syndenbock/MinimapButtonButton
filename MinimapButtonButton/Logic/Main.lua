@@ -152,6 +152,12 @@ initFrames();
 -- minimap button collecting
 --##############################################################################
 
+local function reflowButtonsIfDisplayed ()
+  if (buttonContainer:IsShown()) then
+    addon.updateLayout();
+  end
+end
+
 local function collectMinimapButton (button)
   -- print('collecting button:', button:GetName());
 
@@ -159,6 +165,9 @@ local function collectMinimapButton (button)
   button:SetFrameStrata(constants.FRAME_STRATA);
   button:SetScript('OnDragStart', nil);
   button:SetScript('OnDragStop', nil);
+
+  button:HookScript('OnShow', reflowButtonsIfDisplayed);
+  button:HookScript('OnHide', reflowButtonsIfDisplayed);
 
   if (not tContains(collectedButtons, button)) then
     tinsert(collectedButtons, button);
