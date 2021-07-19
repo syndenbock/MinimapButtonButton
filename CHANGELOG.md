@@ -1,2 +1,1 @@
-- Minimap buttons are now rescanned when toggling the button bar
-- Some performance optimizations
+- Fixed compatibility with Classic and BCC
