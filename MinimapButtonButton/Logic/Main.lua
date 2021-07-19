@@ -2,6 +2,10 @@ local addonName, addon = ...;
 
 local tinsert = _G.tinsert;
 local tContains = _G.tContains;
+local strmatch = _G.strmatch;
+local sort = _G.sort;
+
+local Minimap = _G.Minimap;
 
 local LEFTBUTTON = 'LeftButton';
 local MIDDLEBUTTON = 'MiddleButton';
@@ -20,9 +24,93 @@ local collectedButtons = {};
 --##############################################################################
 
 local function getUnitColor (unit)
-  local color = _G.RAID_CLASS_COLORS[select(2, _G.UnitClass(unit))];
+  local color = _G.C_ClassColor.GetClassColor(select(2, _G.UnitClass(unit)))
 
   return color.r, color.g, color.b, 1;
+end
+
+--##############################################################################
+-- minimap button collecting
+--##############################################################################
+
+local function reflowButtonsIfDisplayed ()
+  if (buttonContainer:IsShown()) then
+    addon.updateLayout();
+  end
+end
+
+local function collectMinimapButton (button)
+  -- print('collecting button:', button:GetName());
+
+  button:SetParent(buttonContainer);
+  button:SetFrameStrata(constants.FRAME_STRATA);
+  button:SetScript('OnDragStart', nil);
+  button:SetScript('OnDragStop', nil);
+
+  button:HookScript('OnShow', reflowButtonsIfDisplayed);
+  button:HookScript('OnHide', reflowButtonsIfDisplayed);
+
+  if (not tContains(collectedButtons, button)) then
+    tinsert(collectedButtons, button);
+  end
+end
+
+local function isMinimapButton (frame)
+  local frameName = addon.getFrameName(frame);
+
+  if (not frameName) then
+    return false;
+  end;
+
+  local patterns = {
+    'LibDBIcon10_',
+    'MinimapButton',
+    'MinimapFrame',
+    'MinimapIcon',
+    '-Minimap',
+  };
+
+  for _, pattern in ipairs(patterns) do
+    if (strmatch(frameName, pattern) ~= nil) then
+      return true;
+    end
+  end
+
+  return false;
+end
+
+local function scanMinimapChildren ()
+  for _, child in ipairs({Minimap:GetChildren()}) do
+    if (not addon.isBlacklisted(child) and isMinimapButton(child)) then
+      collectMinimapButton(child);
+    end
+  end
+end
+
+local function scanButtonByName (buttonName)
+  local button = _G[buttonName];
+
+  if (button ~= nil) then
+    collectMinimapButton(button);
+  end
+end
+
+local function collectWhitelistedButtons ()
+  for buttonName in pairs(addon.options.whitelist) do
+    scanButtonByName(buttonName);
+  end
+end
+
+local function sortCollectedButtons ()
+  sort(collectedButtons, function (a, b)
+    return a:GetName() < b:GetName();
+  end);
+end
+
+local function collectMinimapButtons ()
+  scanMinimapChildren();
+  collectWhitelistedButtons();
+  sortCollectedButtons();
 end
 
 --##############################################################################
@@ -39,6 +127,8 @@ local function showButtons ()
 end
 
 local function toggleButtons ()
+  collectMinimapButtons();
+
   if (buttonContainer:IsShown()) then
     addon.options.buttonsShown = false;
     hideButtons();
@@ -149,88 +239,9 @@ end
 initFrames();
 
 --##############################################################################
--- minimap button collecting
+-- initialization
 --##############################################################################
 
-local function reflowButtonsIfDisplayed ()
-  if (buttonContainer:IsShown()) then
-    addon.updateLayout();
-  end
-end
-
-local function collectMinimapButton (button)
-  -- print('collecting button:', button:GetName());
-
-  button:SetParent(buttonContainer);
-  button:SetFrameStrata(constants.FRAME_STRATA);
-  button:SetScript('OnDragStart', nil);
-  button:SetScript('OnDragStop', nil);
-
-  button:HookScript('OnShow', reflowButtonsIfDisplayed);
-  button:HookScript('OnHide', reflowButtonsIfDisplayed);
-
-  if (not tContains(collectedButtons, button)) then
-    tinsert(collectedButtons, button);
-  end
-end
-
-local function isMinimapButton (frame)
-  local frameName = addon.getFrameName(frame);
-
-  if (not frameName) then
-    return false;
-  end;
-
-  local patterns = {
-    'LibDBIcon10_',
-    'MinimapButton',
-    'MinimapFrame',
-    'MinimapIcon',
-    '-Minimap',
-  };
-
-  for _, pattern in ipairs(patterns) do
-    if (_G.strmatch(frameName, pattern) ~= nil) then
-      return true;
-    end
-  end
-
-  return false;
-end
-
-local function scanMinimapChildren ()
-  for _, child in ipairs({_G.Minimap:GetChildren()}) do
-    if (not addon.isBlacklisted(child) and isMinimapButton(child)) then
-      collectMinimapButton(child);
-    end
-  end
-end
-
-local function scanButtonByName (buttonName)
-  local button = _G[buttonName];
-
-  if (button ~= nil) then
-    collectMinimapButton(button);
-  end
-end
-
-local function collectWhitelistedButtons ()
-  for buttonName in pairs(addon.options.whitelist) do
-    scanButtonByName(buttonName);
-  end
-end
-
-local function sortCollectedButtons ()
-  _G.sort(collectedButtons, function (a, b)
-    return a:GetName() < b:GetName();
-  end);
-end
-
-local function collectMinimapButtons ()
-  scanMinimapChildren();
-  collectWhitelistedButtons();
-  sortCollectedButtons();
-end
 
 local function restoreOptions ()
   if (addon.options.position ~= nil) then
@@ -263,7 +274,8 @@ end);
 
 addon.addSlashHandlerName('mbb');
 
-addon.slash('list', function ()
+
+local function printButtonLists ()
   addon.printAddonMessage('Buttons currently being collected:');
 
   for _, button in ipairs(addon.shared.collectedButtons) do
@@ -285,7 +297,10 @@ addon.slash('list', function ()
       print(buttonName);
     end
   end
-end);
+end
+
+addon.slash('list', printButtonLists);
+addon.slash('default', printButtonLists);
 
 --##############################################################################
 -- shared data
@@ -298,3 +313,8 @@ addon.shared = {
   logo = logo,
   collectedButtons = collectedButtons,
 };
+
+function addon.recollectMinimapButtons ()
+  collectMinimapButtons();
+  addon.updateLayout();
+end
