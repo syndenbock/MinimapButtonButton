@@ -1,9 +1,9 @@
 local addonName, addon = ...;
 
 local tinsert = _G.tinsert;
-local tContains = _G.tContains;
 local strmatch = _G.strmatch;
 local sort = _G.sort;
+local executeAfter = C_Timer.After;
 
 local Minimap = _G.Minimap;
 
@@ -17,6 +17,7 @@ local mainFrame;
 local buttonContainer;
 local mainButton;
 local logo;
+local collectedButtonMap = {};
 local collectedButtons = {};
 
 --##############################################################################
@@ -33,10 +34,8 @@ end
 -- minimap button collecting
 --##############################################################################
 
-local function reflowButtonsIfDisplayed ()
-  if (buttonContainer:IsShown()) then
-    addon.updateLayout();
-  end
+local function updateLayoutOnNextFrame ()
+  executeAfter(0, addon.updateLayout);
 end
 
 local function collectMinimapButton (button)
@@ -47,11 +46,14 @@ local function collectMinimapButton (button)
   button:SetScript('OnDragStart', nil);
   button:SetScript('OnDragStop', nil);
 
-  button:HookScript('OnShow', reflowButtonsIfDisplayed);
-  button:HookScript('OnHide', reflowButtonsIfDisplayed);
+  -- this also causes a layout update when toggling the bar so we need to find
+  -- a better way
+  button:HookScript('OnShow', updateLayoutOnNextFrame);
+  button:HookScript('OnHide', updateLayoutOnNextFrame);
 
-  if (not tContains(collectedButtons, button)) then
+  if (collectedButtonMap[button] == nil) then
     tinsert(collectedButtons, button);
+    collectedButtonMap[button] = true;
   end
 end
 
@@ -108,33 +110,30 @@ local function sortCollectedButtons ()
 end
 
 local function collectMinimapButtons ()
+  local previousCount = #collectedButtons;
+
   scanMinimapChildren();
   collectWhitelistedButtons();
-  sortCollectedButtons();
+
+  if (#collectedButtons > previousCount) then
+    sortCollectedButtons();
+    addon.updateLayout();
+  end
 end
 
 --##############################################################################
 -- main button setup
 --##############################################################################
 
-local function hideButtons ()
-  buttonContainer:Hide();
-end
-
-local function showButtons ()
-  addon.updateLayout();
-  buttonContainer:Show();
-end
-
 local function toggleButtons ()
   collectMinimapButtons();
 
   if (buttonContainer:IsShown()) then
     addon.options.buttonsShown = false;
-    hideButtons();
+    buttonContainer:Hide();
   else
     addon.options.buttonsShown = true;
-    showButtons();
+    buttonContainer:Show();
   end
 end
 
@@ -250,20 +249,19 @@ local function restoreOptions ()
   end
 
   if (addon.options.buttonsShown == true) then
-    showButtons();
+    buttonContainer:Show();
   end
 end
 
 local function init ()
   restoreOptions();
   collectMinimapButtons();
-  addon.updateLayout();
 end
 
 addon.registerEvent('PLAYER_LOGIN', function ()
   --[[ executing on next frame to wait for addons that create minimap buttons
        on PLAYER_LOGIN ]]
-  _G.C_Timer.After(0, init);
+  executeAfter(0, init);
 
   return true;
 end);
@@ -274,11 +272,10 @@ end);
 
 addon.addSlashHandlerName('mbb');
 
-
 local function printButtonLists ()
   addon.printAddonMessage('Buttons currently being collected:');
 
-  for _, button in ipairs(addon.shared.collectedButtons) do
+  for _, button in pairs(addon.shared.collectedButtons) do
     print(button:GetName());
   end
 
@@ -314,7 +311,4 @@ addon.shared = {
   collectedButtons = collectedButtons,
 };
 
-function addon.recollectMinimapButtons ()
-  collectMinimapButtons();
-  addon.updateLayout();
-end
+addon.collectMinimapButtons = collectMinimapButtons;
