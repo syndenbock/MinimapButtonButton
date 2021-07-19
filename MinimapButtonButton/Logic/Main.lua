@@ -3,7 +3,8 @@ local addonName, addon = ...;
 local tinsert = _G.tinsert;
 local strmatch = _G.strmatch;
 local sort = _G.sort;
-local executeAfter = C_Timer.After;
+local executeAfter = _G.C_Timer.After;
+local hooksecurefunc = _G.hooksecurefunc;
 
 local Minimap = _G.Minimap;
 
@@ -35,6 +36,8 @@ end
 --##############################################################################
 
 local function updateLayoutOnNextFrame ()
+  -- Updating layout on the next frame so SetPoint calls during that frame
+  -- have passed
   executeAfter(0, addon.updateLayout);
 end
 
@@ -46,10 +49,11 @@ local function collectMinimapButton (button)
   button:SetScript('OnDragStart', nil);
   button:SetScript('OnDragStop', nil);
 
-  -- this also causes a layout update when toggling the bar so we need to find
-  -- a better way
-  button:HookScript('OnShow', updateLayoutOnNextFrame);
-  button:HookScript('OnHide', updateLayoutOnNextFrame);
+  -- Hook the function on the frame itself instead of setting a script handler
+  -- to execute only when the function is called and not when the frame changes
+  -- visibility because the parent gets shown/hidden
+  hooksecurefunc(button, 'Show', updateLayoutOnNextFrame);
+  hooksecurefunc(button, 'Hide', updateLayoutOnNextFrame);
 
   if (collectedButtonMap[button] == nil) then
     tinsert(collectedButtons, button);
