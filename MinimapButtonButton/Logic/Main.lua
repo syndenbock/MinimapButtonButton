@@ -26,7 +26,8 @@ local collectedButtons = {};
 --##############################################################################
 
 local function getUnitColor (unit)
-  local color = _G.C_ClassColor.GetClassColor(select(2, _G.UnitClass(unit)))
+  -- Do not use C_ClassColor.GetClassColor, it doesn't exist in Classic or BCC
+  local color = _G.RAID_CLASS_COLORS[select(2, _G.UnitClass(unit))];
 
   return color.r, color.g, color.b, 1;
 end
