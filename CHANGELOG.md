@@ -1,1 +1,2 @@
-- Spaces in frame names when using slash commands are now being handled
+- Minimap buttons are now rescanned when toggling the button bar
+- Some performance optimizations
