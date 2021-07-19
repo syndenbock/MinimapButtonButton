@@ -22,7 +22,7 @@ local function setDefaultValues (options)
     },
     majorDirection = addon.constants.directions.LEFT,
     minorDirection = addon.constants.directions.DOWN,
-    buttonsPerRow = 10,
+    buttonsPerRow = 5,
     version = 0,
   };
 
