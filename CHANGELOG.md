@@ -1,1 +1,1 @@
-- Fixed compatibility with Classic and BCC
+- Fix handling of invalid growth direction values
