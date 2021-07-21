@@ -216,6 +216,8 @@ local function getAnchors ()
 
   addon.printAddonMessage('invalid growth direction:',
       majorDirection .. minorDirection);
+  addon.options.majorDirection = directions.LEFT;
+  addon.options.minorDirection = directions.DOWN;
 
   return anchors.TOPLEFT, anchors.TOPRIGHT;
 end
@@ -263,8 +265,10 @@ end
 local function getLayoutInfo ()
   local layoutInfo = {};
 
-  layoutInfo.isHorizontalLayout = isHorizontalLayout();
+  -- Call getAnchors first as that will validate and correct directions if
+  -- needed.
   layoutInfo.anchor, layoutInfo.relativeAnchor = getAnchors();
+  layoutInfo.isHorizontalLayout = isHorizontalLayout();
   layoutInfo.buttonWidth, layoutInfo.buttonHeight = getMaximumButtonDimensions();
   layoutInfo.mainButtonWidth, layoutInfo.mainButtonHeight =
       calculateMainButtonSize(layoutInfo);
