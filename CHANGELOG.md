@@ -1,1 +1,1 @@
-- Fix handling of invalid growth direction values
+- Other addons are now (hopefully) prevented from stealing minimap buttons back
