@@ -16,7 +16,7 @@ addon.slash('include', function (...)
   end
 
   addon.options.whitelist[buttonName] = true;
-  addon.collectMinimapButtons();
+  addon.collectMinimapButtonsAndUpdateLayout();
 
   addon.printAddonMessage(format('Button "%s" is now manually being collected.',
       buttonName));

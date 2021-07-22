@@ -122,8 +122,12 @@ local function collectMinimapButtons ()
 
   if (#collectedButtons > previousCount) then
     sortCollectedButtons();
-    addon.updateLayout();
   end
+end
+
+local function collectMinimapButtonsAndUpdateLayout ()
+  collectMinimapButtons();
+  addon.updateLayout();
 end
 
 --##############################################################################
@@ -131,7 +135,7 @@ end
 --##############################################################################
 
 local function toggleButtons ()
-  collectMinimapButtons();
+  collectMinimapButtonsAndUpdateLayout();
 
   if (buttonContainer:IsShown()) then
     addon.options.buttonsShown = false;
@@ -260,7 +264,7 @@ end
 
 local function init ()
   restoreOptions();
-  collectMinimapButtons();
+  collectMinimapButtonsAndUpdateLayout();
 end
 
 addon.registerEvent('PLAYER_LOGIN', function ()
@@ -316,4 +320,5 @@ addon.shared = {
   collectedButtons = collectedButtons,
 };
 
-addon.collectMinimapButtons = collectMinimapButtons;
+addon.collectMinimapButtonsAndUpdateLayout =
+    collectMinimapButtonsAndUpdateLayout;

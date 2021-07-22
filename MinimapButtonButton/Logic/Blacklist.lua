@@ -40,7 +40,7 @@ addon.slash('unignore', function (...)
   end
 
   addon.options.blacklist[buttonName] = nil;
-  addon.collectMinimapButtons();
+  addon.collectMinimapButtonsAndUpdateLayout();
 
   addon.printAddonMessage(format('Button "%s" is no longer being ignored.',
       buttonName));
