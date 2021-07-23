@@ -43,6 +43,10 @@ local function updateLayoutOnNextFrame ()
 end
 
 local function collectMinimapButton (button)
+  if (collectedButtonMap[button] ~= nil) then
+    return;
+  end
+
   -- print('collecting button:', button:GetName());
 
   button:SetParent(buttonContainer);
@@ -56,10 +60,8 @@ local function collectMinimapButton (button)
   hooksecurefunc(button, 'Show', updateLayoutOnNextFrame);
   hooksecurefunc(button, 'Hide', updateLayoutOnNextFrame);
 
-  if (collectedButtonMap[button] == nil) then
-    tinsert(collectedButtons, button);
-    collectedButtonMap[button] = true;
-  end
+  tinsert(collectedButtons, button);
+  collectedButtonMap[button] = true;
 end
 
 local function isMinimapButton (frame)
