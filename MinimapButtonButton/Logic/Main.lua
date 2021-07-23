@@ -252,12 +252,17 @@ initFrames();
 -- initialization
 --##############################################################################
 
+local function applyScale ()
+  mainFrame:SetScale(addon.options.scale);
+end
 
 local function restoreOptions ()
   if (addon.options.position ~= nil) then
     mainFrame:ClearAllPoints();
     mainFrame:SetPoint(unpack(addon.options.position));
   end
+
+  applyScale();
 
   if (addon.options.buttonsShown == true) then
     buttonContainer:Show();
@@ -322,5 +327,6 @@ addon.shared = {
   collectedButtons = collectedButtons,
 };
 
+addon.applyScale = applyScale;
 addon.collectMinimapButtonsAndUpdateLayout =
     collectMinimapButtonsAndUpdateLayout;

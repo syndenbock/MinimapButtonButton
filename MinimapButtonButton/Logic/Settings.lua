@@ -93,6 +93,22 @@ function handlers.buttonsperrow (setting, value)
   printSettingWasSet(setting, numberValue);
 end
 
+function handlers.scale (setting, value)
+  if (value == nil) then
+    return printSettingValue(setting, addon.options.scale);
+  end
+
+  local numberValue = tonumber(value);
+
+  if (numberValue == nil or numberValue <= 0) then
+    return printInvalidSettingValue(setting, value);
+  end
+
+  addon.options.scale = numberValue;
+  addon.applyScale();
+  printSettingWasSet(setting, numberValue);
+end
+
 local function printAvailableSettings ()
   addon.printAddonMessage('Available settings:');
 
