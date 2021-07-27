@@ -2,7 +2,7 @@ local _, addon = ...;
 
 local format = _G.format;
 
-function addon.isBlacklisted (frame)
+function addon.isButtonBlacklisted (frame)
   local frameName = addon.getFrameName(frame);
 
   return (frameName ~= nil and

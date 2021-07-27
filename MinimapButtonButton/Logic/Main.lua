@@ -43,10 +43,6 @@ local function updateLayoutOnNextFrame ()
 end
 
 local function collectMinimapButton (button)
-  if (collectedButtonMap[button] ~= nil) then
-    return;
-  end
-
   -- print('collecting button:', button:GetName());
 
   button:SetParent(buttonContainer);
@@ -88,9 +84,21 @@ local function isMinimapButton (frame)
   return false;
 end
 
+local function isButtonCollected (button)
+  return (collectedButtonMap[button] ~= nil);
+end
+
+local function shouldButtonBeCollected (button)
+  if (isButtonCollected(button) or addon.isButtonBlacklisted(button)) then
+    return false;
+  end
+
+  return isMinimapButton(button);
+end
+
 local function scanMinimapChildren ()
   for _, child in ipairs({Minimap:GetChildren()}) do
-    if (not addon.isBlacklisted(child) and isMinimapButton(child)) then
+    if (shouldButtonBeCollected(child)) then
       collectMinimapButton(child);
     end
   end
@@ -99,7 +107,7 @@ end
 local function scanButtonByName (buttonName)
   local button = _G[buttonName];
 
-  if (button ~= nil) then
+  if (button ~= nil and not isButtonCollected(button)) then
     collectMinimapButton(button);
   end
 end
