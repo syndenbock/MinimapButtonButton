@@ -76,7 +76,7 @@ local function isMinimapButton (frame)
     'MinimapButton',
     'MinimapFrame',
     'MinimapIcon',
-    '-Minimap',
+    '[-_]Minimap',
   };
 
   for _, pattern in ipairs(patterns) do
