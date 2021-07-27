@@ -1,6 +1,6 @@
 local addonName, addon = ...;
 
-local VERSION_COUNTER = 1;
+local VERSION_COUNTER = 2;
 
 local function migrateOptions (options)
   if (options.collectCovenantButton ~= nil) then
@@ -42,14 +42,13 @@ local function setDefaultValues (options)
 end
 
 local function printVersionMessage ()
-  addon.printAddonMessage('has some new settings!\n',
-      'Type "/mbb set" to see available settings\n',
-      '"/mbb set <setting>" to see the current value of a setting or\n',
-      '"/mbb set <setting> <value>" to set a setting');
+  addon.printAddonMessage('has a new scale setting!\n',
+      'Type "/mbb set scale <value>" to set the scale of the button.',
+      'This will also scale collected buttons.');
 end
 
 local function checkVersion (options)
-  if (options.version >= VERSION_COUNTER) then
+  if (options.version >= VERSION_COUNTER + 1) then
     --[[ setting version to handle rollbacks ]]
     options.version = VERSION_COUNTER;
     return;

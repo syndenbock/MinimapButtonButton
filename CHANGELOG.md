@@ -1,1 +1,3 @@
-- Other addons are now (hopefully) prevented from stealing minimap buttons back
+- Implemented scale setting
+- Improved button scanning pattern
+- Improved handling of external button toggling
