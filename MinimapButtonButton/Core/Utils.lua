@@ -1,11 +1,12 @@
 local addonName, addon = ...;
 
-local tconcat = _G.table.concat;
+local strconcat = _G.strconcat;
+local strjoin = _G.strjoin;
 
-local ADDON_MESSAGE_PREFIX = '|cff00ffff' .. addonName .. '|r';
+local ADDON_MESSAGE_PREFIX = '|cff00ffff' .. addonName .. '|r ';
 
 local function printAddonMessage (...)
-  print(ADDON_MESSAGE_PREFIX, ...);
+  print(strconcat(ADDON_MESSAGE_PREFIX, ...));
 end
 
 local function printReloadMessage (...)
@@ -18,7 +19,7 @@ local function getFrameName (frame)
 end
 
 local function concatButtonName (...)
-  return tconcat({...}, ' ');
+  return strjoin(' ', ...);
 end
 
 addon.printAddonMessage = printAddonMessage;

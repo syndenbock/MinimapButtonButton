@@ -214,8 +214,8 @@ local function getAnchors ()
     end
   end
 
-  addon.printAddonMessage('invalid growth direction:',
-      majorDirection .. minorDirection);
+  addon.printAddonMessage('invalid growth direction: ',
+      majorDirection, minorDirection);
   addon.options.majorDirection = directions.LEFT;
   addon.options.minorDirection = directions.DOWN;
 
