@@ -1,3 +1,1 @@
-- Implemented scale setting
-- Improved button scanning pattern
-- Improved handling of external button toggling
+- Fixed new version message being printed on every login
