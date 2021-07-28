@@ -48,7 +48,7 @@ local function printVersionMessage ()
 end
 
 local function checkVersion (options)
-  if (options.version >= VERSION_COUNTER + 1) then
+  if (options.version >= VERSION_COUNTER) then
     --[[ setting version to handle rollbacks ]]
     options.version = VERSION_COUNTER;
     return;
