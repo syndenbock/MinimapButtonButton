@@ -156,6 +156,11 @@ local function toggleButtons ()
   end
 end
 
+local function setDefaultPosition ()
+  mainFrame:ClearAllPoints();
+  mainFrame:SetPoint(anchors.CENTER, _G.UIParent, anchors.CENTER, 0, 0);
+end
+
 local function storeMainFramePosition ()
   addon.options.position = {mainFrame:GetPoint()};
 end
@@ -183,8 +188,9 @@ local function initMainFrame ()
   mainFrame:SetParent(_G.UIParent);
   mainFrame:SetFrameStrata(constants.FRAME_STRATA);
   mainFrame:SetFrameLevel(constants.FRAME_LEVEL);
+  mainFrame:Raise();
   mainFrame:SetSize(1, 1);
-  mainFrame:SetPoint(anchors.CENTER, _G.UIParent, anchors.CENTER, 0, 0);
+  setDefaultPosition();
   mainFrame:SetClampedToScreen(true);
 end
 
@@ -322,6 +328,7 @@ end
 
 addon.slash('list', printButtonLists);
 addon.slash('default', printButtonLists);
+addon.slash('reset', setDefaultPosition);
 
 --##############################################################################
 -- shared data
