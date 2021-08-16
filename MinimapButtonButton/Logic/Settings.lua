@@ -129,5 +129,5 @@ addon.slash('set', function (setting, ...)
     return;
   end
 
-  handlers[setting](setting, ...);
+  handlers[lowerCaseSetting](setting, ...);
 end);
