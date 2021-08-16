@@ -1,1 +1,1 @@
-- Fixed new version message being printed on every login
+Fixed error when changing a setting using a non-lowercase setting name
