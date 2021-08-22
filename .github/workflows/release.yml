@@ -7,7 +7,8 @@ on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
     tags:
-    - '**'
+    - "*"
+    - "!**-alpha**"
     
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -33,15 +34,17 @@ jobs:
       # Release retail
       - name: Release Retail
         uses: BigWigsMods/packager@master
+        with:
+          args:  -n "{package-name}-{project-version}{nolib}{classic}"
         
       # Release Classic
       - name: Release Classic
         uses: BigWigsMods/packager@master
         with:
-          args: -g classic
+          args: -g classic -n "{package-name}-{project-version}{nolib}{classic}"
       
       # Release BCC
       - name: Release BCC
         uses: BigWigsMods/packager@master
         with:
-          args: -g bcc
+          args: -g bcc -n "{package-name}-{project-version}{nolib}{classic}"
