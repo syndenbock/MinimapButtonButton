@@ -1,1 +1,1 @@
-Fixed error when changing a setting using a non-lowercase setting name
+- Collected buttons are now being prevented from resetting their parent frame
