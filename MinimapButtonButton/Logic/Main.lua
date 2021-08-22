@@ -42,6 +42,14 @@ local function updateLayoutOnNextFrame ()
   executeAfter(0, addon.updateLayout);
 end
 
+local function setButtonParent (button, parent)
+  if (parent == buttonContainer) then
+    return;
+  end
+
+  button:SetParent(buttonContainer);
+end
+
 local function collectMinimapButton (button)
   -- print('collecting button:', button:GetName());
 
@@ -55,6 +63,7 @@ local function collectMinimapButton (button)
   -- visibility because the parent gets shown/hidden
   hooksecurefunc(button, 'Show', updateLayoutOnNextFrame);
   hooksecurefunc(button, 'Hide', updateLayoutOnNextFrame);
+  hooksecurefunc(button, 'SetParent', setButtonParent);
 
   tinsert(collectedButtons, button);
   collectedButtonMap[button] = true;
