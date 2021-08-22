@@ -33,17 +33,15 @@ jobs:
       # Release retail
       - name: Release Retail
         uses: BigWigsMods/packager@master
-        with:
-          args:  -n "{package-name}-{project-version}{nolib}{classic}"
         
       # Release Classic
       - name: Release Classic
         uses: BigWigsMods/packager@master
         with:
-          args: -g classic -n "{package-name}-{project-version}{nolib}{classic}"
+          args: -g classic
       
       # Release BCC
       - name: Release BCC
         uses: BigWigsMods/packager@master
         with:
-          args: -g bcc -n "{package-name}-{project-version}{nolib}{classic}"
+          args: -g bcc
