@@ -1,1 +1,1 @@
-- Updated interface versions
+- The main button can now be moved using any mouse button while holding the ALT key

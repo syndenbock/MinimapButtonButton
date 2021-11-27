@@ -2,7 +2,7 @@
 ## Interface-Classic: 11400
 ## Interface-BCC: 20502
 ## Title: MinimapButtonButton
-## Version: 1.6.4
+## Version: 1.6.5
 ## Author: syndenbock
 ## Notes: Creates a button that collects all minimap buttons
 
