@@ -5,11 +5,13 @@ local strmatch = _G.strmatch;
 local sort = _G.sort;
 local executeAfter = _G.C_Timer.After;
 local hooksecurefunc = _G.hooksecurefunc;
+local IsAltKeyDown = _G.IsAltKeyDown;
 
 local Minimap = _G.Minimap;
 
 local LEFTBUTTON = 'LeftButton';
 local MIDDLEBUTTON = 'MiddleButton';
+local ONMOUSEUP = 'OnMouseUp';
 
 local constants = addon.constants;
 local anchors = constants.anchors;
@@ -175,21 +177,16 @@ local function storeMainFramePosition ()
 end
 
 local function stopMovingMainFrame ()
+  mainFrame:SetScript(ONMOUSEUP, nil);
   mainFrame:SetMovable(false);
-  mainFrame:SetScript('OnMouseUp', nil);
   mainFrame:StopMovingOrSizing();
   storeMainFramePosition();
 end
 
 local function moveMainFrame ()
+  mainButton:SetScript(ONMOUSEUP, stopMovingMainFrame);
   mainFrame:SetMovable(true);
   mainFrame:StartMoving();
-
-  mainButton:SetScript('OnMouseUp', function (_, button)
-    if (button == MIDDLEBUTTON) then
-      stopMovingMainFrame();
-    end
-  end);
 end
 
 local function initMainFrame ()
@@ -245,10 +242,10 @@ local function initMainButton ()
   mainButton:SetBackdropColor(getUnitColor('player'));
 
   mainButton:SetScript('OnMouseDown', function (_, button)
-    if (button == LEFTBUTTON) then
-      toggleButtons();
-    elseif (button == MIDDLEBUTTON) then
+    if (button == MIDDLEBUTTON or IsAltKeyDown()) then
       moveMainFrame();
+    elseif (button == LEFTBUTTON) then
+      toggleButtons();
     end
   end);
 end
