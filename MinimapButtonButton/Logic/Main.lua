@@ -1,11 +1,11 @@
 local addonName, addon = ...;
 
-local tinsert = _G.tinsert;
-local strmatch = _G.strmatch;
-local sort = _G.sort;
 local executeAfter = _G.C_Timer.After;
 local hooksecurefunc = _G.hooksecurefunc;
 local IsAltKeyDown = _G.IsAltKeyDown;
+local issecurevariable = _G.issecurevariable;
+local sort = _G.sort;
+local tinsert = _G.tinsert;
 
 local Minimap = _G.Minimap;
 
@@ -71,32 +71,15 @@ local function collectMinimapButton (button)
   collectedButtonMap[button] = true;
 end
 
+local function isButtonCollected (button)
+  return (collectedButtonMap[button] ~= nil);
+end
+
 local function isMinimapButton (frame)
   local frameName = addon.getFrameName(frame);
 
-  if (not frameName) then
-    return false;
-  end;
-
-  local patterns = {
-    'LibDBIcon10_',
-    'MinimapButton',
-    'MinimapFrame',
-    'MinimapIcon',
-    '[-_]Minimap',
-  };
-
-  for _, pattern in ipairs(patterns) do
-    if (strmatch(frameName, pattern) ~= nil) then
-      return true;
-    end
-  end
-
-  return false;
-end
-
-local function isButtonCollected (button)
-  return (collectedButtonMap[button] ~= nil);
+  return (frameName and addon.checkFrameType(frame, 'Button') and
+      not issecurevariable(addon.getFrameName(frame)));
 end
 
 local function shouldButtonBeCollected (button)

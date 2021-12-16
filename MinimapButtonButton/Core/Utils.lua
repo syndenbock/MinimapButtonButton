@@ -18,6 +18,10 @@ local function getFrameName (frame)
   return frame.GetName and frame:GetName();
 end
 
+local function checkFrameType (frame, type)
+  return frame.IsObjectType and frame:IsObjectType(type);
+end
+
 local function concatButtonName (...)
   return strjoin(' ', ...);
 end
@@ -25,4 +29,5 @@ end
 addon.printAddonMessage = printAddonMessage;
 addon.printReloadMessage = printReloadMessage;
 addon.getFrameName = getFrameName;
+addon.checkFrameType = checkFrameType;
 addon.concatButtonName = concatButtonName;
