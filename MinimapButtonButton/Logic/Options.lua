@@ -10,18 +10,12 @@ local function migrateOptions (options)
 
     options.collectCovenantButton = nil;
   end
-
-  options.blacklist.TukuiMinimapZone = true;
 end
 
 local function setDefaultValues (options)
   local defaults = {
     blacklist = {},
-    whitelist = {
-      ZygorGuidesViewerMapIcon = true,
-      TrinketMenu_IconFrame = true,
-      CodexBrowserIcon = true,
-    },
+    whitelist = {},
     majorDirection = addon.constants.directions.LEFT,
     minorDirection = addon.constants.directions.DOWN,
     buttonsPerRow = 5,
