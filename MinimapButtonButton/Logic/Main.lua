@@ -78,8 +78,12 @@ end
 local function isMinimapButton (frame)
   local frameName = addon.getFrameName(frame);
 
-  return (frameName and addon.checkFrameType(frame, 'Button') and
-      not issecurevariable(addon.getFrameName(frame)));
+  return (
+      frameName and
+      addon.checkFrameType(frame, 'Button') and
+      frame:GetNumRegions() >= 4 and
+      not issecurevariable(addon.getFrameName(frame))
+    );
 end
 
 local function shouldButtonBeCollected (button)
