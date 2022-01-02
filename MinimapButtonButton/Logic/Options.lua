@@ -10,6 +10,8 @@ local function migrateOptions (options)
 
     options.collectCovenantButton = nil;
   end
+
+  options.blacklist.TukuiMinimapZone = true;
 end
 
 local function setDefaultValues (options)
