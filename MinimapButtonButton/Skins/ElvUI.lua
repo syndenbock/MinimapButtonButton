@@ -2,32 +2,33 @@ if (not _G.IsAddOnLoaded('ElvUI')) then return end
 
 local _, addon = ...;
 
+local function skinFrame (frame, engine)
+  local media = engine.media;
+  local edgeSize = 1;
+  local backdrop = {
+    bgFile = media.glossTex,
+    edgeFile = media.blankTex,
+    edgeSize = edgeSize,
+    insets = {
+      left = edgeSize,
+      right = edgeSize,
+      top = edgeSize,
+      bottom = edgeSize,
+    },
+  };
+
+  frame:SetBackdrop(backdrop);
+  frame:SetBackdropColor(unpack(media.backdropcolor));
+  frame:SetBackdropBorderColor(unpack(media.bordercolor));
+end
+
 addon.registerEvent('PLAYER_LOGIN', function ()
   local ENGINE = _G.ElvUI[1];
 
   local function applySkin ()
-    local media = ENGINE.media;
-    local backdrop = {
-      bgFile = media.glossTex,
-      edgeFile = media.blankTex,
-      edgeSize = 1,
-      insets = {
-        left = 1,
-        right = 1,
-        top = 1,
-        bottom = 1,
-      },
-    };
-
-    local function skinFrame (frame)
-      frame:SetBackdrop(backdrop);
-      frame:SetBackdropColor(unpack(media.backdropcolor));
-      frame:SetBackdropBorderColor(unpack(media.bordercolor));
-    end
-
-    skinFrame(addon.shared.buttonContainer);
-    skinFrame(addon.shared.mainButton);
-    addon.shared.logo:SetVertexColor(unpack(media.rgbvaluecolor));
+    skinFrame(addon.shared.buttonContainer, ENGINE);
+    skinFrame(addon.shared.mainButton, ENGINE);
+    addon.shared.logo:SetVertexColor(unpack(ENGINE.media.rgbvaluecolor));
   end
 
   applySkin();
