@@ -8,7 +8,7 @@
 
 ## X-Curse-Project-ID: 446096
 
-## OptionalDeps: ElvUI
+## OptionalDeps: ElvUI, Tukui
 ## SavedVariables: MinimapButtonButtonOptions
 ## SavedVariablesPerCharacter:
 
