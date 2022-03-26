@@ -1,1 +1,3 @@
-- The main button can now be moved using any mouse button while holding the ALT key
+- Implemented skinning for Tukui
+- Reworked minimap button scanning
+- Updated interface versions
