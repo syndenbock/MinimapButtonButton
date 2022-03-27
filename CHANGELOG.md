@@ -1,3 +1,1 @@
-- Implemented skinning for Tukui
-- Reworked minimap button scanning
-- Updated interface versions
+- Reverted button scanning method to before 1.7
