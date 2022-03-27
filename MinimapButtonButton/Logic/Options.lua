@@ -15,7 +15,11 @@ end
 local function setDefaultValues (options)
   local defaults = {
     blacklist = {},
-    whitelist = {},
+    whitelist = {
+      ZygorGuidesViewerMapIcon = true,
+      TrinketMenu_IconFrame = true,
+      CodexBrowserIcon = true,
+    },
     majorDirection = addon.constants.directions.LEFT,
     minorDirection = addon.constants.directions.DOWN,
     buttonsPerRow = 5,
