@@ -6,6 +6,7 @@ local sort = _G.sort;
 local executeAfter = _G.C_Timer.After;
 local hooksecurefunc = _G.hooksecurefunc;
 local IsAltKeyDown = _G.IsAltKeyDown;
+local issecurevariable = _G.issecurevariable;
 
 local Minimap = _G.Minimap;
 
@@ -77,6 +78,10 @@ local function isMinimapButton (frame)
   if (not frameName) then
     return false;
   end;
+
+  if (issecurevariable(frameName)) then
+    return false;
+  end
 
   local patterns = {
     'LibDBIcon10_',
