@@ -1,1 +1,1 @@
-- Reverted button scanning method to before 1.7
+- Minor code improvements
