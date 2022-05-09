@@ -7,6 +7,7 @@
 ## Notes: Creates a button that collects all minimap buttons
 
 ## X-Curse-Project-ID: 446096
+## X-Wago-ID: pkNM4QGz
 
 ## OptionalDeps: ElvUI, Tukui
 ## SavedVariables: MinimapButtonButtonOptions

@@ -2,13 +2,13 @@
 
 name: Release
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
     tags:
     - "*"
-    
+
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -18,10 +18,11 @@ jobs:
   release:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    
-    env: 
+
+    env:
       CF_API_KEY: ${{ secrets.CF_API_KEY }}
       GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+      WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -33,13 +34,13 @@ jobs:
       # Release retail
       - name: Release Retail
         uses: BigWigsMods/packager@master
-        
+
       # Release Classic
       - name: Release Classic
         uses: BigWigsMods/packager@master
         with:
           args: -g classic
-      
+
       # Release BCC
       - name: Release BCC
         uses: BigWigsMods/packager@master
