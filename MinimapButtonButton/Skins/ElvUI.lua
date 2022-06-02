@@ -25,6 +25,10 @@ end
 addon.registerEvent('PLAYER_LOGIN', function ()
   local ENGINE = _G.ElvUI[1];
 
+  if (ENGINE.private.skins.blizzard.enable ~= true) then
+    return;
+  end
+
   local function applySkin ()
     skinFrame(addon.shared.buttonContainer, ENGINE);
     skinFrame(addon.shared.mainButton, ENGINE);
