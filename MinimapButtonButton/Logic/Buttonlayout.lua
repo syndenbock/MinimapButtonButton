@@ -198,7 +198,7 @@ local function getAnchors ()
     if (minorDirection == directions.DOWN) then
       return anchors.TOPRIGHT, anchors.TOPLEFT;
     elseif (minorDirection == directions.UP) then
-      return anchors.TOPLEFT, anchors.TOPRIGHT;
+      return anchors.BOTTOMRIGHT, anchors.BOTTOMLEFT;
     end
   elseif (majorDirection == directions.UP) then
     if (minorDirection == directions.LEFT) then
