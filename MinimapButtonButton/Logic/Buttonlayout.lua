@@ -57,18 +57,22 @@ end
 -- main Layout class
 --##############################################################################
 
-local Layout = {};
+local Layout = {
+  edgeOffset = 6,
+};
 
 function Layout:calculateButtonXOffset (columnCount)
-  return (self.buttonWidth + constants.BUTTON_SPACING) * columnCount + constants.EDGE_OFFSET + self.buttonWidth / 2;
+  return (self.buttonWidth + constants.BUTTON_SPACING) * columnCount +
+      self.edgeOffset + self.buttonWidth / 2;
 end
 
 function Layout:calculateButtonYOffset (rowCount)
-  return (self.buttonHeight + constants.BUTTON_SPACING) * rowCount + constants.EDGE_OFFSET + self.buttonHeight / 2;
+  return (self.buttonHeight + constants.BUTTON_SPACING) * rowCount +
+      self.edgeOffset + self.buttonHeight / 2;
 end
 
 function Layout:calculateButtonAreaDimension (buttonDimension, buttonCount)
-  local dimension = constants.EDGE_OFFSET * 2 + buttonDimension;
+  local dimension = self.edgeOffset * 2 + buttonDimension;
 
   if (buttonCount > 1) then
     dimension = dimension + (buttonCount - 1) *
@@ -371,4 +375,11 @@ end
 
 function addon.applyDefaultLayout ()
   applyLayout(LeftDownLayout);
+end
+
+function addon.setEdgeOffset (offset)
+  if (Layout.edgeOffset ~= offset) then
+    Layout.edgeOffset = offset;
+    Layout:updateLayout();
+  end
 end

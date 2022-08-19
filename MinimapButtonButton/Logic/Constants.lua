@@ -20,7 +20,6 @@ addon.constants = {
   MAINBUTTON_MAX_SIZE = 52,
   LOGO_SIZE = 16,
   EDGE_INSET = 4;
-  EDGE_OFFSET = 4,
   BUTTON_SPACING = 2,
   BUTTON_OFFSET_X = 0,
   BUTTON_OFFSET_Y = -2,

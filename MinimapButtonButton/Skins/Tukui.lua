@@ -21,6 +21,7 @@ local function skinFrame (frame, config)
   frame:SetBackdrop(backdrop);
   frame:SetBackdropColor(unpack(media.BackdropColor));
   frame:SetBackdropBorderColor(unpack(media.BorderColor));
+  addon.setEdgeOffset(4);
 end
 
 addon.registerEvent('PLAYER_LOGIN', function ()
