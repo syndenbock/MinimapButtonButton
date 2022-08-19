@@ -67,14 +67,23 @@ function Layout:calculateYOffset (rowCount)
   return (self.buttonHeight + constants.BUTTON_SPACING) * rowCount;
 end
 
+function Layout:calculateButtonAreaDimension (buttonDimension, buttonCount)
+  local dimension = constants.EDGE_OFFSET * 2 + buttonDimension;
+
+  if (buttonCount > 1) then
+    dimension = dimension + (buttonCount - 1) *
+        (buttonDimension + constants.BUTTON_SPACING);
+  end
+
+  return dimension;
+end
+
 function Layout:calculateButtonAreaWidth (columnCount)
-  return self:calculateXOffset(max(columnCount, 1)) +
-      constants.EDGE_OFFSET * 2;
+  return self:calculateButtonAreaDimension(self.buttonWidth, columnCount);
 end
 
 function Layout:calculateButtonAreaHeight (rowCount)
-  return self:calculateYOffset(max(rowCount, 1)) +
-    constants.EDGE_OFFSET * 2;
+  return self:calculateButtonAreaDimension(self.buttonHeight, rowCount);
 end
 
 function Layout:calculateMainButtonHeight ()
@@ -91,13 +100,7 @@ function Layout:updateMainButton ()
 end
 
 function Layout:calculateContainerWidth (columnCount)
-  local width;
-
-  if (columnCount == 0) then
-    width = self.mainButtonWidth;
-  else
-    width = self:calculateButtonAreaWidth(columnCount);
-  end
+  local width = self:calculateButtonAreaWidth(columnCount);
 
   if (self.isHorizontalLayout) then
     width = width + self.mainButtonWidth;
@@ -107,13 +110,7 @@ function Layout:calculateContainerWidth (columnCount)
 end
 
 function Layout:calculateContainerHeight (rowCount)
-  local height;
-
-  if (rowCount == 0) then
-    height = self.mainButtonHeight;
-  else
-    height = self:calculateButtonAreaHeight(rowCount);
-  end
+  local height = self:calculateButtonAreaHeight(rowCount);
 
   if (not self.isHorizontalLayout) then
     height = height + self.mainButtonHeight;
