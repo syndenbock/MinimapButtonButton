@@ -10,6 +10,12 @@ local function migrateOptions (options)
 
     options.collectCovenantButton = nil;
   end
+
+  if (options.majorDirection ~= nil and options.minorDirection ~= nil) then
+    options.direction = options.majorDirection .. options.minorDirection;
+    options.majorDirection = nil;
+    options.minorDirection = nil
+  end
 end
 
 local function setDefaultValues (options)
@@ -20,8 +26,7 @@ local function setDefaultValues (options)
       TrinketMenu_IconFrame = true,
       CodexBrowserIcon = true,
     },
-    majorDirection = addon.constants.directions.LEFT,
-    minorDirection = addon.constants.directions.DOWN,
+    direction = 'leftdown',
     buttonsPerRow = 5,
     scale = 1,
     version = 0,
@@ -66,13 +71,17 @@ addon.registerEvent('ADDON_LOADED', function (loadedAddon)
   local options = setDefaultValues(_G.MinimapButtonButtonOptions);
 
   migrateOptions(options);
+  addon.options = options;
+
+  if (not addon.applyLayout(options.direction)) then
+    addon.applyDefaultLayout();
+  end
+
   checkVersion(options);
 
   addon.registerEvent('PLAYER_LOGOUT', function ()
     _G.MinimapButtonButtonOptions = options;
   end);
-
-  addon.options = options;
 
   return true;
 end);

@@ -1,12 +1,6 @@
 local _, addon = ...;
 
 addon.constants = {
-  directions = {
-    LEFT = 'LEFT',
-    RIGHT = 'RIGHT',
-    DOWN = 'DOWN',
-    UP = 'UP',
-  },
   anchors = {
     CENTER = 'CENTER',
     LEFT = 'LEFT',
