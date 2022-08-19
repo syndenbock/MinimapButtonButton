@@ -46,11 +46,9 @@ local function updateLayoutOnNextFrame ()
 end
 
 local function setButtonParent (button, parent)
-  if (parent == buttonContainer) then
-    return;
+  if (parent ~= buttonContainer) then
+    button:SetParent(buttonContainer);
   end
-
-  button:SetParent(buttonContainer);
 end
 
 local function collectMinimapButton (button)
@@ -209,6 +207,7 @@ local function initButtonContainer ()
   buttonContainer = _G.CreateFrame('Frame', nil, _G.UIParent,
     _G.BackdropTemplateMixin and 'BackdropTemplate');
   buttonContainer:SetParent(mainFrame);
+  buttonContainer:SetFrameLevel(constants.FRAME_LEVEL);
   buttonContainer:Hide();
 
   buttonContainer:SetBackdrop({
@@ -230,6 +229,7 @@ local function initMainButton ()
       _G.BackdropTemplateMixin and 'BackdropTemplate');
   mainButton:SetParent(mainFrame);
   mainButton:SetPoint(anchors.CENTER, mainFrame, anchors.CENTER, 0, 0);
+  mainButton:SetFrameLevel(constants.FRAME_LEVEL + 1);
   mainButton:Show();
 
   mainButton:SetBackdrop({
