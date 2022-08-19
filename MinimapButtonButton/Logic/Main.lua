@@ -213,12 +213,12 @@ local function initButtonContainer ()
   buttonContainer:SetBackdrop({
     bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
     edgeFile = 'Interface/Tooltips/UI-Tooltip-Border',
-    edgeSize = constants.BUTTON_EDGE_SIZE,
+    edgeSize = constants.EDGE_SIZE,
     insets = {
-      left = constants.EDGE_OFFSET,
-      right = constants.EDGE_OFFSET,
-      top = constants.EDGE_OFFSET,
-      bottom = constants.EDGE_OFFSET
+      left = constants.EDGE_INSET,
+      right = constants.EDGE_INSET,
+      top = constants.EDGE_INSET,
+      bottom = constants.EDGE_INSET
     },
   });
   buttonContainer:SetBackdropColor(0, 0, 0, 1);
@@ -235,12 +235,12 @@ local function initMainButton ()
   mainButton:SetBackdrop({
     bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
     edgeFile = 'Interface/Tooltips/UI-Tooltip-Border',
-    edgeSize = constants.BUTTON_EDGE_SIZE,
+    edgeSize = constants.EDGE_SIZE,
     insets = {
-      left = constants.EDGE_OFFSET,
-      right = constants.EDGE_OFFSET,
-      top = constants.EDGE_OFFSET,
-      bottom = constants.EDGE_OFFSET
+      left = constants.EDGE_INSET,
+      right = constants.EDGE_INSET,
+      top = constants.EDGE_INSET,
+      bottom = constants.EDGE_INSET
     },
   });
 
