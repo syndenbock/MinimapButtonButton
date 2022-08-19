@@ -25,17 +25,6 @@ local collectedButtonMap = {};
 local collectedButtons = {};
 
 --##############################################################################
--- utility functions
---##############################################################################
-
-local function getUnitColor (unit)
-  -- Do not use C_ClassColor.GetClassColor, it doesn't exist in Classic or BCC
-  local color = _G.RAID_CLASS_COLORS[select(2, _G.UnitClass(unit))];
-
-  return color.r, color.g, color.b, 1;
-end
-
---##############################################################################
 -- minimap button collecting
 --##############################################################################
 
@@ -197,7 +186,6 @@ local function initMainFrame ()
   mainFrame:SetParent(_G.UIParent);
   mainFrame:SetFrameStrata(constants.FRAME_STRATA);
   mainFrame:SetFrameLevel(constants.FRAME_LEVEL);
-  mainFrame:Raise();
   mainFrame:SetSize(1, 1);
   setDefaultPosition();
   mainFrame:SetClampedToScreen(true);
@@ -209,19 +197,6 @@ local function initButtonContainer ()
   buttonContainer:SetParent(mainFrame);
   buttonContainer:SetFrameLevel(constants.FRAME_LEVEL);
   buttonContainer:Hide();
-
-  buttonContainer:SetBackdrop({
-    bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
-    edgeFile = 'Interface/Tooltips/UI-Tooltip-Border',
-    edgeSize = constants.EDGE_SIZE,
-    insets = {
-      left = constants.EDGE_INSET,
-      right = constants.EDGE_INSET,
-      top = constants.EDGE_INSET,
-      bottom = constants.EDGE_INSET
-    },
-  });
-  buttonContainer:SetBackdropColor(0, 0, 0, 1);
 end
 
 local function initMainButton ()
@@ -231,20 +206,6 @@ local function initMainButton ()
   mainButton:SetPoint(anchors.CENTER, mainFrame, anchors.CENTER, 0, 0);
   mainButton:SetFrameLevel(constants.FRAME_LEVEL + 1);
   mainButton:Show();
-
-  mainButton:SetBackdrop({
-    bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
-    edgeFile = 'Interface/Tooltips/UI-Tooltip-Border',
-    edgeSize = constants.EDGE_SIZE,
-    insets = {
-      left = constants.EDGE_INSET,
-      right = constants.EDGE_INSET,
-      top = constants.EDGE_INSET,
-      bottom = constants.EDGE_INSET
-    },
-  });
-
-  mainButton:SetBackdropColor(getUnitColor('player'));
 
   mainButton:SetScript('OnMouseDown', function (_, button)
     if (button == MIDDLEBUTTON or IsAltKeyDown()) then
@@ -259,7 +220,7 @@ local function initLogo ()
   logo = mainButton:CreateTexture(nil, constants.FRAME_STRATA);
   logo:SetTexture('Interface\\AddOns\\' .. addonName ..
       '\\Media\\Logo.blp');
-  logo:SetVertexColor(0, 0, 0, 1);
+
   logo:SetPoint(anchors.CENTER, mainButton, anchors.CENTER, 0, 0);
   logo:SetSize(constants.LOGO_SIZE, constants.LOGO_SIZE);
 end

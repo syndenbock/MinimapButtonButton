@@ -22,7 +22,15 @@ local function concatButtonName (...)
   return strjoin(' ', ...);
 end
 
+local function getUnitColor (unit)
+  -- Do not use C_ClassColor.GetClassColor, it doesn't exist in Classic or BCC
+  local color = _G.RAID_CLASS_COLORS[select(2, _G.UnitClass(unit))];
+
+  return color.r, color.g, color.b, 1;
+end
+
 addon.printAddonMessage = printAddonMessage;
 addon.printReloadMessage = printReloadMessage;
 addon.getFrameName = getFrameName;
 addon.concatButtonName = concatButtonName;
+addon.getUnitColor = getUnitColor;

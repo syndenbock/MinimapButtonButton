@@ -58,7 +58,7 @@ end
 --##############################################################################
 
 local Layout = {
-  edgeOffset = 6,
+  edgeOffset = 0,
 };
 
 function Layout:calculateButtonXOffset (columnCount)
@@ -343,12 +343,15 @@ end
 -- public methods
 --##############################################################################
 
-local function applyLayout (layoutMixin)
-  Mixin(Layout, layoutMixin);
-  Layout:updateLayout();
+local function updateLayout ()
+  if (Layout.initialized) then
+    Layout:updateLayout();
+  end
 end
 
-function addon.updateLayout ()
+local function applyLayout (layoutMixin)
+  Layout.initialized = true;
+  Mixin(Layout, layoutMixin);
   Layout:updateLayout();
 end
 
@@ -380,6 +383,8 @@ end
 function addon.setEdgeOffset (offset)
   if (Layout.edgeOffset ~= offset) then
     Layout.edgeOffset = offset;
-    Layout:updateLayout();
+    updateLayout();
   end
 end
+
+addon.updateLayout = updateLayout;

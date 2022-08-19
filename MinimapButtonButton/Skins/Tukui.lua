@@ -1,6 +1,8 @@
-if (not _G.IsAddOnLoaded('Tukui')) then return end
-
 local _, addon = ...;
+
+if (not _G.IsAddOnLoaded('Tukui') or addon.shared.skinned == true) then return end
+
+addon.shared.skinned = true;
 
 local function skinFrame (frame, config)
   local media = config.Medias;

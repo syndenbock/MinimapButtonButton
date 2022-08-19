@@ -1,6 +1,8 @@
-if (not _G.IsAddOnLoaded('ElvUI')) then return end
-
 local _, addon = ...;
+
+if (not _G.IsAddOnLoaded('ElvUI') or addon.shared.skinned == true) then return end
+
+addon.shared.skinned = true;
 
 local function skinFrame (frame, engine)
   local media = engine.media;

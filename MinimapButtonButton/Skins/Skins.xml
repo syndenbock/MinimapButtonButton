@@ -1,4 +1,5 @@
 <UI>
   <script file="ElvUI.lua"/>
   <script file="Tukui.lua"/>
+  <script file="Default.lua"/>
 </UI>
