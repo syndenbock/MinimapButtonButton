@@ -80,7 +80,7 @@ addon.slash('set', function (setting, ...)
   local lowerCaseSetting = strlower(setting);
 
   if (handlers[lowerCaseSetting] == nil) then
-    addon.printAddonMessage('unkown setting:', setting);
+    addon.printAddonMessage('unknown setting:', setting);
     return;
   end
 
