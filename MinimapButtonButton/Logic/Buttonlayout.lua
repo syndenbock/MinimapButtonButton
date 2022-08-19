@@ -59,12 +59,12 @@ end
 
 local Layout = {};
 
-function Layout:calculateXOffset (columnCount)
-  return (self.buttonWidth + constants.BUTTON_SPACING) * columnCount;
+function Layout:calculateButtonXOffset (columnCount)
+  return (self.buttonWidth + constants.BUTTON_SPACING) * columnCount + constants.EDGE_OFFSET + self.buttonWidth / 2;
 end
 
-function Layout:calculateYOffset (rowCount)
-  return (self.buttonHeight + constants.BUTTON_SPACING) * rowCount;
+function Layout:calculateButtonYOffset (rowCount)
+  return (self.buttonHeight + constants.BUTTON_SPACING) * rowCount + constants.EDGE_OFFSET + self.buttonHeight / 2;
 end
 
 function Layout:calculateButtonAreaDimension (buttonDimension, buttonCount)
@@ -162,8 +162,9 @@ end
 function Layout:anchorButton (button, rowIndex, columnIndex)
   local xOffset, yOffset = self:calculateButtonOffsets(rowIndex, columnIndex);
 
+  -- using center anchor to keep buttons of different sizes aligned
   setFrameEffectiveAnchor(button, anchors.CENTER, shared.mainButton,
-    anchors.CENTER, xOffset + constants.BUTTON_OFFSET_X,
+    self.relativeAnchor, xOffset + constants.BUTTON_OFFSET_X,
         yOffset + constants.BUTTON_OFFSET_Y);
 end
 
@@ -220,13 +221,6 @@ function HorizontalLayout:calculateMainButtonSize ()
   return calculateMainButtonRatioDimension(height), height;
 end
 
-function HorizontalLayout:calculateButtonXOffset (columnCount)
-  return self:calculateXOffset(columnCount) +
-      (self.buttonWidth + self.mainButtonWidth) / 2 + constants.EDGE_OFFSET;
-end
-
-HorizontalLayout.calculateButtonYOffset = Layout.calculateYOffset;
-
 local VerticalLayout = {
   isHorizontalLayout = false,
 };
@@ -235,13 +229,6 @@ function VerticalLayout:calculateMainButtonSize ()
   local width = self:calculateMainButtonWidth();
 
   return width, calculateMainButtonRatioDimension(width);
-end
-
-VerticalLayout.calculateButtonXOffset = Layout.calculateXOffset;
-
-function VerticalLayout:calculateButtonYOffset (rowCount)
-  return self:calculateYOffset(rowCount) +
-      (self.buttonHeight + self.mainButtonHeight) / 2 + constants.EDGE_OFFSET;
 end
 
 local LeftDownLayout = Mixin({
