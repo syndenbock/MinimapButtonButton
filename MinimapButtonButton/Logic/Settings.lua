@@ -18,61 +18,16 @@ local function printSettingWasSet (setting, value)
   addon.printAddonMessage(format('setting %s was set to %s', setting, value));
 end
 
-local function getValidDirections ()
-  local directions = addon.constants.directions;
-
-  return {
-    leftdown = {
-      major = directions.LEFT,
-      minor = directions.DOWN,
-    },
-    leftup = {
-        major = directions.LEFT,
-        minor = directions.UP,
-    },
-    rightdown = {
-      major = directions.RIGHT,
-      minor = directions.DOWN,
-    },
-    rightup = {
-      major = directions.RIGHT,
-      minor = directions.UP,
-    },
-    upleft = {
-      major = directions.UP,
-      minor = directions.LEFT,
-    },
-    upright = {
-      major = directions.UP,
-      minor = directions.RIGHT,
-    },
-    downleft = {
-      major = directions.DOWN,
-      minor = directions.LEFT,
-    },
-    downright = {
-      major = directions.DOWN,
-      minor = directions.RIGHT,
-    },
-  };
-end
-
 function handlers.direction (setting, value)
   if (value == nil) then
-    return printSettingValue(setting,
-        addon.options.majorDirection .. addon.options.minorDirection);
+    return printSettingValue(setting, addon.options.direction);
   end
 
-  local direction = strlower(value);
-  local directions = getValidDirections()[direction];
-
-  if (directions == nil) then
+  if (not addon.applyLayout(value)) then
     return printInvalidSettingValue(setting, value);
   end
 
-  addon.options.majorDirection = directions.major;
-  addon.options.minorDirection = directions.minor;
-  addon.updateLayout();
+  addon.options.direction = value;
   printSettingWasSet(setting, value);
 end
 
