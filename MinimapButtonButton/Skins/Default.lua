@@ -7,15 +7,17 @@ addon.shared.skinned = true;
 local shared = addon.shared;
 local constants = addon.constants;
 
+local EDGE_INSET = 4;
+
 shared.mainButton:SetBackdrop({
   bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
   edgeFile = 'Interface/Tooltips/UI-Tooltip-Border',
   edgeSize = constants.EDGE_SIZE,
   insets = {
-    left = constants.EDGE_INSET,
-    right = constants.EDGE_INSET,
-    top = constants.EDGE_INSET,
-    bottom = constants.EDGE_INSET
+    left = EDGE_INSET,
+    right = EDGE_INSET,
+    top = EDGE_INSET,
+    bottom = EDGE_INSET,
   },
 });
 
@@ -28,13 +30,13 @@ shared.buttonContainer:SetBackdrop({
   edgeFile = 'Interface/Tooltips/UI-Tooltip-Border',
   edgeSize = constants.EDGE_SIZE,
   insets = {
-    left = constants.EDGE_INSET,
-    right = constants.EDGE_INSET,
-    top = constants.EDGE_INSET,
-    bottom = constants.EDGE_INSET
+    left = EDGE_INSET,
+    right = EDGE_INSET,
+    top = EDGE_INSET,
+    bottom = EDGE_INSET
   },
 });
 
 shared.buttonContainer:SetBackdropColor(0, 0, 0, 1);
 
-addon.setEdgeOffset(6);
+addon.setEdgeOffset(EDGE_INSET);
