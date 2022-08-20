@@ -58,21 +58,22 @@ end
 --##############################################################################
 
 local Layout = {
-  edgeOffset = 0,
+  innerOffset = 0,
+  outerOffset = 0,
 };
 
 function Layout:calculateButtonXOffset (columnCount)
   return (self.buttonWidth + constants.BUTTON_SPACING) * columnCount +
-      self.edgeOffset + self.buttonWidth / 2;
+      self.innerOffset + self.buttonWidth / 2;
 end
 
 function Layout:calculateButtonYOffset (rowCount)
   return (self.buttonHeight + constants.BUTTON_SPACING) * rowCount +
-      self.edgeOffset + self.buttonHeight / 2;
+      self.innerOffset + self.buttonHeight / 2;
 end
 
 function Layout:calculateButtonAreaDimension (buttonDimension, buttonCount)
-  local dimension = self.edgeOffset * 2 + buttonDimension;
+  local dimension = self.innerOffset * 2 + buttonDimension;
 
   if (buttonCount > 1) then
     dimension = dimension + (buttonCount - 1) *
@@ -105,12 +106,6 @@ end
 
 function Layout:setButtonContainerSize ()
   shared.buttonContainer:SetSize(self:calculateButtonContainerSize());
-end
-
-function Layout:anchorButtonContainer ()
-  shared.buttonContainer:ClearAllPoints();
-  shared.buttonContainer:SetPoint(self.buttonAnchor,
-      shared.mainButton, self.relativeAnchor, 0, 0);
 end
 
 function Layout:updateButtonContainer ()
@@ -223,6 +218,12 @@ local LeftDownLayout = Mixin({
   buttonAnchor = anchors.TOPRIGHT,
 }, HorizontalLayout);
 
+function LeftDownLayout:anchorButtonContainer ()
+  shared.buttonContainer:ClearAllPoints();
+  shared.buttonContainer:SetPoint(self.buttonAnchor,
+      shared.mainButton, anchors.TOPLEFT, -self.outerOffset, 0);
+end
+
 function LeftDownLayout:calculateButtonOffsets (rowIndex, columnIndex)
   local xOffset = -self:calculateButtonXOffset(columnIndex);
   local yOffset = -self:calculateButtonYOffset(rowIndex);
@@ -234,6 +235,12 @@ local LeftUpLayout = Mixin({
   relativeAnchor = anchors.BOTTOMLEFT,
   buttonAnchor = anchors.BOTTOMRIGHT,
 }, HorizontalLayout);
+
+function LeftUpLayout:anchorButtonContainer ()
+  shared.buttonContainer:ClearAllPoints();
+  shared.buttonContainer:SetPoint(self.buttonAnchor,
+      shared.mainButton, anchors.BOTTOMLEFT, -self.outerOffset, 0);
+end
 
 function LeftUpLayout:calculateButtonOffsets (rowIndex, columnIndex)
   local xOffset = -self:calculateButtonXOffset(columnIndex);
@@ -247,6 +254,12 @@ local RightDownLayout = Mixin({
   buttonAnchor = anchors.TOPLEFT,
 }, HorizontalLayout);
 
+function RightDownLayout:anchorButtonContainer ()
+  shared.buttonContainer:ClearAllPoints();
+  shared.buttonContainer:SetPoint(self.buttonAnchor,
+      shared.mainButton, anchors.TOPRIGHT, self.outerOffset, 0);
+end
+
 function RightDownLayout:calculateButtonOffsets (rowIndex, columnIndex)
   local xOffset = self:calculateButtonXOffset(columnIndex);
   local yOffset = -self:calculateButtonYOffset(rowIndex);
@@ -258,6 +271,12 @@ local RightUpLayout = Mixin({
   relativeAnchor = anchors.BOTTOMRIGHT,
   buttonAnchor = anchors.BOTTOMLEFT,
 }, HorizontalLayout);
+
+function RightUpLayout:anchorButtonContainer ()
+  shared.buttonContainer:ClearAllPoints();
+  shared.buttonContainer:SetPoint(self.buttonAnchor,
+      shared.mainButton, anchors.BOTTOMRIGHT, self.outerOffset, 0);
+end
 
 function RightUpLayout:calculateButtonOffsets (rowIndex, columnIndex)
   local xOffset = self:calculateButtonXOffset(columnIndex);
@@ -271,6 +290,12 @@ local UpLeftLayout = Mixin({
   buttonAnchor = anchors.BOTTOMRIGHT,
 }, VerticalLayout);
 
+function UpLeftLayout:anchorButtonContainer ()
+  shared.buttonContainer:ClearAllPoints();
+  shared.buttonContainer:SetPoint(self.buttonAnchor,
+      shared.mainButton, anchors.TOPRIGHT, 0, self.outerOffset);
+end
+
 function UpLeftLayout:calculateButtonOffsets (rowIndex, columnIndex)
   local xOffset = -self:calculateButtonXOffset(rowIndex);
   local yOffset = self:calculateButtonYOffset(columnIndex);
@@ -282,6 +307,12 @@ local UpRightLayout = Mixin({
   relativeAnchor = anchors.TOPLEFT,
   buttonAnchor = anchors.BOTTOMLEFT,
 }, VerticalLayout);
+
+function UpRightLayout:anchorButtonContainer ()
+  shared.buttonContainer:ClearAllPoints();
+  shared.buttonContainer:SetPoint(self.buttonAnchor,
+      shared.mainButton, anchors.TOPLEFT, 0, self.outerOffset);
+end
 
 function UpRightLayout:calculateButtonOffsets (rowIndex, columnIndex)
   local xOffset = self:calculateButtonXOffset(rowIndex);
@@ -295,6 +326,12 @@ local DownLeftLayout = Mixin({
   buttonAnchor = anchors.TOPRIGHT,
 }, VerticalLayout);
 
+function DownLeftLayout:anchorButtonContainer ()
+  shared.buttonContainer:ClearAllPoints();
+  shared.buttonContainer:SetPoint(self.buttonAnchor,
+      shared.mainButton, anchors.BOTTOMRIGHT, 0, -self.outerOffset);
+end
+
 function DownLeftLayout:calculateButtonOffsets (rowIndex, columnIndex)
   local xOffset = -self:calculateButtonXOffset(rowIndex);
   local yOffset = -self:calculateButtonYOffset(columnIndex);
@@ -306,6 +343,12 @@ local DownRightLayout = Mixin({
   relativeAnchor = anchors.BOTTOMLEFT,
   buttonAnchor = anchors.TOPLEFT,
 }, VerticalLayout);
+
+function DownRightLayout:anchorButtonContainer ()
+  shared.buttonContainer:ClearAllPoints();
+  shared.buttonContainer:SetPoint(self.buttonAnchor,
+      shared.mainButton, anchors.BOTTOMLEFT, 0, -self.outerOffset);
+end
 
 function DownRightLayout:calculateButtonOffsets (rowIndex, columnIndex)
   local xOffset = self:calculateButtonXOffset(rowIndex);
@@ -355,9 +398,13 @@ function addon.applyDefaultLayout ()
   applyLayout(LeftDownLayout);
 end
 
-function addon.setEdgeOffset (offset)
-  if (Layout.edgeOffset ~= offset) then
-    Layout.edgeOffset = offset;
+function addon.setEdgeOffsets (innerOffset, outerOffset)
+  innerOffset = innerOffset or 0;
+  outerOffset = outerOffset or 0;
+
+  if (Layout.innerOffset ~= innerOffset or Layout.outerOffset ~= outerOffset) then
+    Layout.innerOffset = innerOffset;
+    Layout.outerOffset = outerOffset;
     updateLayout();
   end
 end

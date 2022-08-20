@@ -39,4 +39,4 @@ shared.buttonContainer:SetBackdrop({
 
 shared.buttonContainer:SetBackdropColor(0, 0, 0, 1);
 
-addon.setEdgeOffset(EDGE_INSET);
+addon.setEdgeOffsets(EDGE_INSET, -2);
