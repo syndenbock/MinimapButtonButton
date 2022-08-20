@@ -103,26 +103,6 @@ function Layout:updateMainButton ()
   shared.mainButton:SetSize(self.mainButtonWidth, self.mainButtonHeight);
 end
 
-function Layout:calculateContainerWidth (columnCount)
-  local width = self:calculateButtonAreaWidth(columnCount);
-
-  if (self.isHorizontalLayout) then
-    width = width + self.mainButtonWidth;
-  end
-
-  return width;
-end
-
-function Layout:calculateContainerHeight (rowCount)
-  local height = self:calculateButtonAreaHeight(rowCount);
-
-  if (not self.isHorizontalLayout) then
-    height = height + self.mainButtonHeight;
-  end
-
-  return height;
-end
-
 function Layout:setButtonContainerSize ()
   local buttonContainer = shared.buttonContainer;
   local buttonCount = getShownChildrenCount(buttonContainer);
@@ -130,11 +110,11 @@ function Layout:setButtonContainerSize ()
   local rowCount = ceil(buttonCount / addon.options.buttonsPerRow);
 
   if (self.isHorizontalLayout) then
-    buttonContainer:SetSize(self:calculateContainerWidth(columnCount),
-        self:calculateContainerHeight(rowCount));
+    buttonContainer:SetWidth(self:calculateButtonAreaWidth(columnCount) + self.mainButtonWidth);
+    buttonContainer:SetHeight(self:calculateButtonAreaHeight(rowCount));
   else
-    buttonContainer:SetSize(self:calculateContainerWidth(rowCount),
-        self:calculateContainerHeight(columnCount));
+    buttonContainer:SetWidth(self:calculateButtonAreaWidth(rowCount));
+    buttonContainer:SetHeight(self:calculateButtonAreaHeight(columnCount) + self.mainButtonHeight);
   end
 end
 
