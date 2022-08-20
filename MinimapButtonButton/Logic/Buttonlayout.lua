@@ -104,18 +104,7 @@ function Layout:updateMainButton ()
 end
 
 function Layout:setButtonContainerSize ()
-  local buttonContainer = shared.buttonContainer;
-  local buttonCount = getShownChildrenCount(buttonContainer);
-  local columnCount = min(buttonCount, addon.options.buttonsPerRow);
-  local rowCount = ceil(buttonCount / addon.options.buttonsPerRow);
-
-  if (self.isHorizontalLayout) then
-    buttonContainer:SetWidth(self:calculateButtonAreaWidth(columnCount) + self.mainButtonWidth);
-    buttonContainer:SetHeight(self:calculateButtonAreaHeight(rowCount));
-  else
-    buttonContainer:SetWidth(self:calculateButtonAreaWidth(rowCount));
-    buttonContainer:SetHeight(self:calculateButtonAreaHeight(columnCount) + self.mainButtonHeight);
-  end
+  shared.buttonContainer:SetSize(self:calculateButtonContainerSize());
 end
 
 function Layout:anchorButtonContainer ()
@@ -195,9 +184,16 @@ end
 -- Layout subclasses
 --##############################################################################
 
-local HorizontalLayout = {
-  isHorizontalLayout = true,
-};
+local HorizontalLayout = {};
+
+function HorizontalLayout:calculateButtonContainerSize ()
+  local buttonCount = getShownChildrenCount(shared.buttonContainer);
+  local columnCount = min(buttonCount, addon.options.buttonsPerRow);
+  local rowCount = ceil(buttonCount / addon.options.buttonsPerRow);
+
+  return self:calculateButtonAreaWidth(columnCount) + self.mainButtonWidth,
+      self:calculateButtonAreaHeight(rowCount);
+end
 
 function HorizontalLayout:calculateMainButtonSize ()
   local height = self:calculateMainButtonHeight();
@@ -205,9 +201,16 @@ function HorizontalLayout:calculateMainButtonSize ()
   return calculateMainButtonRatioDimension(height), height;
 end
 
-local VerticalLayout = {
-  isHorizontalLayout = false,
-};
+local VerticalLayout = {};
+
+function VerticalLayout:calculateButtonContainerSize ()
+  local buttonCount = getShownChildrenCount(shared.buttonContainer);
+  local rowCount = min(buttonCount, addon.options.buttonsPerRow);
+  local columnCount = ceil(buttonCount / addon.options.buttonsPerRow);
+
+  return self:calculateButtonAreaWidth(columnCount),
+      self:calculateButtonAreaHeight(rowCount) + self.mainButtonHeight;
+end
 
 function VerticalLayout:calculateMainButtonSize ()
   local width = self:calculateMainButtonWidth();
@@ -216,7 +219,6 @@ function VerticalLayout:calculateMainButtonSize ()
 end
 
 local LeftDownLayout = Mixin({
-  isHorizontalLayout = true,
   relativeAnchor = anchors.TOPLEFT,
   anchor = anchors.TOPRIGHT,
 }, HorizontalLayout);
@@ -229,7 +231,6 @@ function LeftDownLayout:calculateButtonOffsets (rowIndex, columnIndex)
 end
 
 local LeftUpLayout = Mixin({
-  isHorizontalLayout = true,
   relativeAnchor = anchors.BOTTOMLEFT,
   anchor = anchors.BOTTOMRIGHT,
 }, HorizontalLayout);
@@ -242,7 +243,6 @@ function LeftUpLayout:calculateButtonOffsets (rowIndex, columnIndex)
 end
 
 local RightDownLayout = Mixin({
-  isHorizontalLayout = true,
   relativeAnchor = anchors.TOPRIGHT,
   anchor = anchors.TOPLEFT,
 }, HorizontalLayout);
@@ -255,7 +255,6 @@ function RightDownLayout:calculateButtonOffsets (rowIndex, columnIndex)
 end
 
 local RightUpLayout = Mixin({
-  isHorizontalLayout = true,
   relativeAnchor = anchors.BOTTOMRIGHT,
   anchor = anchors.BOTTOMLEFT,
 }, HorizontalLayout);
@@ -268,7 +267,6 @@ function RightUpLayout:calculateButtonOffsets (rowIndex, columnIndex)
 end
 
 local UpLeftLayout = Mixin({
-  isHorizontalLayout = false,
   relativeAnchor = anchors.TOPRIGHT,
   anchor = anchors.BOTTOMRIGHT,
 }, VerticalLayout);
@@ -281,7 +279,6 @@ function UpLeftLayout:calculateButtonOffsets (rowIndex, columnIndex)
 end
 
 local UpRightLayout = Mixin({
-  isHorizontalLayout = false,
   relativeAnchor = anchors.TOPLEFT,
   anchor = anchors.BOTTOMLEFT,
 }, VerticalLayout);
@@ -294,7 +291,6 @@ function UpRightLayout:calculateButtonOffsets (rowIndex, columnIndex)
 end
 
 local DownLeftLayout = Mixin({
-  isHorizontalLayout = false,
   relativeAnchor = anchors.BOTTOMRIGHT,
   anchor = anchors.TOPRIGHT,
 }, VerticalLayout);
@@ -307,7 +303,6 @@ function DownLeftLayout:calculateButtonOffsets (rowIndex, columnIndex)
 end
 
 local DownRightLayout = Mixin({
-  isHorizontalLayout = false,
   relativeAnchor = anchors.BOTTOMLEFT,
   anchor = anchors.TOPLEFT,
 }, VerticalLayout);
