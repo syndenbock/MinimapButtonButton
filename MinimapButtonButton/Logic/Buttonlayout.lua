@@ -109,8 +109,8 @@ end
 
 function Layout:anchorButtonContainer ()
   shared.buttonContainer:ClearAllPoints();
-  shared.buttonContainer:SetPoint(self.anchor,
-      shared.mainButton, self.anchor, 0, 0);
+  shared.buttonContainer:SetPoint(self.containerAnchor,
+      shared.mainButton, self.containerAnchor, 0, 0);
 end
 
 function Layout:updateButtonContainer ()
@@ -137,7 +137,7 @@ function Layout:anchorButton (button, rowIndex, columnIndex)
 
   -- using center anchor to keep buttons of different sizes aligned
   setFrameEffectiveAnchor(button, anchors.CENTER, shared.mainButton,
-    self.relativeAnchor, xOffset + constants.BUTTON_OFFSET_X,
+    self.buttonAnchor, xOffset + constants.BUTTON_OFFSET_X,
         yOffset + constants.BUTTON_OFFSET_Y);
 end
 
@@ -219,8 +219,8 @@ function VerticalLayout:calculateMainButtonSize ()
 end
 
 local LeftDownLayout = Mixin({
-  relativeAnchor = anchors.TOPLEFT,
-  anchor = anchors.TOPRIGHT,
+  buttonAnchor = anchors.TOPLEFT,
+  containerAnchor = anchors.TOPRIGHT,
 }, HorizontalLayout);
 
 function LeftDownLayout:calculateButtonOffsets (rowIndex, columnIndex)
@@ -231,8 +231,8 @@ function LeftDownLayout:calculateButtonOffsets (rowIndex, columnIndex)
 end
 
 local LeftUpLayout = Mixin({
-  relativeAnchor = anchors.BOTTOMLEFT,
-  anchor = anchors.BOTTOMRIGHT,
+  buttonAnchor = anchors.BOTTOMLEFT,
+  containerAnchor = anchors.BOTTOMRIGHT,
 }, HorizontalLayout);
 
 function LeftUpLayout:calculateButtonOffsets (rowIndex, columnIndex)
@@ -243,8 +243,8 @@ function LeftUpLayout:calculateButtonOffsets (rowIndex, columnIndex)
 end
 
 local RightDownLayout = Mixin({
-  relativeAnchor = anchors.TOPRIGHT,
-  anchor = anchors.TOPLEFT,
+  buttonAnchor = anchors.TOPRIGHT,
+  containerAnchor = anchors.TOPLEFT,
 }, HorizontalLayout);
 
 function RightDownLayout:calculateButtonOffsets (rowIndex, columnIndex)
@@ -255,8 +255,8 @@ function RightDownLayout:calculateButtonOffsets (rowIndex, columnIndex)
 end
 
 local RightUpLayout = Mixin({
-  relativeAnchor = anchors.BOTTOMRIGHT,
-  anchor = anchors.BOTTOMLEFT,
+  buttonAnchor = anchors.BOTTOMRIGHT,
+  containerAnchor = anchors.BOTTOMLEFT,
 }, HorizontalLayout);
 
 function RightUpLayout:calculateButtonOffsets (rowIndex, columnIndex)
@@ -267,8 +267,8 @@ function RightUpLayout:calculateButtonOffsets (rowIndex, columnIndex)
 end
 
 local UpLeftLayout = Mixin({
-  relativeAnchor = anchors.TOPRIGHT,
-  anchor = anchors.BOTTOMRIGHT,
+  buttonAnchor = anchors.TOPRIGHT,
+  containerAnchor = anchors.BOTTOMRIGHT,
 }, VerticalLayout);
 
 function UpLeftLayout:calculateButtonOffsets (rowIndex, columnIndex)
@@ -279,8 +279,8 @@ function UpLeftLayout:calculateButtonOffsets (rowIndex, columnIndex)
 end
 
 local UpRightLayout = Mixin({
-  relativeAnchor = anchors.TOPLEFT,
-  anchor = anchors.BOTTOMLEFT,
+  buttonAnchor = anchors.TOPLEFT,
+  containerAnchor = anchors.BOTTOMLEFT,
 }, VerticalLayout);
 
 function UpRightLayout:calculateButtonOffsets (rowIndex, columnIndex)
@@ -291,8 +291,8 @@ function UpRightLayout:calculateButtonOffsets (rowIndex, columnIndex)
 end
 
 local DownLeftLayout = Mixin({
-  relativeAnchor = anchors.BOTTOMRIGHT,
-  anchor = anchors.TOPRIGHT,
+  buttonAnchor = anchors.BOTTOMRIGHT,
+  containerAnchor = anchors.TOPRIGHT,
 }, VerticalLayout);
 
 function DownLeftLayout:calculateButtonOffsets (rowIndex, columnIndex)
@@ -303,8 +303,8 @@ function DownLeftLayout:calculateButtonOffsets (rowIndex, columnIndex)
 end
 
 local DownRightLayout = Mixin({
-  relativeAnchor = anchors.BOTTOMLEFT,
-  anchor = anchors.TOPLEFT,
+  buttonAnchor = anchors.BOTTOMLEFT,
+  containerAnchor = anchors.TOPLEFT,
 }, VerticalLayout);
 
 function DownRightLayout:calculateButtonOffsets (rowIndex, columnIndex)
