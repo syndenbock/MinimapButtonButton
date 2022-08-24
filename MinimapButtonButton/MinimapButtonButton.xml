@@ -1,5 +1,6 @@
 <UI>
   <include file="Core\Core.xml"/>
   <include file="Logic\Logic.xml"/>
+  <include file="Layouts\Layouts.xml"/>
   <include file="Skins\Skins.xml"/>
 </UI>
