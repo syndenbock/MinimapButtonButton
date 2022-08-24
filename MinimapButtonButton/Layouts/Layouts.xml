@@ -1,4 +1,5 @@
 <UI>
-  <script file="Base.lua"/>
+  <script file="Main.lua"/>
+  <script file="LayoutBase.lua"/>
   <script file="Gridlayouts.lua"/>
 </UI>

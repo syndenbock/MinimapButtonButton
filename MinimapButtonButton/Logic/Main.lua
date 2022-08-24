@@ -1,8 +1,8 @@
 local addonName, addon = ...;
 
-local tinsert = _G.tinsert;
-local strmatch = _G.strmatch;
 local sort = _G.sort;
+local strmatch = _G.strmatch;
+local tinsert = _G.tinsert;
 local executeAfter = _G.C_Timer.After;
 local hooksecurefunc = _G.hooksecurefunc;
 local IsAltKeyDown = _G.IsAltKeyDown;
@@ -202,6 +202,7 @@ end
 local function initMainButton ()
   mainButton = _G.CreateFrame('Frame', addonName .. 'Button', _G.UIParent,
       _G.BackdropTemplateMixin and 'BackdropTemplate');
+  mainButton:SetClampedToScreen(true);
   mainButton:SetParent(mainFrame);
   mainButton:SetPoint(anchors.CENTER, mainFrame, anchors.CENTER, 0, 0);
   mainButton:SetFrameLevel(constants.FRAME_LEVEL + 1);
