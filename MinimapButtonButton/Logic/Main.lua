@@ -17,7 +17,6 @@ local ONMOUSEUP = 'OnMouseUp';
 local constants = addon.constants;
 local anchors = constants.anchors;
 
-local mainFrame;
 local buttonContainer;
 local mainButton;
 local logo;
@@ -160,61 +159,52 @@ local function toggleButtons ()
 end
 
 local function setDefaultPosition ()
-  mainFrame:ClearAllPoints();
-  mainFrame:SetPoint(anchors.CENTER, _G.UIParent, anchors.CENTER, 0, 0);
+  mainButton:ClearAllPoints();
+  mainButton:SetPoint(anchors.CENTER, _G.UIParent, anchors.CENTER, 0, 0);
 end
 
-local function storeMainFramePosition ()
-  addon.options.position = {mainFrame:GetPoint()};
+local function storeMainButtonPosition ()
+  addon.options.position = {mainButton:GetPoint()};
 end
 
-local function stopMovingMainFrame ()
-  mainFrame:SetScript(ONMOUSEUP, nil);
-  mainFrame:SetMovable(false);
-  mainFrame:StopMovingOrSizing();
-  storeMainFramePosition();
+local function stopMovingMainButton ()
+  mainButton:SetScript(ONMOUSEUP, nil);
+  mainButton:SetMovable(false);
+  mainButton:StopMovingOrSizing();
+  storeMainButtonPosition();
 end
 
-local function moveMainFrame ()
-  mainButton:SetScript(ONMOUSEUP, stopMovingMainFrame);
-  mainFrame:SetMovable(true);
-  mainFrame:StartMoving();
-end
-
-local function initMainFrame ()
-  mainFrame = _G.CreateFrame('Frame', addonName .. 'Frame');
-  mainFrame:SetParent(_G.UIParent);
-  mainFrame:SetFrameStrata(constants.FRAME_STRATA);
-  mainFrame:SetFrameLevel(constants.FRAME_LEVEL);
-  mainFrame:SetSize(1, 1);
-  setDefaultPosition();
-  mainFrame:SetClampedToScreen(true);
-end
-
-local function initButtonContainer ()
-  buttonContainer = _G.CreateFrame('Frame', nil, _G.UIParent,
-    _G.BackdropTemplateMixin and 'BackdropTemplate');
-  buttonContainer:SetParent(mainFrame);
-  buttonContainer:SetFrameLevel(constants.FRAME_LEVEL);
-  buttonContainer:Hide();
+local function moveMainButton ()
+  mainButton:SetScript(ONMOUSEUP, stopMovingMainButton);
+  mainButton:SetMovable(true);
+  mainButton:StartMoving();
 end
 
 local function initMainButton ()
   mainButton = _G.CreateFrame('Frame', addonName .. 'Button', _G.UIParent,
       _G.BackdropTemplateMixin and 'BackdropTemplate');
+  mainButton:SetParent(_G.UIParent);
+  mainButton:SetFrameStrata(constants.FRAME_STRATA);
+  mainButton:SetFrameLevel(constants.FRAME_LEVEL);
+  setDefaultPosition();
   mainButton:SetClampedToScreen(true);
-  mainButton:SetParent(mainFrame);
-  mainButton:SetPoint(anchors.CENTER, mainFrame, anchors.CENTER, 0, 0);
-  mainButton:SetFrameLevel(constants.FRAME_LEVEL + 1);
   mainButton:Show();
 
   mainButton:SetScript('OnMouseDown', function (_, button)
     if (button == MIDDLEBUTTON or IsAltKeyDown()) then
-      moveMainFrame();
+      moveMainButton();
     elseif (button == LEFTBUTTON) then
       toggleButtons();
     end
   end);
+end
+
+local function initButtonContainer ()
+  buttonContainer = _G.CreateFrame('Frame', nil, _G.UIParent,
+    _G.BackdropTemplateMixin and 'BackdropTemplate');
+  buttonContainer:SetParent(mainButton);
+  buttonContainer:SetFrameLevel(constants.FRAME_LEVEL);
+  buttonContainer:Hide();
 end
 
 local function initLogo ()
@@ -227,9 +217,8 @@ local function initLogo ()
 end
 
 local function initFrames ()
-  initMainFrame();
-  initButtonContainer();
   initMainButton();
+  initButtonContainer();
   initLogo();
 end
 
@@ -240,13 +229,13 @@ initFrames();
 --##############################################################################
 
 local function applyScale ()
-  mainFrame:SetScale(addon.options.scale);
+  mainButton:SetScale(addon.options.scale);
 end
 
 local function restoreOptions ()
   if (addon.options.position ~= nil) then
-    mainFrame:ClearAllPoints();
-    mainFrame:SetPoint(unpack(addon.options.position));
+    mainButton:ClearAllPoints();
+    mainButton:SetPoint(unpack(addon.options.position));
   end
 
   applyScale();
@@ -308,7 +297,6 @@ addon.slash('reset', setDefaultPosition);
 --##############################################################################
 
 addon.shared = {
-  mainFrame = mainFrame,
   buttonContainer = buttonContainer,
   mainButton = mainButton,
   logo = logo,
