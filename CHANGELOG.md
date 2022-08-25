@@ -1,2 +1,3 @@
-- ElvUI skin is now only enabled if Blizzard skins are enabled in ElvUI
-- Updated interface version for 9.2.5
+- Reworked layouting code to allow easy implementing of new layouts
+- Added russian title text
+- Slightly updated default and ElvUI skins
