@@ -88,6 +88,8 @@ function GridLayout:anchorDisplayedButtons ()
 end
 
 function GridLayout:anchorButton (button, row, column)
+  -- Anchoring the center of each button to keep buttons of different sizes
+  -- aligned.
   self:setFrameEffectiveAnchor(button, anchors.CENTER, shared.buttonContainer,
       self:getButtonAnchor(row, column));
 end
