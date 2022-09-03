@@ -1,3 +1,1 @@
-- Reworked layouting code to allow easy implementing of new layouts
-- Added russian title text
-- Slightly updated default and ElvUI skins
+- Added interface version for Wrath Classic
