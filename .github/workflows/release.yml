@@ -34,3 +34,5 @@ jobs:
       # Release package
       - name: Release Retail
         uses: BigWigsMods/packager@v2
+        with:
+          args: -S
