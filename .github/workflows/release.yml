@@ -31,18 +31,6 @@ jobs:
         uses: actions/checkout@v1  # note: checkout@v2 breaks git history, so generating a changelog and
                                    # file naming for non-tagged builds will not work properly
 
-      # Release retail
+      # Release package
       - name: Release Retail
-        uses: BigWigsMods/packager@master
-
-      # Release Classic
-      - name: Release Classic
-        uses: BigWigsMods/packager@master
-        with:
-          args: -g classic
-
-      # Release BCC
-      - name: Release BCC
-        uses: BigWigsMods/packager@master
-        with:
-          args: -g bcc
+        uses: BigWigsMods/packager@v2
