@@ -3,6 +3,9 @@ local _, addon = ...;
 local max = _G.max;
 local Mixin = _G.Mixin;
 
+local ClearAllPoints = _G.UIParent.ClearAllPoints;
+local SetPoint = _G.UIParent.SetPoint;
+
 local shared = addon.shared;
 
 local Layout = {};
@@ -66,7 +69,9 @@ function Layout:setButtonContainerSize (width, height)
 end
 
 function Layout:setFrameEffectiveAnchor (frame, anchor, parent, parentAnchor, x, y)
-  frame:ClearAllPoints();
-  frame:SetPoint(anchor, parent, parentAnchor, x / frame:GetScale(),
+  -- Using deferred methods here because we have overriden the collected buttons
+  -- methods to prevent other addons from moving them
+  ClearAllPoints(frame);
+  SetPoint(frame, anchor, parent, parentAnchor, x / frame:GetScale(),
       y / frame:GetScale());
 end
