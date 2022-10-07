@@ -1,1 +1,1 @@
-- Added interface version for Wrath Classic
+- Try to prevent other addons from re-moving collected buttons
