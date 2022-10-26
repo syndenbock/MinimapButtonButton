@@ -72,10 +72,11 @@ local function isMinimapButton (frame)
 
   local patterns = {
     '^LibDBIcon10_',
-    'MinimapButton$',
-    'MinimapFrame$',
-    'MinimapIcon$',
-    '[-_]Minimap$',
+    'MinimapButton',
+    'MinimapFrame',
+    'MinimapIcon',
+    '[-_]Minimap[-_]',
+    'Minimap$',
   };
 
   for _, pattern in ipairs(patterns) do
