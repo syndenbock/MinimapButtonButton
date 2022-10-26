@@ -1,1 +1,1 @@
-- Fixed compatibility with Retail 10.0
+- (Hopefully) fixed some buttons no longer being automatically collected
