@@ -1,1 +1,1 @@
-- (Hopefully) fixed some buttons no longer being automatically collected
+- Ensure manually collected buttons are actual frames
