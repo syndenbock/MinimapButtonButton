@@ -1,1 +1,1 @@
-- Try to prevent other addons from re-moving collected buttons
+- Fixed compatibility with Retail 10.0
