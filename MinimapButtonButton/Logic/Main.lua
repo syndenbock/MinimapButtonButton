@@ -209,7 +209,7 @@ local function initButtonContainer ()
 end
 
 local function initLogo ()
-  logo = mainButton:CreateTexture(nil, constants.FRAME_STRATA);
+  logo = mainButton:CreateTexture(nil, 'ARTWORK');
   logo:SetTexture('Interface\\AddOns\\' .. addonName ..
       '\\Media\\Logo.blp');
 
