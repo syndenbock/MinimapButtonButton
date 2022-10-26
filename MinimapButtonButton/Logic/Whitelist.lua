@@ -15,6 +15,11 @@ addon.slash('include', function (...)
     return;
   end
 
+  if (not addon.isValidFrame(_G[buttonName])) then
+    addon.printAddonMessage(format('"%s" is not a valid frame.', buttonName));
+    return;
+  end
+
   addon.options.whitelist[buttonName] = true;
   addon.collectMinimapButtonsAndUpdateLayout();
 

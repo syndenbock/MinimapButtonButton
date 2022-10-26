@@ -108,10 +108,22 @@ local function scanMinimapChildren ()
   end
 end
 
+local function isValidFrame (frame)
+  if (type(frame) ~= 'table') then
+    return false;
+  end
+
+  if (not frame.IsObjectType or not frame:IsObjectType('Frame')) then
+    return false;
+  end
+
+  return true;
+end
+
 local function scanButtonByName (buttonName)
   local button = _G[buttonName];
 
-  if (button ~= nil and not isButtonCollected(button)) then
+  if (isValidFrame(button) and not isButtonCollected(button)) then
     collectMinimapButton(button);
   end
 end
@@ -308,3 +320,4 @@ addon.shared = {
 addon.applyScale = applyScale;
 addon.collectMinimapButtonsAndUpdateLayout =
     collectMinimapButtonsAndUpdateLayout;
+addon.isValidFrame = isValidFrame;
