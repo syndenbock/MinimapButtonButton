@@ -49,6 +49,14 @@ function Layout:getMaximumButtonDimensions ()
     maxHeight = max(maxHeight, self:getFrameEffectiveHeight(button));
   end);
 
+  if (maxWidth == 0) then
+    maxWidth = addon.constants.MAINBUTTON_MIN_SIZE;
+  end
+
+  if (maxHeight == 0) then
+    maxHeight = addon.constants.MAINBUTTON_MIN_SIZE;
+  end
+
   return maxWidth, maxHeight;
 end
 

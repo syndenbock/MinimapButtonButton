@@ -15,7 +15,6 @@ function GridLayout:updateLayout ()
   self:updateButtonSizes();
   self:updateMainButton();
   self:updateButtonContainer();
-  -- TODO you were here
   self:anchorDisplayedButtons();
 end
 
