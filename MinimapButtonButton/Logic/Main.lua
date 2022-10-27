@@ -42,6 +42,7 @@ local function collectMinimapButton (button)
   button:SetFrameStrata(constants.FRAME_STRATA);
   button:SetScript('OnDragStart', nil);
   button:SetScript('OnDragStop', nil);
+  button:SetIgnoreParentScale(false);
 
   -- Hook the function on the frame itself instead of setting a script handler
   -- to execute only when the function is called and not when the frame changes
