@@ -1,1 +1,1 @@
-- Ensure manually collected buttons are actual frames
+- Make collected buttons not ignore their parents scale
