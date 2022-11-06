@@ -1,1 +1,1 @@
-- Make collected buttons not ignore their parents scale
+- Ignore frames whose names end with a number
