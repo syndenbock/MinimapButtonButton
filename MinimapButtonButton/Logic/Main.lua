@@ -60,17 +60,11 @@ local function collectMinimapButton (button)
   collectedButtonMap[button] = true;
 end
 
-local function isMinimapButton (frame)
-  local frameName = addon.getFrameName(frame);
+local function nameEndsWithNumber (frameName)
+  return (strmatch(frameName, '%d$') ~= nil);
+end
 
-  if (not frameName) then
-    return false;
-  end;
-
-  if (issecurevariable(frameName)) then
-    return false;
-  end
-
+local function nameMatchesButtonPattern (frameName)
   local patterns = {
     '^LibDBIcon10_',
     'MinimapButton',
@@ -87,6 +81,24 @@ local function isMinimapButton (frame)
   end
 
   return false;
+end
+
+local function isMinimapButton (frame)
+  local frameName = addon.getFrameName(frame);
+
+  if (not frameName) then
+    return false;
+  end;
+
+  if (issecurevariable(frameName)) then
+    return false;
+  end
+
+  if (nameEndsWithNumber(frameName)) then
+    return false;
+  end
+
+  return (nameMatchesButtonPattern(frameName));
 end
 
 local function isButtonCollected (button)
