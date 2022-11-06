@@ -260,7 +260,12 @@ local function applyScale ()
 end
 
 local function restoreOptions ()
-  if (addon.options.position ~= nil) then
+  if (addon.options.position == nil) then
+    addon.createTooltip(mainButton, {
+      'You can drag the button using the middle mouse button',
+      'or any mouse button while holding ALT.'
+    });
+  else
     mainButton:ClearAllPoints();
     mainButton:SetPoint(unpack(addon.options.position));
   end
