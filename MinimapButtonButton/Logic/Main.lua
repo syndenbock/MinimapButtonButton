@@ -113,6 +113,7 @@ end
 
 local function nameMatchesButtonPattern (frameName)
   local patterns = {
+    '^LibDBIcon10_', -- keep this in, some buttons are manually named to be detected
     'MinimapButton',
     'MinimapFrame',
     'MinimapIcon',
