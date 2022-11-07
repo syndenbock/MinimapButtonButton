@@ -64,6 +64,23 @@ local function isButtonCollected (button)
   return (collectedButtonMap[button] ~= nil);
 end
 
+local function collectLibDBIconButtons ()
+  local LibStub = _G.LibStub;
+  local LibDBIconStub = LibStub and LibStub('LibDBIcon-1.0');
+
+  if (not LibDBIconStub) then
+    return;
+  end
+
+  for _, buttonName in ipairs(LibDBIconStub:GetButtonList()) do
+    local button = LibDBIconStub:GetMinimapButton(buttonName);
+
+    if (not addon.isButtonBlacklisted(button) and not isButtonCollected(button)) then
+      collectMinimapButton(button);
+    end
+  end
+end
+
 local function isValidFrame (frame)
   if (type(frame) ~= 'table') then
     return false;
@@ -96,7 +113,6 @@ end
 
 local function nameMatchesButtonPattern (frameName)
   local patterns = {
-    '^LibDBIcon10_',
     'MinimapButton',
     'MinimapFrame',
     'MinimapIcon',
@@ -156,6 +172,7 @@ end
 local function collectMinimapButtons ()
   local previousCount = #collectedButtons;
 
+  collectLibDBIconButtons();
   collectWhitelistedButtons();
   scanMinimapChildren();
 
