@@ -60,6 +60,36 @@ local function collectMinimapButton (button)
   collectedButtonMap[button] = true;
 end
 
+local function isButtonCollected (button)
+  return (collectedButtonMap[button] ~= nil);
+end
+
+local function isValidFrame (frame)
+  if (type(frame) ~= 'table') then
+    return false;
+  end
+
+  if (not frame.IsObjectType or not frame:IsObjectType('Frame')) then
+    return false;
+  end
+
+  return true;
+end
+
+local function scanButtonByName (buttonName)
+  local button = _G[buttonName];
+
+  if (isValidFrame(button) and not isButtonCollected(button)) then
+    collectMinimapButton(button);
+  end
+end
+
+local function collectWhitelistedButtons ()
+  for buttonName in pairs(addon.options.whitelist) do
+    scanButtonByName(buttonName);
+  end
+end
+
 local function nameEndsWithNumber (frameName)
   return (strmatch(frameName, '%d$') ~= nil);
 end
@@ -101,10 +131,6 @@ local function isMinimapButton (frame)
   return (nameMatchesButtonPattern(frameName));
 end
 
-local function isButtonCollected (button)
-  return (collectedButtonMap[button] ~= nil);
-end
-
 local function shouldButtonBeCollected (button)
   if (isButtonCollected(button) or addon.isButtonBlacklisted(button)) then
     return false;
@@ -121,32 +147,6 @@ local function scanMinimapChildren ()
   end
 end
 
-local function isValidFrame (frame)
-  if (type(frame) ~= 'table') then
-    return false;
-  end
-
-  if (not frame.IsObjectType or not frame:IsObjectType('Frame')) then
-    return false;
-  end
-
-  return true;
-end
-
-local function scanButtonByName (buttonName)
-  local button = _G[buttonName];
-
-  if (isValidFrame(button) and not isButtonCollected(button)) then
-    collectMinimapButton(button);
-  end
-end
-
-local function collectWhitelistedButtons ()
-  for buttonName in pairs(addon.options.whitelist) do
-    scanButtonByName(buttonName);
-  end
-end
-
 local function sortCollectedButtons ()
   sort(collectedButtons, function (a, b)
     return a:GetName() < b:GetName();
@@ -156,8 +156,8 @@ end
 local function collectMinimapButtons ()
   local previousCount = #collectedButtons;
 
-  scanMinimapChildren();
   collectWhitelistedButtons();
+  scanMinimapChildren();
 
   if (#collectedButtons > previousCount) then
     sortCollectedButtons();
