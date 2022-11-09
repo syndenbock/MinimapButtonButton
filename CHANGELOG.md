@@ -1,2 +1,1 @@
-- Use LibDBIcon to reliably detect more buttons
-- Display tooltip about how the frame can be moved until it has been manually moved
+- Buttons are now rescanned one second after logging in to pick up special candidates like Questie
