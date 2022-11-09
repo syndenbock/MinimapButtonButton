@@ -304,9 +304,11 @@ addon.registerEvent('PLAYER_LOGIN', function ()
   --[[ executing on next frame to wait for addons that create minimap buttons
        on PLAYER_LOGIN ]]
   executeAfter(0, init);
-
+  -- rescanning buttons after a second for special candidates like Questie
+  executeAfter(1, collectMinimapButtonsAndUpdateLayout);
   return true;
 end);
+
 
 --##############################################################################
 -- slash commands
