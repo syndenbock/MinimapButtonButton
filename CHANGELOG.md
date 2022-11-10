@@ -1,1 +1,1 @@
-- Buttons are now rescanned one second after logging in to pick up special candidates like Questie
+- Filter excessive Show/Hide calls on collected buttons to reduce the cpu impact of improperly implemented minimap buttons
