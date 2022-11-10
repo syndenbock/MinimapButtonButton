@@ -35,6 +35,15 @@ end
 
 local function doNothing () end
 
+local function updateLayoutIfVisibilityChanged (frame)
+  local visibility = frame:IsShown();
+
+  if (collectedButtonMap[frame] ~= visibility) then
+    collectedButtonMap[frame] = visibility;
+    addon.updateLayout();
+  end
+end
+
 local function collectMinimapButton (button)
   -- print('collecting button:', button:GetName());
 
@@ -47,17 +56,18 @@ local function collectMinimapButton (button)
   -- Hook the function on the frame itself instead of setting a script handler
   -- to execute only when the function is called and not when the frame changes
   -- visibility because the parent gets shown/hidden
-  hooksecurefunc(button, 'Show', addon.updateLayout);
-  hooksecurefunc(button, 'Hide', addon.updateLayout);
-  hooksecurefunc(button, 'SetParent', setButtonParent);
+  hooksecurefunc(button, 'Show', updateLayoutIfVisibilityChanged);
+  hooksecurefunc(button, 'Hide', updateLayoutIfVisibilityChanged);
+
   -- There's still a ton of addons being coded like hot garbage moving their
   -- buttons on every single frame so to prevent a billion comments stating that
   -- MBB is apparently incompatible, we try to block moving the frame
   button.ClearAllPoints = doNothing;
   button.SetPoint = doNothing;
+  button.SetParent = doNothing;
 
   tinsert(collectedButtons, button);
-  collectedButtonMap[button] = true;
+  collectedButtonMap[button] = button:IsShown();
 end
 
 local function isButtonCollected (button)
