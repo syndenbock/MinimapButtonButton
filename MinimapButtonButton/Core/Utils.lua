@@ -1,5 +1,7 @@
 local addonName, addon = ...;
 
+local module = addon.export('Core/Utils', {});
+
 local strconcat = _G.strconcat;
 local strjoin = _G.strjoin;
 
@@ -29,8 +31,8 @@ local function getUnitColor (unit)
   return color.r, color.g, color.b, 1;
 end
 
-addon.printAddonMessage = printAddonMessage;
-addon.printReloadMessage = printReloadMessage;
-addon.getFrameName = getFrameName;
-addon.concatButtonName = concatButtonName;
-addon.getUnitColor = getUnitColor;
+module.printAddonMessage = printAddonMessage;
+module.printReloadMessage = printReloadMessage;
+module.getFrameName = getFrameName;
+module.concatButtonName = concatButtonName;
+module.getUnitColor = getUnitColor;

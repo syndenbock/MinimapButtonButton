@@ -4,6 +4,8 @@ local strsplit = _G.strsplit;
 local tremove = _G.tremove;
 local unpack = _G.unpack;
 
+local module = addon.export('Core/SlashCommands', {});
+
 local slashCommands = {};
 local handlerCount = 0;
 
@@ -41,9 +43,9 @@ addHandlerName(addonName);
 -- public methods
 --##############################################################################
 
-addon.addSlashHandlerName = addHandlerName;
+module.addHandlerName = addHandlerName;
 
-function addon.slash (command, callback)
+function module.addCommand (command, callback)
   assert(slashCommands[command] == nil,
       addonName .. ': slash handler already exists for ' .. command);
 

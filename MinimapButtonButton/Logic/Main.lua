@@ -8,14 +8,21 @@ local hooksecurefunc = _G.hooksecurefunc;
 local IsAltKeyDown = _G.IsAltKeyDown;
 local issecurevariable = _G.issecurevariable;
 
+local Constants = addon.import('Logic/Constants');
+local SlashCommands = addon.import('Core/SlashCommands');
+local Utils = addon.import('Core/Utils');
+
+local anchors = Constants.anchors;
+
 local Minimap = _G.Minimap;
 
 local LEFTBUTTON = 'LeftButton';
 local MIDDLEBUTTON = 'MiddleButton';
 local ONMOUSEUP = 'OnMouseUp';
 
-local constants = addon.constants;
-local anchors = constants.anchors;
+local Layout;
+local Blacklist;
+local options;
 
 local buttonContainer;
 local mainButton;
@@ -27,12 +34,6 @@ local collectedButtons = {};
 -- minimap button collecting
 --##############################################################################
 
-local function setButtonParent (button, parent)
-  if (parent ~= buttonContainer) then
-    button:SetParent(buttonContainer);
-  end
-end
-
 local function doNothing () end
 
 local function updateLayoutIfVisibilityChanged (frame)
@@ -40,7 +41,7 @@ local function updateLayoutIfVisibilityChanged (frame)
 
   if (collectedButtonMap[frame] ~= visibility) then
     collectedButtonMap[frame] = visibility;
-    addon.updateLayout();
+    Layout.updateLayout();
   end
 end
 
@@ -48,7 +49,7 @@ local function collectMinimapButton (button)
   -- print('collecting button:', button:GetName());
 
   button:SetParent(buttonContainer);
-  button:SetFrameStrata(constants.FRAME_STRATA);
+  button:SetFrameStrata(Constants.FRAME_STRATA);
   button:SetScript('OnDragStart', nil);
   button:SetScript('OnDragStop', nil);
   button:SetIgnoreParentScale(false);
@@ -85,7 +86,8 @@ local function collectLibDBIconButtons ()
   for _, buttonName in ipairs(LibDBIconStub:GetButtonList()) do
     local button = LibDBIconStub:GetMinimapButton(buttonName);
 
-    if (not addon.isButtonBlacklisted(button) and not isButtonCollected(button)) then
+    if (not isButtonCollected(button) and
+        not Blacklist.isButtonBlacklisted(button)) then
       collectMinimapButton(button);
     end
   end
@@ -112,7 +114,7 @@ local function scanButtonByName (buttonName)
 end
 
 local function collectWhitelistedButtons ()
-  for buttonName in pairs(addon.options.whitelist) do
+  for buttonName in pairs(options.whitelist) do
     scanButtonByName(buttonName);
   end
 end
@@ -141,7 +143,7 @@ local function nameMatchesButtonPattern (frameName)
 end
 
 local function isMinimapButton (frame)
-  local frameName = addon.getFrameName(frame);
+  local frameName = Utils.getFrameName(frame);
 
   if (not frameName) then
     return false;
@@ -159,7 +161,8 @@ local function isMinimapButton (frame)
 end
 
 local function shouldButtonBeCollected (button)
-  if (isButtonCollected(button) or addon.isButtonBlacklisted(button)) then
+  if (isButtonCollected(button) or
+      Blacklist.isButtonBlacklisted(button)) then
     return false;
   end
 
@@ -194,7 +197,7 @@ end
 
 local function collectMinimapButtonsAndUpdateLayout ()
   collectMinimapButtons();
-  addon.updateLayout();
+  Layout.updateLayout();
 end
 
 --##############################################################################
@@ -205,10 +208,10 @@ local function toggleButtons ()
   collectMinimapButtonsAndUpdateLayout();
 
   if (buttonContainer:IsShown()) then
-    addon.options.buttonsShown = false;
+    options.buttonsShown = false;
     buttonContainer:Hide();
   else
-    addon.options.buttonsShown = true;
+    options.buttonsShown = true;
     buttonContainer:Show();
   end
 end
@@ -219,7 +222,7 @@ local function setDefaultPosition ()
 end
 
 local function storeMainButtonPosition ()
-  addon.options.position = {mainButton:GetPoint()};
+  options.position = {mainButton:GetPoint()};
 end
 
 local function stopMovingMainButton ()
@@ -239,8 +242,8 @@ local function initMainButton ()
   mainButton = _G.CreateFrame('Frame', addonName .. 'Button', _G.UIParent,
       _G.BackdropTemplateMixin and 'BackdropTemplate');
   mainButton:SetParent(_G.UIParent);
-  mainButton:SetFrameStrata(constants.FRAME_STRATA);
-  mainButton:SetFrameLevel(constants.FRAME_LEVEL);
+  mainButton:SetFrameStrata(Constants.FRAME_STRATA);
+  mainButton:SetFrameLevel(Constants.FRAME_LEVEL);
   setDefaultPosition();
   mainButton:SetClampedToScreen(true);
   mainButton:Show();
@@ -258,7 +261,7 @@ local function initButtonContainer ()
   buttonContainer = _G.CreateFrame('Frame', nil, _G.UIParent,
     _G.BackdropTemplateMixin and 'BackdropTemplate');
   buttonContainer:SetParent(mainButton);
-  buttonContainer:SetFrameLevel(constants.FRAME_LEVEL);
+  buttonContainer:SetFrameLevel(Constants.FRAME_LEVEL);
   buttonContainer:Hide();
 end
 
@@ -268,7 +271,7 @@ local function initLogo ()
       '\\Media\\Logo.blp');
 
   logo:SetPoint(anchors.CENTER, mainButton, anchors.CENTER, 0, 0);
-  logo:SetSize(constants.LOGO_SIZE, constants.LOGO_SIZE);
+  logo:SetSize(Constants.LOGO_SIZE, Constants.LOGO_SIZE);
 end
 
 local function initFrames ()
@@ -284,33 +287,41 @@ initFrames();
 --##############################################################################
 
 local function applyScale ()
-  mainButton:SetScale(addon.options.scale);
+  mainButton:SetScale(options.scale);
 end
 
 local function restoreOptions ()
-  if (addon.options.position == nil) then
-    addon.createTooltip(mainButton, {
+  if (options.position == nil) then
+    addon.import('Core/Tooltip').createTooltip(mainButton, {
       'You can drag the button using the middle mouse button',
       'or any mouse button while holding ALT.'
     });
   else
     mainButton:ClearAllPoints();
-    mainButton:SetPoint(unpack(addon.options.position));
+    mainButton:SetPoint(unpack(options.position));
   end
 
   applyScale();
 
-  if (addon.options.buttonsShown == true) then
+  if (options.buttonsShown == true) then
     buttonContainer:Show();
   end
 end
 
+local function updateImports ()
+  -- Cannot be imported immediately because they are not registered yet
+  Layout = addon.import('Layouts/Main');
+  Blacklist = addon.import('Logic/Blacklist');
+  options = addon.import('Logic/Options').getAll();
+end
+
 local function init ()
+  updateImports();
   restoreOptions();
   collectMinimapButtonsAndUpdateLayout();
 end
 
-addon.registerEvent('PLAYER_LOGIN', function ()
+addon.import('Core/Events').registerEvent('PLAYER_LOGIN', function ()
   --[[ executing on next frame to wait for addons that create minimap buttons
        on PLAYER_LOGIN ]]
   executeAfter(0, init);
@@ -324,48 +335,46 @@ end);
 -- slash commands
 --##############################################################################
 
-addon.addSlashHandlerName('mbb');
+SlashCommands.addHandlerName('mbb');
 
 local function printButtonLists ()
-  addon.printAddonMessage('Buttons currently being collected:');
+  Utils.printAddonMessage('Buttons currently being collected:');
 
-  for _, button in pairs(addon.shared.collectedButtons) do
+  for _, button in pairs(collectedButtons) do
     print(button:GetName());
   end
 
-  if (next(addon.options.whitelist) ~= nil) then
-    addon.printAddonMessage('Buttons currently being manually collected:');
+  if (next(options.whitelist) ~= nil) then
+    Utils.printAddonMessage('Buttons currently being manually collected:');
 
-    for buttonName in pairs(addon.options.whitelist) do
+    for buttonName in pairs(options.whitelist) do
       print(buttonName);
     end
   end
 
-  if (next(addon.options.blacklist) ~= nil) then
-    addon.printAddonMessage('Buttons currently being ignored:');
+  if (next(options.blacklist) ~= nil) then
+    Utils.printAddonMessage('Buttons currently being ignored:');
 
-    for buttonName in pairs(addon.options.blacklist) do
+    for buttonName in pairs(options.blacklist) do
       print(buttonName);
     end
   end
 end
 
-addon.slash('list', printButtonLists);
-addon.slash('default', printButtonLists);
-addon.slash('reset', setDefaultPosition);
+SlashCommands.addCommand('list', printButtonLists);
+SlashCommands.addCommand('default', printButtonLists);
+SlashCommands.addCommand('reset', setDefaultPosition);
 
 --##############################################################################
 -- shared data
 --##############################################################################
 
-addon.shared = {
+addon.export('Logic/Main', {
   buttonContainer = buttonContainer,
   mainButton = mainButton,
   logo = logo,
   collectedButtons = collectedButtons,
-};
-
-addon.applyScale = applyScale;
-addon.collectMinimapButtonsAndUpdateLayout =
-    collectMinimapButtonsAndUpdateLayout;
-addon.isValidFrame = isValidFrame;
+  applyScale = applyScale,
+  collectMinimapButtonsAndUpdateLayout = collectMinimapButtonsAndUpdateLayout,
+  isValidFrame = isValidFrame,
+});

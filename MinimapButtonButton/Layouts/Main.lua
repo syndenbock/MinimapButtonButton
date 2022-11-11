@@ -2,7 +2,7 @@ local _, addon = ...;
 
 local strlower = _G.strlower;
 
-addon.shared.Layouts = {};
+local module = addon.export('Layouts/Main', {});
 
 local currentLayout = nil;
 local availableLayouts = {};
@@ -22,7 +22,7 @@ local function updateLayout ()
   end
 end
 
-function addon.registerLayout (name, mixin)
+function module.registerLayout (name, mixin)
   name = strlower(name);
   assert(availableLayouts[name] == nil,
       'Layout with name ' .. name .. ' already exists.');
@@ -41,7 +41,7 @@ local function applyLayout (name)
   end
 end
 
-function addon.setEdgeOffsets (innerOffset, outerOffset)
+function module.setEdgeOffsets (innerOffset, outerOffset)
   innerOffset = innerOffset or 0;
   outerOffset = outerOffset or 0;
 
@@ -53,9 +53,9 @@ function addon.setEdgeOffsets (innerOffset, outerOffset)
   end
 end
 
-function addon.applyDefaultLayout ()
+function module.applyDefaultLayout ()
   assert(applyLayout('leftdown'), 'Default leftdown layout was not registered.');
 end
 
-addon.applyLayout = applyLayout;
-addon.updateLayout = updateLayout;
+module.applyLayout = applyLayout;
+module.updateLayout = updateLayout;

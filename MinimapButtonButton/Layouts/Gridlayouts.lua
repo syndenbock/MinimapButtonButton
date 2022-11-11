@@ -4,10 +4,12 @@ local ceil = _G.ceil;
 local min = _G.min;
 local CreateFromMixins = _G.CreateFromMixins;
 
-local constants = addon.constants;
-local anchors = constants.anchors;
-local shared = addon.shared;
-local Base = shared.Layouts.Base;
+local Constants = addon.import('Logic/Constants');
+local Main = addon.import('Logic/Main');
+local Layouts = addon.import('Layouts/Main');
+local Base = addon.import('Layouts/LayoutBase');
+local options = addon.import('Logic/Options').getAll();
+local anchors = Constants.anchors;
 
 local GridLayout = CreateFromMixins(Base);
 
@@ -39,16 +41,16 @@ function GridLayout:calculateButtonAreaDimension (buttonDimension, buttonCount)
 
   if (buttonCount > 1) then
     dimension = dimension + (buttonCount - 1) *
-        (buttonDimension + constants.BUTTON_SPACING);
+        (buttonDimension + Constants.BUTTON_SPACING);
   end
 
   return dimension;
 end
 
 function GridLayout:enforceMainButtonBoundaries (dimension)
-  if (dimension < constants.MAINBUTTON_MIN_SIZE or
-      dimension > constants.MAINBUTTON_MAX_SIZE) then
-    return constants.MAINBUTTON_DEFAULT_SIZE;
+  if (dimension < Constants.MAINBUTTON_MIN_SIZE or
+      dimension > Constants.MAINBUTTON_MAX_SIZE) then
+    return Constants.MAINBUTTON_DEFAULT_SIZE;
   end
 
   return dimension;
@@ -71,7 +73,7 @@ function GridLayout:calculateButtonContainerSize ()
 end
 
 function GridLayout:anchorDisplayedButtons ()
-  local buttonsPerRow = addon.options.buttonsPerRow;
+  local buttonsPerRow = options.buttonsPerRow;
   local row = 0;
   local column = 0;
 
@@ -89,17 +91,17 @@ end
 function GridLayout:anchorButton (button, row, column)
   -- Anchoring the center of each button to keep buttons of different sizes
   -- aligned.
-  self:setFrameEffectiveAnchor(button, anchors.CENTER, shared.buttonContainer,
+  self:setFrameEffectiveAnchor(button, anchors.CENTER, Main.buttonContainer,
       self:getButtonAnchor(row, column));
 end
 
 function GridLayout:calculateButtonXOffset (column)
-  return (self.buttonWidth + constants.BUTTON_SPACING) * column +
+  return (self.buttonWidth + Constants.BUTTON_SPACING) * column +
       self.options.innerOffset + self.buttonWidth / 2;
 end
 
 function GridLayout:calculateButtonYOffset (row)
-  return (self.buttonHeight + constants.BUTTON_SPACING) * row +
+  return (self.buttonHeight + Constants.BUTTON_SPACING) * row +
       self.options.innerOffset + self.buttonHeight / 2;
 end
 
@@ -118,8 +120,8 @@ end
 function HorizontalLayout:calculateGridSize ()
   local buttonCount = self:getShownButtonCount();
 
-  return min(buttonCount, addon.options.buttonsPerRow),
-      ceil(buttonCount / addon.options.buttonsPerRow);
+  return min(buttonCount, options.buttonsPerRow),
+      ceil(buttonCount / options.buttonsPerRow);
 end
 
 local VerticalLayout = CreateFromMixins(GridLayout);
@@ -133,8 +135,8 @@ end
 function VerticalLayout:calculateGridSize ()
   local buttonCount = self:getShownButtonCount();
 
-  return ceil(buttonCount / addon.options.buttonsPerRow),
-      min(buttonCount, addon.options.buttonsPerRow);
+  return ceil(buttonCount / options.buttonsPerRow),
+      min(buttonCount, options.buttonsPerRow);
 end
 
 --##############################################################################
@@ -144,8 +146,8 @@ end
 local LeftDownLayout = CreateFromMixins(HorizontalLayout);
 
 function LeftDownLayout:anchorButtonContainer ()
-  shared.buttonContainer:ClearAllPoints();
-  shared.buttonContainer:SetPoint(anchors.TOPRIGHT, shared.mainButton,
+  Main.buttonContainer:ClearAllPoints();
+  Main.buttonContainer:SetPoint(anchors.TOPRIGHT, Main.mainButton,
       anchors.TOPLEFT, -self.options.outerOffset, 0);
 end
 
@@ -154,13 +156,13 @@ function LeftDownLayout:getButtonAnchor (row, column)
       -self:calculateButtonYOffset(row);
 end
 
-addon.registerLayout('leftdown', LeftDownLayout);
+Layouts.registerLayout('leftdown', LeftDownLayout);
 
 local LeftUpLayout = CreateFromMixins(HorizontalLayout);
 
 function LeftUpLayout:anchorButtonContainer ()
-  shared.buttonContainer:ClearAllPoints();
-  shared.buttonContainer:SetPoint(anchors.BOTTOMRIGHT, shared.mainButton,
+  Main.buttonContainer:ClearAllPoints();
+  Main.buttonContainer:SetPoint(anchors.BOTTOMRIGHT, Main.mainButton,
       anchors.BOTTOMLEFT, -self.options.outerOffset, 0);
 end
 
@@ -169,13 +171,13 @@ function LeftUpLayout:getButtonAnchor (row, column)
       self:calculateButtonYOffset(row);
 end
 
-addon.registerLayout('leftup', LeftUpLayout);
+Layouts.registerLayout('leftup', LeftUpLayout);
 
 local RightDownLayout = CreateFromMixins(HorizontalLayout);
 
 function RightDownLayout:anchorButtonContainer ()
-  shared.buttonContainer:ClearAllPoints();
-  shared.buttonContainer:SetPoint(anchors.TOPLEFT, shared.mainButton,
+  Main.buttonContainer:ClearAllPoints();
+  Main.buttonContainer:SetPoint(anchors.TOPLEFT, Main.mainButton,
       anchors.TOPRIGHT, self.options.outerOffset, 0);
 end
 
@@ -184,13 +186,13 @@ function RightDownLayout:getButtonAnchor (row, column)
       -self:calculateButtonYOffset(row);
 end
 
-addon.registerLayout('rightdown', RightDownLayout);
+Layouts.registerLayout('rightdown', RightDownLayout);
 
 local RightUpLayout = CreateFromMixins(HorizontalLayout);
 
 function RightUpLayout:anchorButtonContainer ()
-  shared.buttonContainer:ClearAllPoints();
-  shared.buttonContainer:SetPoint(anchors.BOTTOMLEFT, shared.mainButton,
+  Main.buttonContainer:ClearAllPoints();
+  Main.buttonContainer:SetPoint(anchors.BOTTOMLEFT, Main.mainButton,
       anchors.BOTTOMRIGHT, self.options.outerOffset, 0);
 end
 
@@ -199,13 +201,13 @@ function RightUpLayout:getButtonAnchor (row, column)
       self:calculateButtonYOffset(row);
 end
 
-addon.registerLayout('rightup', RightUpLayout);
+Layouts.registerLayout('rightup', RightUpLayout);
 
 local UpLeftLayout = CreateFromMixins(VerticalLayout);
 
 function UpLeftLayout:anchorButtonContainer ()
-  shared.buttonContainer:ClearAllPoints();
-  shared.buttonContainer:SetPoint(anchors.BOTTOMRIGHT, shared.mainButton,
+  Main.buttonContainer:ClearAllPoints();
+  Main.buttonContainer:SetPoint(anchors.BOTTOMRIGHT, Main.mainButton,
       anchors.TOPRIGHT, 0, self.options.outerOffset);
 end
 
@@ -214,13 +216,13 @@ function UpLeftLayout:getButtonAnchor (row, column)
       self:calculateButtonYOffset(column);
 end
 
-addon.registerLayout('upleft', UpLeftLayout);
+Layouts.registerLayout('upleft', UpLeftLayout);
 
 local UpRightLayout = CreateFromMixins(VerticalLayout);
 
 function UpRightLayout:anchorButtonContainer ()
-  shared.buttonContainer:ClearAllPoints();
-  shared.buttonContainer:SetPoint(anchors.BOTTOMLEFT, shared.mainButton,
+  Main.buttonContainer:ClearAllPoints();
+  Main.buttonContainer:SetPoint(anchors.BOTTOMLEFT, Main.mainButton,
       anchors.TOPLEFT, 0, self.options.outerOffset);
 end
 
@@ -229,13 +231,13 @@ function UpRightLayout:getButtonAnchor (row, column)
       self:calculateButtonYOffset(column);
 end
 
-addon.registerLayout('upright', UpRightLayout);
+Layouts.registerLayout('upright', UpRightLayout);
 
 local DownLeftLayout = CreateFromMixins(VerticalLayout);
 
 function DownLeftLayout:anchorButtonContainer ()
-  shared.buttonContainer:ClearAllPoints();
-  shared.buttonContainer:SetPoint(anchors.TOPRIGHT, shared.mainButton,
+  Main.buttonContainer:ClearAllPoints();
+  Main.buttonContainer:SetPoint(anchors.TOPRIGHT, Main.mainButton,
       anchors.BOTTOMRIGHT, 0, -self.options.outerOffset);
 end
 
@@ -244,13 +246,13 @@ function DownLeftLayout:getButtonAnchor (row, column)
       -self:calculateButtonYOffset(column);
 end
 
-addon.registerLayout('downleft', DownLeftLayout);
+Layouts.registerLayout('downleft', DownLeftLayout);
 
 local DownRightLayout = CreateFromMixins(VerticalLayout);
 
 function DownRightLayout:anchorButtonContainer ()
-  shared.buttonContainer:ClearAllPoints();
-  shared.buttonContainer:SetPoint(anchors.TOPLEFT, shared.mainButton,
+  Main.buttonContainer:ClearAllPoints();
+  Main.buttonContainer:SetPoint(anchors.TOPLEFT, Main.mainButton,
       anchors.BOTTOMLEFT, 0, -self.options.outerOffset);
 end
 
@@ -259,4 +261,4 @@ function DownRightLayout:getButtonAnchor (row, column)
       -self:calculateButtonYOffset(column);
 end
 
-addon.registerLayout('downright', DownRightLayout);
+Layouts.registerLayout('downright', DownRightLayout);

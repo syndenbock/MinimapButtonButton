@@ -1,6 +1,6 @@
 local _, addon = ...;
 
-addon.constants = {
+addon.export('Logic/Constants', {
   anchors = {
     CENTER = 'CENTER',
     LEFT = 'LEFT',
@@ -22,4 +22,4 @@ addon.constants = {
   BUTTON_SPACING = 0,
   BUTTON_OFFSET_X = 0,
   BUTTON_OFFSET_Y = -1,
-};
+});

@@ -1,8 +1,7 @@
 local _, addon = ...;
 
-if (not _G.IsAddOnLoaded('Tukui') or addon.shared.skinned == true) then return end
-
-addon.shared.skinned = true;
+if (not _G.IsAddOnLoaded('Tukui') or
+    not addon.import('Skins/Main').reserveSkin()) then return end
 
 local function skinFrame (frame, config)
   local media = config.Medias;
@@ -23,14 +22,15 @@ local function skinFrame (frame, config)
   frame:SetBackdrop(backdrop);
   frame:SetBackdropColor(unpack(media.BackdropColor));
   frame:SetBackdropBorderColor(unpack(media.BorderColor));
-  addon.setEdgeOffsets(2, 0);
+  addon.import('Layouts/Main').setEdgeOffsets(2, 0);
 end
 
-addon.registerEvent('PLAYER_LOGIN', function ()
+addon.import('Core/Events').registerEvent('PLAYER_LOGIN', function ()
   local CONFIG = _G.Tukui[2];
+  local Main = addon.import('Logic/Main');
 
-  skinFrame(addon.shared.buttonContainer, CONFIG);
-  skinFrame(addon.shared.mainButton, CONFIG);
-  addon.shared.logo:SetVertexColor(unpack(CONFIG.Medias.BorderColor));
+  skinFrame(Main.buttonContainer, CONFIG);
+  skinFrame(Main.mainButton, CONFIG);
+  Main.logo:SetVertexColor(unpack(CONFIG.Medias.BorderColor));
   return true;
 end);

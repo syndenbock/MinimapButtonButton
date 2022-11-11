@@ -1,8 +1,7 @@
 local _, addon = ...;
 
-if (not _G.IsAddOnLoaded('ElvUI') or addon.shared.skinned == true) then return end
-
-addon.shared.skinned = true;
+if (not _G.IsAddOnLoaded('ElvUI') or
+    not addon.import('Skins/Main').reserveSkin()) then return end
 
 local function skinFrame (frame, engine)
   local media = engine.media;
@@ -22,10 +21,10 @@ local function skinFrame (frame, engine)
   frame:SetBackdrop(backdrop);
   frame:SetBackdropColor(unpack(media.backdropcolor));
   frame:SetBackdropBorderColor(unpack(media.bordercolor));
-  addon.setEdgeOffsets(2, -1);
+  addon.import('Layouts/Main').setEdgeOffsets(2, -1);
 end
 
-addon.registerEvent('PLAYER_LOGIN', function ()
+addon.import('Core/Events').registerEvent('PLAYER_LOGIN', function ()
   local ENGINE = _G.ElvUI[1];
 
   if (ENGINE.private.skins.blizzard.enable ~= true) then
@@ -33,9 +32,11 @@ addon.registerEvent('PLAYER_LOGIN', function ()
   end
 
   local function applySkin ()
-    skinFrame(addon.shared.buttonContainer, ENGINE);
-    skinFrame(addon.shared.mainButton, ENGINE);
-    addon.shared.logo:SetVertexColor(unpack(ENGINE.media.rgbvaluecolor));
+    local Main = addon.import('Logic/Main');
+
+    skinFrame(Main.buttonContainer, ENGINE);
+    skinFrame(Main.mainButton, ENGINE);
+    Main.logo:SetVertexColor(unpack(ENGINE.media.rgbvaluecolor));
   end
 
   applySkin();

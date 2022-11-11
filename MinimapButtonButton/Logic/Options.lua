@@ -1,8 +1,26 @@
 local addonName, addon = ...;
 
+local Events = addon.import('Core/Events');
+local Utils = addon.import('Core/Utils');
+
 local VERSION_COUNTER = 2;
 
-local function migrateOptions (options)
+local module = addon.export('Logic/Options', {});
+local options = {};
+
+function module.get (name)
+  return options[name];
+end
+
+function module.set (name, value)
+  options[name] = value;
+end
+
+function module.getAll ()
+  return options;
+end
+
+local function migrateOptions ()
   if (options.collectCovenantButton ~= nil) then
     if (options.collectCovenantButton == true) then
       options.whitelist['GarrisonLandingPageMinimapButton'] = true;
@@ -18,7 +36,15 @@ local function migrateOptions (options)
   end
 end
 
-local function setDefaultValues (options)
+local function checkValues (loadedValues, defaults)
+  for setting, defaultValue in pairs(defaults) do
+    if (type(loadedValues[setting]) ~= type(defaultValue)) then
+      loadedValues[setting] = defaultValue;
+    end
+  end
+end
+
+local function readValues (loadedValues)
   local defaults = {
     blacklist = {},
     whitelist = {
@@ -32,27 +58,25 @@ local function setDefaultValues (options)
     version = 0,
   };
 
-  if (type(options) ~= type(defaults)) then
+  if (type(loadedValues) ~= type(defaults)) then
     defaults.version = VERSION_COUNTER;
-    return defaults;
+    loadedValues = defaults;
+  else
+    checkValues(loadedValues, defaults);
   end
 
-  for setting, value in pairs(defaults) do
-    if (type(options[setting]) ~= type(value)) then
-      options[setting] = value;
-    end
+  for setting, value in pairs(loadedValues) do
+    options[setting] = value;
   end
-
-  return options;
 end
 
 local function printVersionMessage ()
-  addon.printAddonMessage('has a new scale setting!\n',
+  Utils.printAddonMessage('has a new scale setting!\n',
       'Type "/mbb set scale <value>" to set the scale of the button.',
       'This will also scale collected buttons.');
 end
 
-local function checkVersion (options)
+local function checkVersion ()
   if (options.version >= VERSION_COUNTER) then
     --[[ setting version to handle rollbacks ]]
     options.version = VERSION_COUNTER;
@@ -63,23 +87,24 @@ local function checkVersion (options)
   printVersionMessage();
 end
 
-addon.registerEvent('ADDON_LOADED', function (loadedAddon)
+Events.registerEvent('ADDON_LOADED', function (loadedAddon)
   if (loadedAddon ~= addonName) then
     return;
   end
 
-  local options = setDefaultValues(_G.MinimapButtonButtonOptions);
+  local Layout = addon.import('Layouts/Main');
 
-  migrateOptions(options);
-  addon.options = options;
+  readValues(_G.MinimapButtonButtonOptions);
 
-  if (not addon.applyLayout(options.direction)) then
-    addon.applyDefaultLayout();
+  migrateOptions();
+
+  if (not Layout.applyLayout(options.direction)) then
+    Layout.applyDefaultLayout();
   end
 
-  checkVersion(options);
+  checkVersion();
 
-  addon.registerEvent('PLAYER_LOGOUT', function ()
+  Events.registerEvent('PLAYER_LOGOUT', function ()
     _G.MinimapButtonButtonOptions = options;
   end);
 

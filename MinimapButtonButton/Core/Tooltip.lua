@@ -1,5 +1,7 @@
 local _, addon = ...;
 
+local module = addon.export('Core/Tooltip', {});
+
 local GameTooltip = _G.GameTooltip;
 
 local function displayText (text)
@@ -30,7 +32,7 @@ local function createTooltip (parent)
   parent:HookScript('OnLeave', hideGameTooltip);
 end
 
-addon.createTooltip = function (parent, text)
+function module.createTooltip (parent, text)
   parent.text = text;
   createTooltip(parent);
 end

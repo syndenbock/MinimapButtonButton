@@ -1,18 +1,16 @@
 local _, addon = ...;
 
-if (addon.shared.skinned == true) then return end
+if (not addon.import('Skins/Main').reserveSkin()) then return end
 
-addon.shared.skinned = true;
-
-local shared = addon.shared;
-local constants = addon.constants;
+local Constants = addon.import('Logic/Constants');
+local Main = addon.import('Logic/Main');
 
 local EDGE_INSET = 4;
 
-shared.mainButton:SetBackdrop({
+Main.mainButton:SetBackdrop({
   bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
   edgeFile = 'Interface/Tooltips/UI-Tooltip-Border',
-  edgeSize = constants.EDGE_SIZE,
+  edgeSize = Constants.EDGE_SIZE,
   insets = {
     left = EDGE_INSET,
     right = EDGE_INSET,
@@ -21,14 +19,14 @@ shared.mainButton:SetBackdrop({
   },
 });
 
-shared.mainButton:SetBackdropColor(addon.getUnitColor('player'));
+Main.mainButton:SetBackdropColor(addon.import('Core/Utils').getUnitColor('player'));
 
-shared.logo:SetVertexColor(0, 0, 0, 1);
+Main.logo:SetVertexColor(0, 0, 0, 1);
 
-shared.buttonContainer:SetBackdrop({
+Main.buttonContainer:SetBackdrop({
   bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
   edgeFile = 'Interface/Tooltips/UI-Tooltip-Border',
-  edgeSize = constants.EDGE_SIZE,
+  edgeSize = Constants.EDGE_SIZE,
   insets = {
     left = EDGE_INSET,
     right = EDGE_INSET,
@@ -37,6 +35,6 @@ shared.buttonContainer:SetBackdrop({
   },
 });
 
-shared.buttonContainer:SetBackdropColor(0, 0, 0, 1);
+Main.buttonContainer:SetBackdropColor(0, 0, 0, 1);
 
-addon.setEdgeOffsets(EDGE_INSET, -2);
+addon.import('Layouts/Main').setEdgeOffsets(EDGE_INSET, -2);

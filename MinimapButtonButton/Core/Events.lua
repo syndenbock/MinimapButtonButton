@@ -1,5 +1,6 @@
 local _, addon = ...;
 
+local module = addon.export('Core/Events', {});
 local callbacks = {};
 local eventFrame = _G.CreateFrame('frame');
 
@@ -35,5 +36,5 @@ end);
 -- public methods
 --##############################################################################
 
-addon.registerEvent = addCallback;
-addon.unregisterEvent = removeCallback;
+module.registerEvent = addCallback;
+module.unregisterEvent = removeCallback;

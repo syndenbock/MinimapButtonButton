@@ -3,14 +3,12 @@ local _, addon = ...;
 local max = _G.max;
 local Mixin = _G.Mixin;
 
+local Constants = addon.import('Logic/Constants');
+local Main = addon.import('Logic/Main');
+local Layout = addon.export('Layouts/LayoutBase', {});
+
 local ClearAllPoints = _G.UIParent.ClearAllPoints;
 local SetPoint = _G.UIParent.SetPoint;
-
-local shared = addon.shared;
-
-local Layout = {};
-
-shared.Layouts.Base = Layout;
 
 function Layout:New (options)
   return Mixin({
@@ -23,7 +21,7 @@ function Layout:isButtonDisplayed (button)
 end
 
 function Layout:iterateDisplayedButtons (callback)
-  for index, button in ipairs(shared.collectedButtons) do
+  for index, button in ipairs(Main.collectedButtons) do
     if (self:isButtonDisplayed(button)) then
       callback(button, index);
     end
@@ -50,11 +48,11 @@ function Layout:getMaximumButtonDimensions ()
   end);
 
   if (maxWidth == 0) then
-    maxWidth = addon.constants.MAINBUTTON_MIN_SIZE;
+    maxWidth = Constants.MAINBUTTON_MIN_SIZE;
   end
 
   if (maxHeight == 0) then
-    maxHeight = addon.constants.MAINBUTTON_MIN_SIZE;
+    maxHeight = Constants.MAINBUTTON_MIN_SIZE;
   end
 
   return maxWidth, maxHeight;
@@ -69,11 +67,11 @@ function Layout:getFrameEffectiveHeight (frame)
 end
 
 function Layout:setMainButtonSize (width, height)
-  shared.mainButton:SetSize(width, height);
+  Main.mainButton:SetSize(width, height);
 end
 
 function Layout:setButtonContainerSize (width, height)
-  shared.buttonContainer:SetSize(width, height);
+  Main.buttonContainer:SetSize(width, height);
 end
 
 function Layout:setFrameEffectiveAnchor (frame, anchor, parent, parentAnchor, x, y)

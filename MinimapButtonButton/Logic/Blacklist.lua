@@ -2,56 +2,63 @@ local _, addon = ...;
 
 local format = _G.format;
 
-function addon.isButtonBlacklisted (frame)
-  local frameName = addon.getFrameName(frame);
+local Utils = addon.import('Core/Utils');
+local SlashCommandHandler = addon.import('Core/SlashCommands');
+local Main = addon.import('Logic/Main');
+local options = addon.import('Logic/Options').getAll();
+
+local module = addon.export('Logic/Blacklist', {});
+
+function module.isButtonBlacklisted (frame)
+  local frameName = Utils.getFrameName(frame);
 
   return (frameName ~= nil and
-      addon.options.blacklist[frameName] == true);
+      options.blacklist[frameName] == true);
 end
 
-addon.slash('ignore', function (...)
+SlashCommandHandler.addCommand('ignore', function (...)
   if (... == nil) then
-    addon.printAddonMessage('Please add a button name');
+    Utils.printAddonMessage('Please add a button name');
     return;
   end
 
-  local buttonName = addon.concatButtonName(...);
+  local buttonName = Utils.concatButtonName(...);
 
   if (_G[buttonName] == nil) then
-    addon.printAddonMessage(format('No frame named "%s" was found.', buttonName));
+    Utils.printAddonMessage(format('No frame named "%s" was found.', buttonName));
     return;
   end
 
-  addon.options.blacklist[buttonName] = true;
-  addon.printReloadMessage(format('Button "%s" is now being ignored.', buttonName));
+  options.blacklist[buttonName] = true;
+  Utils.printReloadMessage(format('Button "%s" is now being ignored.', buttonName));
 end);
 
-addon.slash('unignore', function (...)
+SlashCommandHandler.addCommand('unignore', function (...)
   if (... == nil) then
-    addon.printAddonMessage('Please add a button name');
+    Utils.printAddonMessage('Please add a button name');
     return;
   end
 
-  local buttonName = addon.concatButtonName(...);
+  local buttonName = Utils.concatButtonName(...);
 
-  if (addon.options.blacklist[buttonName] == nil) then
-    addon.printAddonMessage(format('Button "%s" is not being ignored.', buttonName));
+  if (options.blacklist[buttonName] == nil) then
+    Utils.printAddonMessage(format('Button "%s" is not being ignored.', buttonName));
     return;
   end
 
-  addon.options.blacklist[buttonName] = nil;
-  addon.collectMinimapButtonsAndUpdateLayout();
+  options.blacklist[buttonName] = nil;
+  Main.collectMinimapButtonsAndUpdateLayout();
 
-  addon.printAddonMessage(format('Button "%s" is no longer being ignored.',
+  Utils.printAddonMessage(format('Button "%s" is no longer being ignored.',
       buttonName));
 end);
 
-addon.slash('unignoreall', function ()
-  if (next(addon.options.blacklist) == nil) then
-    addon.printAddonMessage('No buttons are currently being ignored.');
+SlashCommandHandler.addCommand('unignoreall', function ()
+  if (next(options.blacklist) == nil) then
+    Utils.printAddonMessage('No buttons are currently being ignored.');
     return;
   end
 
-  addon.options.blacklist = {};
-  addon.printReloadMessage('No more buttons are being ignored.');
+  options.blacklist = {};
+  Utils.printReloadMessage('No more buttons are being ignored.');
 end);

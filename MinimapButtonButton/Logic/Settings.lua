@@ -1,24 +1,23 @@
 local _, addon = ...;
 
-
 local floor = _G.floor;
 
+local Main = addon.import('Logic/Main');
+local Options = addon.import('Logic/Options');
+local options = Options.getAll();
+local Layout;
+
+local module = addon.export('Logic/Settings', {});
 local handlers = {};
-local module = {};
-
-addon['Logic/Settings'] = module;
-
-local function defaultGetter (setting)
-  return addon.options[setting];
-end
 
 handlers.direction = {
   set = function (value)
-    if (not addon.applyLayout(value)) then
+    Layout = Layout or addon.import('Layouts/Main');
+    if (not Layout.applyLayout(value)) then
       return false;
     end
 
-    addon.options.direction = value;
+    options.direction = value;
     return true;
   end
 };
@@ -31,13 +30,14 @@ handlers.buttonsperrow = {
       return false;
     end
 
+    Layout = Layout or addon.import('Layouts/Main');
     numberValue = floor(numberValue);
-    addon.options.buttonsPerRow = numberValue;
-    addon.updateLayout();
+    options.buttonsPerRow = numberValue;
+    Layout.updateLayout();
     return true;
   end,
   get = function ()
-    return addon.options.buttonsPerRow;
+    return options.buttonsPerRow;
   end
 };
 
@@ -49,8 +49,8 @@ handlers.scale = {
       return false;
     end
 
-    addon.options.scale = numberValue;
-    addon.applyScale();
+    options.scale = numberValue;
+    Main.applyScale();
     return true;
   end
 };
@@ -69,7 +69,7 @@ function module.getSetting (setting)
   if (handlers[setting].get ~= nil) then
     return handlers[setting].get();
   else
-    return defaultGetter(setting);
+    return Options.get(setting);
   end
 end
 
