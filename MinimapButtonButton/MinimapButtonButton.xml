@@ -3,4 +3,5 @@
   <include file="Logic\Logic.xml"/>
   <include file="Layouts\Layouts.xml"/>
   <include file="Skins\Skins.xml"/>
+  <include file="Commands\Commands.xml"/>
 </UI>
