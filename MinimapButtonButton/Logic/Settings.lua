@@ -3,16 +3,14 @@ local _, addon = ...;
 local floor = _G.floor;
 
 local Main = addon.import('Logic/Main');
-local Options = addon.import('Logic/Options');
-local options = Options.getAll();
-local Layout;
+local options = addon.import('Logic/Options').getAll();
+local Layout = addon.importPending('Layouts/Main');
 
 local module = addon.export('Logic/Settings', {});
 local handlers = {};
 
 handlers.direction = {
   set = function (value)
-    Layout = Layout or addon.import('Layouts/Main');
     if (not Layout.applyLayout(value)) then
       return false;
     end
@@ -30,7 +28,6 @@ handlers.buttonsperrow = {
       return false;
     end
 
-    Layout = Layout or addon.import('Layouts/Main');
     numberValue = floor(numberValue);
     options.buttonsPerRow = numberValue;
     Layout.updateLayout();
@@ -69,7 +66,7 @@ function module.getSetting (setting)
   if (handlers[setting].get ~= nil) then
     return handlers[setting].get();
   else
-    return Options.get(setting);
+    return options[setting];
   end
 end
 

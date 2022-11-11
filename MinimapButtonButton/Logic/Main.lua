@@ -20,8 +20,8 @@ local LEFTBUTTON = 'LeftButton';
 local MIDDLEBUTTON = 'MiddleButton';
 local ONMOUSEUP = 'OnMouseUp';
 
-local Layout;
-local Blacklist;
+local Layout = addon.importPending('Layouts/Main');
+local Blacklist = addon.importPending('Logic/Blacklist');
 local options;
 
 local buttonContainer;
@@ -308,15 +308,8 @@ local function restoreOptions ()
   end
 end
 
-local function updateImports ()
-  -- Cannot be imported immediately because they are not registered yet
-  Layout = addon.import('Layouts/Main');
-  Blacklist = addon.import('Logic/Blacklist');
-  options = addon.import('Logic/Options').getAll();
-end
-
 local function init ()
-  updateImports();
+  options = addon.import('Logic/Options').getAll()
   restoreOptions();
   collectMinimapButtonsAndUpdateLayout();
 end
