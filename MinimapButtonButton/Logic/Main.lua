@@ -162,6 +162,7 @@ end
 
 local function shouldButtonBeCollected (button)
   if (isButtonCollected(button) or
+      not isValidFrame(button) or
       Blacklist.isButtonBlacklisted(button)) then
     return false;
   end
