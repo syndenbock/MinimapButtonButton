@@ -332,10 +332,12 @@ end);
 SlashCommands.addHandlerName('mbb');
 
 local function printButtonLists ()
-  Utils.printAddonMessage('Buttons currently being collected:');
+  if (#collectedButtons > 0) then
+    Utils.printAddonMessage('Buttons currently being collected:');
 
-  for _, button in pairs(collectedButtons) do
-    print(button:GetName());
+    for _, button in ipairs(collectedButtons) do
+      print(button:GetName());
+    end
   end
 
   if (next(options.whitelist) ~= nil) then
