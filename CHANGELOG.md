@@ -1,1 +1,3 @@
-- Filter excessive Show/Hide calls on collected buttons to reduce the cpu impact of improperly implemented minimap buttons
+- Updated Retail interface version for 10.0.2
+- Improved checks when scanning minimap buttons
+- Some code improvements
