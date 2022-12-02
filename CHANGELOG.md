@@ -1,3 +1,1 @@
-- Updated Retail interface version for 10.0.2
-- Improved checks when scanning minimap buttons
-- Some code improvements
+- Main button dragging tooltip will no longer show after the main button has been moved
