@@ -231,6 +231,10 @@ local function stopMovingMainButton ()
   mainButton:SetMovable(false);
   mainButton:StopMovingOrSizing();
   storeMainButtonPosition();
+
+  if (mainButton.hasTooltip) then
+    addon.import('Core/Tooltip').removeTooltip(mainButton);
+  end
 end
 
 local function moveMainButton ()

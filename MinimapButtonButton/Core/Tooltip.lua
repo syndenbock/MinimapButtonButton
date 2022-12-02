@@ -20,19 +20,21 @@ local function hideGameTooltip ()
   GameTooltip:Hide();
 end
 
-local function createTooltip (parent)
-  parent:HookScript('OnEnter', function ()
+function module.createTooltip (parent, text)
+  parent:SetScript('OnEnter', function ()
     GameTooltip:SetOwner(parent, 'ANCHOR_NONE');
     GameTooltip:ClearAllPoints();
     GameTooltip:SetPoint('BOTTOMLEFT', parent, 'TOPLEFT', 0, 0);
-    displayText(parent.text);
+    displayText(text);
     GameTooltip:Show();
   end);
 
-  parent:HookScript('OnLeave', hideGameTooltip);
+  parent:SetScript('OnLeave', hideGameTooltip);
+  parent.hasTooltip = true;
 end
 
-function module.createTooltip (parent, text)
-  parent.text = text;
-  createTooltip(parent);
+function module.removeTooltip (parent)
+  parent:SetScript('OnEnter', nil);
+  parent:SetScript('OnLeave', nil);
+  parent.hasTooltip = nil;
 end
