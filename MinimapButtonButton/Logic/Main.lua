@@ -1,5 +1,6 @@
 local addonName, addon = ...;
 
+local gmatch = _G.gmatch;
 local sort = _G.sort;
 local strmatch = _G.strmatch;
 local tinsert = _G.tinsert;
@@ -105,8 +106,22 @@ local function isValidFrame (frame)
   return true;
 end
 
+local function findButtonByName (name)
+  local parent = _G;
+
+  for frameName in gmatch(name, '[^.]+') do
+    parent = parent[frameName];
+
+    if (parent == nil) then
+      return nil;
+    end
+  end
+
+  return parent;
+end
+
 local function scanButtonByName (buttonName)
-  local button = _G[buttonName];
+  local button = findButtonByName(buttonName);
 
   if (isValidFrame(button) and not isButtonCollected(button)) then
     collectMinimapButton(button);
@@ -149,7 +164,7 @@ local function isMinimapButton (frame)
     return false;
   end;
 
-  if (issecurevariable(frameName)) then
+  if (issecurevariable(_G, frameName)) then
     return false;
   end
 
@@ -178,10 +193,12 @@ local function scanMinimapChildren ()
   end
 end
 
+local function buttonSortFunc (a, b)
+  return ((a:GetName() or '') < (b:GetName() or ''));
+end
+
 local function sortCollectedButtons ()
-  sort(collectedButtons, function (a, b)
-    return a:GetName() < b:GetName();
-  end);
+  sort(collectedButtons, buttonSortFunc);
 end
 
 local function collectMinimapButtons ()
@@ -376,5 +393,6 @@ addon.export('Logic/Main', {
   collectedButtons = collectedButtons,
   applyScale = applyScale,
   collectMinimapButtonsAndUpdateLayout = collectMinimapButtonsAndUpdateLayout,
+  findButtonByName = findButtonByName,
   isValidFrame = isValidFrame,
 });

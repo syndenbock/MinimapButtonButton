@@ -14,13 +14,14 @@ SlashCommandHandler.addCommand('include', function (...)
   end
 
   local buttonName = Utils.concatButtonName(...);
+  local button = Main.findButtonByName(buttonName);
 
-  if (_G[buttonName] == nil) then
+  if (button == nil) then
     Utils.printAddonMessage(format('No frame named "%s" was found.', buttonName));
     return;
   end
 
-  if (not Main.isValidFrame(_G[buttonName])) then
+  if (not Main.isValidFrame(button)) then
     Utils.printAddonMessage(format('"%s" is not a valid frame.', buttonName));
     return;
   end
