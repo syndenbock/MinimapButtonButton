@@ -1,1 +1,1 @@
-- Main button dragging tooltip will no longer show after the main button has been moved
+- Buttons can now be manually collected by using their "parent path", eg "MinimapCluster.Tracking" for the tracking button
