@@ -1,1 +1,1 @@
-- Buttons can now be manually collected by using their "parent path", eg "MinimapCluster.Tracking" for the tracking button
+- MinimapButtonButton is now hidden during pet battles on Retail
