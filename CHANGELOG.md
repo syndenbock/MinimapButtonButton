@@ -1,1 +1,1 @@
-- MinimapButtonButton is now hidden during pet battles on Retail
+- Added button scale setting
