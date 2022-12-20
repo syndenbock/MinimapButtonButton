@@ -3,7 +3,7 @@ local addonName, addon = ...;
 local Events = addon.import('Core/Events');
 local Utils = addon.import('Core/Utils');
 
-local VERSION_COUNTER = 2;
+local VERSION_COUNTER = 3;
 
 local module = addon.export('Logic/Options', {});
 local options = {};
@@ -72,20 +72,17 @@ local function readValues (loadedValues)
 end
 
 local function printVersionMessage ()
-  Utils.printAddonMessage('has a new scale setting!\n',
-      'Type "/mbb set scale <value>" to set the scale of the button.',
-      'This will also scale collected buttons.');
+  Utils.printAddonMessage('has a new button scale setting!\n',
+      'Type "/mbb set buttonScale <value>" to set the scale of the collected buttons.');
 end
 
 local function checkVersion ()
-  if (options.version >= VERSION_COUNTER) then
-    --[[ setting version to handle rollbacks ]]
-    options.version = VERSION_COUNTER;
-    return;
+  if (options.version < VERSION_COUNTER) then
+    printVersionMessage();
   end
 
+  --[[ alawys set version to handle rollbacks ]]
   options.version = VERSION_COUNTER;
-  printVersionMessage();
 end
 
 Events.registerEvent('ADDON_LOADED', function (loadedAddon)
