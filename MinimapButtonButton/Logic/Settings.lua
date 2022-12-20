@@ -52,6 +52,23 @@ handlers.scale = {
   end
 };
 
+handlers.buttonscale = {
+  set = function (value)
+    local numberValue = tonumber(value);
+
+    if (numberValue == nil or numberValue <= 0) then
+      return false;
+    end
+
+    options.buttonScale = numberValue;
+    Main.applyButtonScale();
+    return true;
+  end,
+  get = function ()
+    return options.buttonScale;
+  end
+}
+
 function module.printAvailableSettings ()
   for setting in pairs(handlers) do
     print(setting);

@@ -54,6 +54,7 @@ local function collectMinimapButton (button)
   button:SetScript('OnDragStart', nil);
   button:SetScript('OnDragStop', nil);
   button:SetIgnoreParentScale(false);
+  button:SetScale(options.buttonScale);
 
   -- Hook the function on the frame itself instead of setting a script handler
   -- to execute only when the function is called and not when the frame changes
@@ -312,6 +313,14 @@ local function applyScale ()
   mainButton:SetScale(options.scale);
 end
 
+local function applyButtonScale ()
+  for _, button in ipairs(collectedButtons) do
+    button:SetScale(options.buttonScale);
+  end
+
+  Layout.updateLayout();
+end
+
 local function restoreOptions ()
   if (options.position == nil) then
     addon.import('Core/Tooltip').createTooltip(mainButton, {
@@ -331,7 +340,7 @@ local function restoreOptions ()
 end
 
 local function init ()
-  options = addon.import('Logic/Options').getAll()
+  options = addon.import('Logic/Options').getAll();
   restoreOptions();
   collectMinimapButtonsAndUpdateLayout();
 end
@@ -392,6 +401,7 @@ addon.export('Logic/Main', {
   logo = logo,
   collectedButtons = collectedButtons,
   applyScale = applyScale,
+  applyButtonScale = applyButtonScale,
   collectMinimapButtonsAndUpdateLayout = collectMinimapButtonsAndUpdateLayout,
   findButtonByName = findButtonByName,
   isValidFrame = isValidFrame,

@@ -55,6 +55,7 @@ local function readValues (loadedValues)
     direction = 'leftdown',
     buttonsPerRow = 5,
     scale = 1,
+    buttonScale = 1,
     version = 0,
   };
 
