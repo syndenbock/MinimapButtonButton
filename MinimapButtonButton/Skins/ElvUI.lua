@@ -40,7 +40,10 @@ addon.import('Core/Events').registerEvent('PLAYER_LOGIN', function ()
   end
 
   applySkin();
-  ENGINE.valueColorUpdateFuncs[applySkin] = true;
+  -- ElvUI uses strings as the key here but to not risk an overlap and to keep
+  -- compatibility for users that didn't update ElvUI the function itself is
+  -- used
+  ENGINE.valueColorUpdateFuncs[applySkin] = applySkin;
 
   return true;
 end);
