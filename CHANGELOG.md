@@ -1,1 +1,1 @@
-- Added button scale setting
+- Added auto hide setting
