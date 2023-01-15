@@ -53,6 +53,7 @@ local function readValues (loadedValues)
       CodexBrowserIcon = true,
     },
     direction = 'leftdown',
+    autohide = 0,
     buttonsPerRow = 5,
     scale = 1,
     buttonScale = 1,

@@ -17,7 +17,7 @@ handlers.direction = {
 
     options.direction = value;
     return true;
-  end
+  end,
 };
 
 handlers.buttonsperrow = {
@@ -35,7 +35,7 @@ handlers.buttonsperrow = {
   end,
   get = function ()
     return options.buttonsPerRow;
-  end
+  end,
 };
 
 handlers.scale = {
@@ -49,7 +49,7 @@ handlers.scale = {
     options.scale = numberValue;
     Main.applyScale();
     return true;
-  end
+  end,
 };
 
 handlers.buttonscale = {
@@ -66,8 +66,26 @@ handlers.buttonscale = {
   end,
   get = function ()
     return options.buttonScale;
-  end
-}
+  end,
+};
+
+handlers.autohide = {
+  set = function (value)
+    local numberValue = tonumber(value);
+
+    if (numberValue == nil) then
+      return false;
+    end
+
+    options.autohide = numberValue;
+
+    if (numberValue > 0) then
+      Main.hideButtons();
+    end
+
+    return true;
+  end,
+};
 
 function module.printAvailableSettings ()
   for setting in pairs(handlers) do

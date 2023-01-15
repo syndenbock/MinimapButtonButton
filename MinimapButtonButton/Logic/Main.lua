@@ -223,15 +223,46 @@ end
 -- main button setup
 --##############################################################################
 
+local hideCallback = nil;
+
+local function hideButtons ()
+  options.buttonsShown = false;
+  buttonContainer:Hide();
+end
+
+local function hideButtonsAfterDelay (delay)
+  local function hider ()
+    if (hideCallback == hider) then
+      hideCallback = nil;
+
+      -- Make sure autohide wasn't disabled in the meantime
+      if (options.autohide > 0) then
+        hideButtons();
+      end
+    end
+  end
+
+  hideCallback = hider;
+  C_Timer.After(delay, hider);
+end
+
+local function showButtons ()
+  if (options.autohide > 0) then
+    hideButtonsAfterDelay(options.autohide);
+  else
+    options.buttonsShown = true;
+  end
+
+  buttonContainer:Show();
+end
+
 local function toggleButtons ()
   collectMinimapButtonsAndUpdateLayout();
 
   if (buttonContainer:IsShown()) then
-    options.buttonsShown = false;
-    buttonContainer:Hide();
+    hideButtons();
   else
-    options.buttonsShown = true;
-    buttonContainer:Show();
+    showButtons();
   end
 end
 
@@ -401,6 +432,7 @@ addon.export('Logic/Main', {
   logo = logo,
   collectedButtons = collectedButtons,
   applyScale = applyScale,
+  hideButtons = hideButtons,
   applyButtonScale = applyButtonScale,
   collectMinimapButtonsAndUpdateLayout = collectMinimapButtonsAndUpdateLayout,
   findButtonByName = findButtonByName,
