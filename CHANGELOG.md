@@ -1,1 +1,1 @@
-- Added auto hide setting
+- Fixed ElvUI skin compatibility with latest version of ElvUI
