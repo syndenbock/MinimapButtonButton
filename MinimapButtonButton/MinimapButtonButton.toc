@@ -1,7 +1,7 @@
 ## Interface: 100002
 ## Interface-Classic: 11403
 ## Interface-BCC: 20504
-## Interface-Wrath: 30400
+## Interface-Wrath: 30401
 ## Title: MinimapButtonButton
 ## Title-ruRU: Универсальная кнопка миникарты
 ## Version: 1.14.1
