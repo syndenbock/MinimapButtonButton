@@ -4,7 +4,7 @@
 ## Interface-Wrath: 30401
 ## Title: MinimapButtonButton
 ## Title-ruRU: Универсальная кнопка миникарты
-## Version: 1.14.1
+## Version: 1.14.2
 ## Author: syndenbock
 ## Notes: Creates a button that collects all minimap buttons
 ## Notes-ruRU: Создает кнопку, которая собирает все значки миникарты воедино

@@ -1,1 +1,1 @@
-- Fixed ElvUI skin compatibility with latest version of ElvUI
+- Updated interface version for Wrath Classic
