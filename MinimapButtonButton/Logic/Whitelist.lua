@@ -1,19 +1,15 @@
 local _, addon = ...;
 
 local format = _G.format;
+local wipe = _G.wipe;
 
 local Utils = addon.import('Core/Utils');
 local Main = addon.import('Logic/Main');
-local SlashCommandHandler = addon.import('Core/SlashCommands');
 local options = addon.import('Logic/Options').getAll();
 
-SlashCommandHandler.addCommand('include', function (...)
-  if (... == nil) then
-    Utils.printAddonMessage('Please add a button name');
-    return;
-  end
+local module = addon.export('Logic/Whitelist', {});
 
-  local buttonName = Utils.concatButtonName(...);
+function module.addToWhitelist (buttonName)
   local button = Main.findButtonByName(buttonName);
 
   if (button == nil) then
@@ -28,36 +24,27 @@ SlashCommandHandler.addCommand('include', function (...)
 
   options.whitelist[buttonName] = true;
   Main.collectMinimapButtonsAndUpdateLayout();
-
   Utils.printAddonMessage(format('Button "%s" is now manually being collected.',
       buttonName));
-end);
+end
 
-SlashCommandHandler.addCommand('uninclude', function (...)
-  if (... == nil) then
-    Utils.printAddonMessage('Please add a button name');
-    return;
-  end
-
-  local buttonName = Utils.concatButtonName(...);
-
+function module.removeFromWhitelist (buttonName)
   if (options.whitelist[buttonName] == nil) then
-    Utils.printAddonMessage(format(
-        'No button named "%s" is currently being manually collected.', buttonName));
+    Utils.printAddonMessage(format('Button "%s" is not currently being manually collected.', buttonName));
     return;
   end
 
   options.whitelist[buttonName] = nil;
   Utils.printReloadMessage(format('Button "%s" is no longer being collected manually.',
       buttonName));
-end);
+end
 
-SlashCommandHandler.addCommand('unincludeall', function ()
+function module.clearWhitelist ()
   if (next(options.whitelist) == nil) then
     Utils.printAddonMessage('No buttons are currently being manually collected.');
     return;
   end
 
-  options.whitelist = {};
+  wipe(options.whitelist);
   Utils.printReloadMessage('No more buttons are being manually collected.');
-end);
+end

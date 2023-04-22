@@ -1,9 +1,9 @@
 local _, addon = ...;
 
 local format = _G.format;
+local wipe = _G.wipe;
 
 local Utils = addon.import('Core/Utils');
-local SlashCommandHandler = addon.import('Core/SlashCommands');
 local Main = addon.import('Logic/Main');
 local options = addon.import('Logic/Options').getAll();
 
@@ -16,14 +16,7 @@ function module.isButtonBlacklisted (frame)
       options.blacklist[frameName] == true);
 end
 
-SlashCommandHandler.addCommand('ignore', function (...)
-  if (... == nil) then
-    Utils.printAddonMessage('Please add a button name');
-    return;
-  end
-
-  local buttonName = Utils.concatButtonName(...);
-
+function module.addToBlacklist (buttonName)
   if (_G[buttonName] == nil) then
     Utils.printAddonMessage(format('No frame named "%s" was found.', buttonName));
     return;
@@ -31,18 +24,11 @@ SlashCommandHandler.addCommand('ignore', function (...)
 
   options.blacklist[buttonName] = true;
   Utils.printReloadMessage(format('Button "%s" is now being ignored.', buttonName));
-end);
+end
 
-SlashCommandHandler.addCommand('unignore', function (...)
-  if (... == nil) then
-    Utils.printAddonMessage('Please add a button name');
-    return;
-  end
-
-  local buttonName = Utils.concatButtonName(...);
-
+function module.removeFromBlacklist (buttonName)
   if (options.blacklist[buttonName] == nil) then
-    Utils.printAddonMessage(format('Button "%s" is not being ignored.', buttonName));
+    Utils.printAddonMessage(format('Button "%s" is not currently being ignored.', buttonName));
     return;
   end
 
@@ -51,14 +37,14 @@ SlashCommandHandler.addCommand('unignore', function (...)
 
   Utils.printAddonMessage(format('Button "%s" is no longer being ignored.',
       buttonName));
-end);
+end
 
-SlashCommandHandler.addCommand('unignoreall', function ()
+function module.clearBlacklist ()
   if (next(options.blacklist) == nil) then
     Utils.printAddonMessage('No buttons are currently being ignored.');
     return;
   end
 
-  options.blacklist = {};
+  wipe(options.blacklist);
   Utils.printReloadMessage('No more buttons are being ignored.');
-end);
+end
