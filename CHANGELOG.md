@@ -1,2 +1,1 @@
-- Merged ignore and uninclude functions
-- Merged include and unignore functions
+- Updated interface version for Retail 10.1.0
