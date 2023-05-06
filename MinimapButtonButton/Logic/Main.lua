@@ -256,12 +256,21 @@ local function showButtons ()
   buttonContainer:Show();
 end
 
+local function applyButtonScale ()
+  for _, button in ipairs(collectedButtons) do
+    button:SetScale(options.buttonScale);
+  end
+
+  Layout.updateLayout();
+end
+
 local function toggleButtons ()
   collectMinimapButtonsAndUpdateLayout();
 
   if (buttonContainer:IsShown()) then
     hideButtons();
   else
+    applyButtonScale();
     showButtons();
   end
 end
@@ -342,14 +351,6 @@ initFrames();
 
 local function applyScale ()
   mainButton:SetScale(options.scale);
-end
-
-local function applyButtonScale ()
-  for _, button in ipairs(collectedButtons) do
-    button:SetScale(options.buttonScale);
-  end
-
-  Layout.updateLayout();
 end
 
 local function restoreOptions ()
