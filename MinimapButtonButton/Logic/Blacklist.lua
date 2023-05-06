@@ -46,5 +46,6 @@ function module.clearBlacklist ()
   end
 
   wipe(options.blacklist);
-  Utils.printReloadMessage('No more buttons are being ignored.');
+  Main.collectMinimapButtonsAndUpdateLayout();
+  Utils.printAddonMessage('No more buttons are being ignored.');
 end
