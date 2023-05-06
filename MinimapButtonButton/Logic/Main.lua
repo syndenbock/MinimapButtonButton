@@ -9,6 +9,8 @@ local hooksecurefunc = _G.hooksecurefunc;
 local IsAltKeyDown = _G.IsAltKeyDown;
 local issecurevariable = _G.issecurevariable;
 
+local SetScale = _G.UIParent.SetScale;
+
 local Constants = addon.import('Logic/Constants');
 local SlashCommands = addon.import('Core/SlashCommands');
 local Utils = addon.import('Core/Utils');
@@ -68,6 +70,7 @@ local function collectMinimapButton (button)
   button.ClearAllPoints = doNothing;
   button.SetPoint = doNothing;
   button.SetParent = doNothing;
+  button.SetScale = doNothing;
 
   tinsert(collectedButtons, button);
   collectedButtonMap[button] = button:IsShown();
@@ -346,7 +349,7 @@ end
 
 local function applyButtonScale ()
   for _, button in ipairs(collectedButtons) do
-    button:SetScale(options.buttonScale);
+    SetScale(button, options.buttonScale);
   end
 
   Layout.updateLayout();
