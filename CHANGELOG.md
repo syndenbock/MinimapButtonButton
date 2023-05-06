@@ -1,1 +1,1 @@
-- Updated interface version for Retail 10.1.0
+- Added icon for the addon panel
