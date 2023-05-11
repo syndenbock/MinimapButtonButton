@@ -3,7 +3,9 @@ local _, addon = ...;
 local floor = _G.floor;
 
 local Main = addon.import('Logic/Main');
+local Utils = addon.import('Core/Utils');
 local options = addon.import('Logic/Options').getAll();
+local Enhancements = addon.importPending('Features/Enhancements');
 local Layout = addon.importPending('Layouts/Main');
 
 local module = addon.export('Logic/Settings', {});
@@ -86,6 +88,24 @@ handlers.autohide = {
     return true;
   end,
 };
+
+if (Utils.isRetail()) then
+  handlers.hidecompartment = {
+    set = function (value)
+      if (value == 'true') then
+        options.hidecompartment = true;
+        Enhancements.hideCompartmentFrame();
+      elseif (value == 'false') then
+        options.hidecompartment = false;
+        Enhancements.showCompartmentFrame();
+      else
+        return false;
+      end
+
+      return true;
+    end,
+  };
+end
 
 function module.printAvailableSettings ()
   for setting in pairs(handlers) do

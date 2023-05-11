@@ -8,6 +8,7 @@ local SlashCommands = addon.import('Core/SlashCommands');
 
 local strlower = _G.strlower;
 local format = _G.format;
+local tostring = _G.tostring;
 
 local function printSettingValue (setting, value)
   Utils.printAddonMessage(format('Current value of setting %s is %s', setting, value));
@@ -36,7 +37,7 @@ SlashCommands.addCommand('set', function (setting, value)
   end
 
   if (value == nil) then
-    printSettingValue(setting, Settings.getSetting(lowerCaseSetting));
+    printSettingValue(setting, tostring(Settings.getSetting(lowerCaseSetting)));
   else
     if (Settings.setSetting(lowerCaseSetting, value)) then
       printSettingWasSet(setting, value);
