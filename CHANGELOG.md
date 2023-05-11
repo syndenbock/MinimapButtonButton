@@ -1,3 +1,1 @@
-- Other addons are now prevented from manipulating the scale of collected buttons
-- Improved LibDBIcon button detection
-- Some code updates
+- Added option to hide addon compartment frame
