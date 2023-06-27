@@ -1,1 +1,1 @@
-- Added option to hide addon compartment frame
+- Update interface version for Wrath Classic
