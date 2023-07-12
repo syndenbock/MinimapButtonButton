@@ -81,7 +81,7 @@ local function isButtonCollected (button)
 end
 
 local function getLibDBIcon ()
-  return _G.LibStub and _G.LibStub('LibDBIcon-1.0');
+  return _G.LibStub and _G.LibStub:GetLibrary('LibDBIcon-1.0', true);
 end
 
 local function collectLibDBIconButton (button)
