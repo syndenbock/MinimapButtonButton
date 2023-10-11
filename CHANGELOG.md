@@ -1,1 +1,1 @@
-- Updated interface versions for Retail and Classic
+- Updated interface version for Wrath
