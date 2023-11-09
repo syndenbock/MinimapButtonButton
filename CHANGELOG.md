@@ -1,1 +1,1 @@
-- Updated interface version for Wrath
+- Updated interface version for Retail 10.2
