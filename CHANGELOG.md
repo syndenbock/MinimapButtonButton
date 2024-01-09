@@ -1,1 +1,1 @@
-- Updated interface version for Retail 10.2
+- Add translations for addon description in addons panel
