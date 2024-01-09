@@ -8,6 +8,10 @@
 ## Author: syndenbock
 ## Notes: Creates a button that collects all minimap buttons
 ## Notes-ruRU: Создает кнопку, которая собирает все значки миникарты воедино
+## Notes-esES: Crea un botón que recopila todos los botones del minimapa
+## Notes-esMX: Crea un botón que recopila todos los botones del minimapa
+## Notes-ptBR: Cria um botão que coleta todos os botões do minimapa
+## Notes-frFR: Crée un bouton qui rassemble tous les boutons de la mini-carte
 ## IconTexture: Interface\AddOns\MinimapButtonButton\Media\Logo.blp
 
 ## X-Curse-Project-ID: 446096
