@@ -148,6 +148,10 @@ local function collectWhitelistedButtons ()
   end
 end
 
+local function isTomCatsButton (frameName)
+  return (strmatch(frameName, '^TomCats-') ~= nil);
+end
+
 local function nameEndsWithNumber (frameName)
   return (strmatch(frameName, '%d$') ~= nil);
 end
@@ -180,6 +184,12 @@ local function isMinimapButton (frame)
 
   if (issecurevariable(_G, frameName)) then
     return false;
+  end
+
+  -- Some TomCats buttons end with the current year so we need to check that
+  -- before nameEndsWithNumber
+  if (isTomCatsButton(frameName)) then
+    return true;
   end
 
   if (nameEndsWithNumber(frameName)) then
