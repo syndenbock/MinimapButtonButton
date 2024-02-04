@@ -1,1 +1,1 @@
-- Update interface version for Retail 10.2.5
+- TomCats holiday buttons are now being automatically collected
