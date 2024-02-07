@@ -1,1 +1,1 @@
-- TomCats holiday buttons are now being automatically collected
+- Updated interface version for Classic 1.15.5
