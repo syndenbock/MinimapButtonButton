@@ -1,1 +1,1 @@
-- Updated interface version for Retail 10.2.6
+- Prevent changing alpha of collected buttons
