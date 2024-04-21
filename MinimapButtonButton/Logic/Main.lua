@@ -57,7 +57,6 @@ local function collectButton (button)
   button:SetScript('OnDragStop', nil);
   button:SetIgnoreParentScale(false);
   button:SetScale(options.buttonScale);
-  button:SetAlpha(1);
 
   -- Hook the function on the frame itself instead of setting a script handler
   -- to execute only when the function is called and not when the frame changes
@@ -72,7 +71,6 @@ local function collectButton (button)
   button.SetPoint = doNothing;
   button.SetParent = doNothing;
   button.SetScale = doNothing;
-  button.SetAlpha = doNothing;
 
   tinsert(collectedButtons, button);
   collectedButtonMap[button] = button:IsShown();
