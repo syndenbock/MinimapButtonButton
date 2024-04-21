@@ -1,1 +1,1 @@
-- Prevent changing alpha of collected buttons
+- Reverted alpha lock on buttons
