@@ -1,1 +1,1 @@
-- Reverted alpha lock on buttons
+- Added interface version for Cataclysm Classic
