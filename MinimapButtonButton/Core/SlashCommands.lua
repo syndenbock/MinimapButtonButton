@@ -1,8 +1,7 @@
 local addonName, addon = ...;
 
+local strlower = _G.strlower;
 local strsplit = _G.strsplit;
-local tremove = _G.tremove;
-local unpack = _G.unpack;
 
 local module = addon.export('Core/SlashCommands', {});
 
@@ -10,7 +9,7 @@ local slashCommands = {};
 local handlerCount = 0;
 
 local function executeSlashCommand (command, ...)
-  local handler = slashCommands[command];
+  local handler = slashCommands[strlower(command)];
 
   if (not handler) then
     return print(addonName .. ': unknown command "' .. command .. '"');
@@ -20,15 +19,11 @@ local function executeSlashCommand (command, ...)
 end
 
 local function slashHandler (input)
-  input = input or '';
+  if (input == nil or input == '') then
+    return executeSlashCommand('default');
+  end
 
-  local paramList = {strsplit(' ', input)}
-  local command = tremove(paramList, 1)
-
-  command = command or 'default';
-  command = command == '' and 'default' or command;
-
-  executeSlashCommand(command, unpack(paramList));
+  executeSlashCommand(strsplit(' ', input));
 end
 
 local function addHandlerName (name)
@@ -37,6 +32,8 @@ local function addHandlerName (name)
 end
 
 local function addCommand (command, callback)
+  command = strlower(command);
+
   assert(type(callback) == 'function',
     addonName .. ': callback is not a function');
   assert(slashCommands[command] == nil,
@@ -46,7 +43,6 @@ local function addCommand (command, callback)
 end
 
 _G.SlashCmdList[addonName] = slashHandler;
-addHandlerName(addonName);
 
 --##############################################################################
 -- public methods

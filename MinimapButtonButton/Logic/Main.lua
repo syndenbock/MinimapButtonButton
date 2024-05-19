@@ -424,6 +424,7 @@ end);
 -- slash commands
 --##############################################################################
 
+SlashCommands.addHandlerName(addonName);
 SlashCommands.addHandlerName('mbb');
 
 local function printButtonLists ()
