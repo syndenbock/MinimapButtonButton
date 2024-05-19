@@ -1,1 +1,1 @@
-- Updated interface version for Classic
+- Improved slash command handling and made commands case-insensitive
