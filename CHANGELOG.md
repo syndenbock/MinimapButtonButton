@@ -1,1 +1,1 @@
-- Improved slash command handling and made commands case-insensitive
+- Fixed error in the TWW Beta
