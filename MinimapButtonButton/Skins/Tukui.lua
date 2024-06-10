@@ -1,6 +1,6 @@
 local _, addon = ...;
 
-if (not _G.IsAddOnLoaded('Tukui') or
+if (not _G.C_AddOns.IsAddOnLoaded('Tukui') or
     not addon.import('Skins/Main').reserveSkin()) then return end
 
 local function skinFrame (frame, config)
