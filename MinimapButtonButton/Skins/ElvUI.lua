@@ -1,7 +1,7 @@
 local _, addon = ...;
 
-if (not _G.IsAddOnLoaded('ElvUI') or
-    not addon.import('Skins/Main').reserveSkin()) then return end
+if (not addon.import('Core/Utils').isAddOnLoaded('ElvUI')
+    or not addon.import('Skins/Main').reserveSkin()) then return end
 
 local function skinFrame (frame, engine)
   local media = engine.media;

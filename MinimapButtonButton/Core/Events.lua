@@ -19,8 +19,8 @@ local function removeCallback (event, callback)
   callbacks[event][callback] = nil;
 
   if (next(callbacks[event]) == nil) then
-    callbacks[event] = nil;
     eventFrame:UnregisterEvent(event);
+    callbacks[event] = nil;
   end
 end
 
