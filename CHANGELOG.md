@@ -1,1 +1,1 @@
-- Fixed error in the TWW Beta
+- Bumped interface version for Retail 11.0
