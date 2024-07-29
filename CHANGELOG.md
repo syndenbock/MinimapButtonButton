@@ -1,1 +1,1 @@
-- Bumped interface version for Retail 11.0
+- A notification message is now displayed when accessing a setting that's unavailable on the current client
