@@ -5,10 +5,10 @@ local floor = _G.floor;
 local Main = addon.import('Logic/Main');
 local Utils = addon.import('Core/Utils');
 local options = addon.import('Logic/Options').getAll();
-local Enhancements = addon.importPending('Features/Enhancements');
-local Layout = addon.importPending('Layouts/Main');
+local Enhancements = addon.import('Features/Enhancements');
+local Layout = addon.import('Layouts/Main');
 
-local module = addon.export('Logic/Settings', {});
+local module = addon.export('Settings/Settings', {});
 local handlers = {};
 
 handlers.direction = {
@@ -89,7 +89,7 @@ handlers.autohide = {
   end,
 };
 
-if (Utils.isRetail()) then
+if (Enhancements.compartment) then
   handlers.hidecompartment = {
     set = function (value)
       if (value == 'true') then
@@ -105,6 +105,12 @@ if (Utils.isRetail()) then
       return true;
     end,
   };
+else
+  handlers.hidecompartment = {
+    override = function ()
+      Utils.printAddonMessage('This setting is unavailable because the compartment frame only exists on Retail.');
+    end
+  };
 end
 
 function module.printAvailableSettings ()
@@ -118,13 +124,33 @@ function module.doesSettingExist (setting)
 end
 
 function module.getSetting (setting)
-  if (handlers[setting].get ~= nil) then
-    return handlers[setting].get();
-  else
-    return options[setting];
+  local handler = handlers[setting];
+
+  if (handler.override ~= nil) then
+    return handler.override();
   end
+
+  local value = nil;
+
+  if (handler.get ~= nil) then
+    value = handler.get();
+  else
+    value = options[setting];
+  end
+
+  if (value == nil) then
+    error('No value for setting: ' .. setting);
+  end
+
+  return value;
 end
 
 function module.setSetting (setting, value)
-  return handlers[setting].set(value);
+  local handler = handlers[setting];
+
+  if (handler.override) then
+    return handler.override();
+  end
+
+  return handler.set(value);
 end

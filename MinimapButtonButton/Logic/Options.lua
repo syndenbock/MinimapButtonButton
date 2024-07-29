@@ -93,6 +93,7 @@ Events.registerEvent('ADDON_LOADED', function (loadedAddon)
   end
 
   local Layout = addon.import('Layouts/Main');
+  local Enhancements = addon.import('Features/Enhancements');
 
   readValues(_G.MinimapButtonButtonOptions);
 
@@ -102,8 +103,8 @@ Events.registerEvent('ADDON_LOADED', function (loadedAddon)
     Layout.applyDefaultLayout();
   end
 
-  if (Utils.isRetail() and options.hidecompartment == true) then
-    addon.import('Features/Enhancements').hideCompartmentFrame();
+  if (Enhancements.compartment and options.hidecompartment == true) then
+    Enhancements.hideCompartmentFrame();
   end
 
   checkVersion();

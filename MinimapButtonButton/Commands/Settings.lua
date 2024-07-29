@@ -1,7 +1,7 @@
 local _, addon = ...;
 
 local Utils = addon.import('Core/Utils');
-local Settings = addon.import('Logic/Settings');
+local Settings = addon.import('Settings/Settings');
 local Whitelist = addon.import('Logic/Whitelist');
 local Blacklist = addon.import('Logic/Blacklist');
 local SlashCommands = addon.import('Core/SlashCommands');
@@ -37,12 +37,20 @@ SlashCommands.addCommand('set', function (setting, value)
   end
 
   if (value == nil) then
-    printSettingValue(setting, tostring(Settings.getSetting(lowerCaseSetting)));
+    local value = Settings.getSetting(lowerCaseSetting);
+
+    if (value ~= nil) then
+      printSettingValue(setting, tostring(value));
+    end
   else
-    if (Settings.setSetting(lowerCaseSetting, value)) then
+    local status = Settings.setSetting(lowerCaseSetting, value);
+
+    if (status == true) then
       printSettingWasSet(setting, value);
-    else
+    elseif (status == false) then
       printInvalidSettingValue(setting, value);
+    elseif (status ~= nil) then
+      error('Invalid getter status: ' .. status);
     end
   end
 end);
