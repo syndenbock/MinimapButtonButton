@@ -1,1 +1,1 @@
-- A notification message is now displayed when accessing a setting that's unavailable on the current client
+- The <hidecompartment> option is no longer printed in the settings list on classic clients where it's unavailable
