@@ -10,6 +10,7 @@ local Layout = addon.import('Layouts/Main');
 
 local module = addon.export('Settings/Settings', {});
 local handlers = {};
+local unavailableHandlers = {}
 
 handlers.direction = {
   set = function (value)
@@ -106,11 +107,9 @@ if (Enhancements.compartment) then
     end,
   };
 else
-  handlers.hidecompartment = {
-    override = function ()
-      Utils.printAddonMessage('This setting is unavailable because the compartment frame only exists on Retail.');
-    end
-  };
+  unavailableHandlers.hidecompartment = function ()
+      return 'This setting is unavailable because the compartment frame only exists on Retail.';
+  end
 end
 
 function module.printAvailableSettings ()
@@ -123,34 +122,24 @@ function module.doesSettingExist (setting)
   return (handlers[setting] ~= nil);
 end
 
+function module.isSettingUnavailable (setting)
+  return (unavailableHandlers[setting] ~= nil);
+end
+
+function module.getSettingUnavailableReason (setting)
+  return unavailableHandlers[setting]()
+end
+
 function module.getSetting (setting)
   local handler = handlers[setting];
 
-  if (handler.override ~= nil) then
-    return handler.override();
-  end
-
-  local value = nil;
-
   if (handler.get ~= nil) then
-    value = handler.get();
+    return handler.get();
   else
-    value = options[setting];
+    return options[setting];
   end
-
-  if (value == nil) then
-    error('No value for setting: ' .. setting);
-  end
-
-  return value;
 end
 
 function module.setSetting (setting, value)
-  local handler = handlers[setting];
-
-  if (handler.override) then
-    return handler.override();
-  end
-
-  return handler.set(value);
+  return handlers[setting].set(value);
 end

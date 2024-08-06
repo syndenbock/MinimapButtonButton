@@ -31,17 +31,18 @@ SlashCommands.addCommand('set', function (setting, value)
 
   local lowerCaseSetting = strlower(setting);
 
+  if (Settings.isSettingUnavailable(setting)) then
+    Utils.printAddonMessage(Settings.getSettingUnavailableReason(setting));
+    return;
+  end
+
   if (not Settings.doesSettingExist(lowerCaseSetting)) then
     Utils.printAddonMessage('unknown setting: ', setting);
     return;
   end
 
   if (value == nil) then
-    local value = Settings.getSetting(lowerCaseSetting);
-
-    if (value ~= nil) then
-      printSettingValue(setting, tostring(value));
-    end
+    printSettingValue(setting, tostring(Settings.getSetting(lowerCaseSetting)));
   else
     local status = Settings.setSetting(lowerCaseSetting, value);
 
@@ -49,7 +50,7 @@ SlashCommands.addCommand('set', function (setting, value)
       printSettingWasSet(setting, value);
     elseif (status == false) then
       printInvalidSettingValue(setting, value);
-    elseif (status ~= nil) then
+    else
       error('Invalid getter status: ' .. status);
     end
   end
