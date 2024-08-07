@@ -1,1 +1,1 @@
-- The <hidecompartment> option is no longer printed in the settings list on classic clients where it's unavailable
+- The expansion landing page button is now included if the garrison button was collected before
