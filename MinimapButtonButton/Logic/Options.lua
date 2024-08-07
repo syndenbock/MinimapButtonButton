@@ -34,6 +34,11 @@ local function migrateOptions ()
     options.majorDirection = nil;
     options.minorDirection = nil;
   end
+
+  if (options.whitelist['GarrisonLandingPageMinimapButton'] == true) then
+    options.whitelist['ExpansionLandingPageMinimapButton'] = true;
+    options.whitelist['GarrisonLandingPageMinimapButton'] = nil;
+  end
 end
 
 local function checkValues (loadedValues, defaults)
