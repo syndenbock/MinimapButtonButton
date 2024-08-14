@@ -35,7 +35,6 @@ local function getUnitColor (unit)
 end
 
 addon.export('Core/Utils', {
-  isAddOnLoaded = _G.C_AddOns and _G.C_AddOns.IsAddOnLoaded or _G.IsAddOnLoaded,
   printAddonMessage = printAddonMessage,
   printReloadMessage = printReloadMessage,
   getFrameName = getFrameName,
