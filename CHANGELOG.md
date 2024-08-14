@@ -1,1 +1,1 @@
-- The expansion landing page button is now included if the garrison button was collected before
+- Update interface version for 11.0.2
