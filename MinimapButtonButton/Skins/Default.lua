@@ -19,7 +19,7 @@ Main.mainButton:SetBackdrop({
   },
 });
 
-Main.mainButton:SetBackdropColor(addon.import('Core/Utils').getUnitColor('player'));
+Main.mainButton:SetBackdropColor(addon.import('Core/Utils').getPlayerColor());
 
 Main.logo:SetVertexColor(0, 0, 0, 1);
 

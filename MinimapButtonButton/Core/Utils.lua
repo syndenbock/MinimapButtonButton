@@ -41,11 +41,16 @@ local function getUnitColor (unit)
   return color.r, color.g, color.b, 1;
 end
 
+local function getPlayerColor ()
+  return getUnitColor('player');
+end
+
 addon.export('Core/Utils', {
   printAddonMessage = printAddonMessage,
   printReloadMessage = printReloadMessage,
   getFrameName = getFrameName,
   concatButtonName = concatButtonName,
   getUnitColor = getUnitColor,
+  getPlayerColor = getPlayerColor,
   isRetail = isRetail,
 });
