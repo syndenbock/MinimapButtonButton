@@ -1,1 +1,1 @@
-- Update interface version for 11.0.2
+- Added support for addons that customize unit colors using a CUSTOM_CLASS_COLORS table
