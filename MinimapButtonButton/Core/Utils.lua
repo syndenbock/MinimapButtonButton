@@ -29,7 +29,14 @@ end
 
 local function getUnitColor (unit)
   -- Do not use C_ClassColor.GetClassColor, it doesn't exist in Classic or BCC
-  local color = _G.RAID_CLASS_COLORS[select(2, _G.UnitClass(unit))];
+  local playerClass = select(2, _G.UnitClass(unit));
+  local color;
+
+  if (type(_G.CUSTOM_CLASS_COLORS) == "table") then
+    color = _G.CUSTOM_CLASS_COLORS[playerClass];
+  else
+    color = _G.RAID_CLASS_COLORS[playerClass];
+  end
 
   return color.r, color.g, color.b, 1;
 end
