@@ -1,1 +1,1 @@
-- Updated interface version for Classic
+- Updated interface version for Retail 11.0.5
