@@ -1,1 +1,1 @@
-- Updated interface version for Retail 11.0.5
+- Updated interface version for Cataclysm Classic
