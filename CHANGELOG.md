@@ -1,1 +1,1 @@
-- Updated interface version for Cataclysm Classic
+- Updated interface version for Classic
