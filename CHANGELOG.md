@@ -1,1 +1,1 @@
-- Updated interface version for Classic
+- chore: Update interface version for Retail 11.0.7
