@@ -126,7 +126,7 @@ local function findButtonByName (name)
   for frameName in gmatch(name, '[^.]+') do
     parent = parent[frameName];
 
-    if (parent == nil) then
+    if (type(parent) ~= 'table') then
       return nil;
     end
   end
