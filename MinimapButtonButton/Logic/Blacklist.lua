@@ -17,7 +17,7 @@ function module.isButtonBlacklisted (frame)
 end
 
 function module.addToBlacklist (buttonName)
-  if (_G[buttonName] == nil) then
+  if (Main.findButtonByName(buttonName) == nil) then
     Utils.printAddonMessage(format('No frame named "%s" was found.', buttonName));
     return;
   end
