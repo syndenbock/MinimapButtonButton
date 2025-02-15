@@ -84,7 +84,7 @@ local function getLibDBIcon ()
   return _G.LibStub and _G.LibStub:GetLibrary('LibDBIcon-1.0', true);
 end
 
-local function collectLibDBIconButton (button)
+local function collectLibIcon (button)
   if (not isButtonCollected(button) and
       not Blacklist.isButtonBlacklisted(button)) then
     collectButton(button);
@@ -104,7 +104,23 @@ local function collectLibDBIconButtons ()
   for _, buttonName in ipairs(LibDBIcon:GetButtonList()) do
     local button = LibDBIcon:GetMinimapButton(buttonName);
 
-    collectLibDBIconButton(button);
+    collectLibIcon(button);
+  end
+end
+
+local function getLibMapButton ()
+  return _G.LibStub and _G.LibStub:GetLibrary('LibMapButton-1.1', true);
+end
+
+local function collectLibMapButtonButtons ()
+  local LibMapButton = getLibMapButton();
+
+  if (not LibMapButton) then
+    return;
+  end
+
+  for _, button in pairs(LibMapButton.buttons) do
+    collectLibIcon(button);
   end
 end
 
@@ -229,6 +245,7 @@ local function collectMinimapButtonsAndUpdateLayout ()
   local previousCount = #collectedButtons;
 
   collectLibDBIconButtons();
+  collectLibMapButtonButtons();
   collectWhitelistedButtons();
   scanMinimapChildren();
 
@@ -397,7 +414,7 @@ local function hookLibDBIconButtons ()
   end
 
   LibDBIcon.RegisterCallback(addonName, 'LibDBIcon_IconCreated', function (_, button)
-    if (collectLibDBIconButton(button)) then
+    if (collectLibIcon(button)) then
       Layout.updateLayout();
     end
   end);
