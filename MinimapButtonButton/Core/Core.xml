@@ -1,7 +1,8 @@
 <UI>
   <script file="Core.lua"/>
+  <script file="Utils.lua"/>
   <script file="Events.lua"/>
   <script file="SlashCommands.lua"/>
-  <script file="Utils.lua"/>
+  <script file="HelpCommands.lua"/>
   <script file="Tooltip.lua"/>
 </UI>
