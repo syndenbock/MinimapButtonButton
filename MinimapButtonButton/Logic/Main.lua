@@ -13,6 +13,7 @@ local SetScale = _G.UIParent.SetScale;
 
 local Constants = addon.import('Logic/Constants');
 local SlashCommands = addon.import('Core/SlashCommands');
+local HelpCommands = addon.import('Core/HelpCommands');
 local Utils = addon.import('Core/Utils');
 
 local anchors = Constants.anchors;
@@ -471,8 +472,11 @@ local function printButtonLists ()
 end
 
 SlashCommands.addCommand('list', printButtonLists);
+HelpCommands.addHelper('list', 'This command lists all buttons that are currently being collected and ignored.')
+
 SlashCommands.addCommand('default', printButtonLists);
 SlashCommands.addCommand('reset', setDefaultPosition);
+HelpCommands.addHelper('reset', 'This command resets the main buttons position to the middle of the screen.');
 
 --##############################################################################
 -- shared data
