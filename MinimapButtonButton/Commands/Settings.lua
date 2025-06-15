@@ -79,12 +79,10 @@ SlashCommands.addCommand({'include', 'unignore'}, function (...)
   Whitelist.addToWhitelist(buttonName);
 end);
 
-HelpCommands.addHelper({'include', 'unignore'}, function (...)
-  Utils.printAddonMessage(strjoin(' ',
-      'This command adds a button with the name passed to the command to be manually collected.',
-      'If the button was previously ignored, it will be removed from the ignore list.'
-  ));
-end);
+HelpCommands.addHelper({'include', 'unignore'}, strjoin(' ',
+    'This command adds a button with the name passed to the command to be manually collected.',
+    'If the button was previously ignored, it will be removed from the ignore list.'
+));
 
 SlashCommands.addCommand({'ignore', 'uninclude'}, function (...)
   if (... == nil) then
@@ -98,19 +96,13 @@ SlashCommands.addCommand({'ignore', 'uninclude'}, function (...)
   Blacklist.addToBlacklist(buttonName);
 end);
 
-HelpCommands.addHelper({'ignore', 'uninclude'}, function (...)
-  Utils.printAddonMessage(strjoin(' ',
-      'This command stops a button with the name passed to the command from being collected.',
-      'This requires a "/reload" to take effect.'
-  ));
-end);
+HelpCommands.addHelper({'ignore', 'uninclude'}, strjoin(' ',
+  'This command stops a button with the name passed to the command from being collected.',
+  'This requires a "/reload" to take effect.'
+));
 
 SlashCommands.addCommand({'includeall', 'unignoreall'}, Blacklist.clearBlacklist);
-HelpCommands.addHelper({'includeall', 'unignoreall'}, function (...)
-  Utils.printAddonMessage('This command causes all buttons that are being ignored to be collected again.');
-end);
+HelpCommands.addHelper({'includeall', 'unignoreall'}, 'This command causes all buttons that are being ignored to be collected again.');
 
 SlashCommands.addCommand({'ignoreall', 'unincludeall'}, Whitelist.clearWhitelist);
-HelpCommands.addHelper({'ignoreall', 'unincludeall'}, function (...)
-  Utils.printAddonMessage('This command causes all buttons that have manually been marked for collection to no longer be collected.');
-end);
+HelpCommands.addHelper({'ignoreall', 'unincludeall'}, 'This command causes all buttons that have manually been marked for collection to no longer be collected.');

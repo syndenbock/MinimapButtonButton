@@ -44,5 +44,9 @@ SlashCommands.addCommand('help', function (command, ...)
     return;
   end
 
-  helper(...);
+  if (type(helper) == 'function') then
+    helper(...);
+  else
+    Utils.printAddonMessage(helper);
+  end
 end);
