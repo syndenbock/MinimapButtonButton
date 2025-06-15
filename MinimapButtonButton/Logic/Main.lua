@@ -456,18 +456,12 @@ local function printButtonLists ()
 
   if (next(options.whitelist) ~= nil) then
     Utils.printAddonMessage('Buttons currently being manually collected:');
-
-    for buttonName in pairs(options.whitelist) do
-      print(buttonName);
-    end
+    Utils.printTableKeys(options.whitelist);
   end
 
   if (next(options.blacklist) ~= nil) then
     Utils.printAddonMessage('Buttons currently being ignored:');
-
-    for buttonName in pairs(options.blacklist) do
-      print(buttonName);
-    end
+    Utils.printTableKeys(options.blacklist);
   end
 end
 
