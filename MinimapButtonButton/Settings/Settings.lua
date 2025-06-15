@@ -1,9 +1,9 @@
 local _, addon = ...;
 
 local floor = _G.floor;
+local strjoin = _G.strjoin;
 
 local Main = addon.import('Logic/Main');
-local Utils = addon.import('Core/Utils');
 local options = addon.import('Logic/Options').getAll();
 local Enhancements = addon.import('Features/Enhancements');
 local Layout = addon.import('Layouts/Main');
@@ -21,6 +21,10 @@ handlers.direction = {
     options.direction = value;
     return true;
   end,
+  help = strjoin('\n',
+      'This setting allows you to set the direction the collected buttons attach to the frame. Available values are:',
+      'leftdown leftup', 'rightup rightdown', 'upleft upright', 'downleft downright'
+  )
 };
 
 handlers.buttonsperrow = {
@@ -39,6 +43,7 @@ handlers.buttonsperrow = {
   get = function ()
     return options.buttonsPerRow;
   end,
+  help = "This setting specifies how many buttons will be placed in one row at max."
 };
 
 handlers.scale = {
@@ -53,6 +58,7 @@ handlers.scale = {
     Main.applyScale();
     return true;
   end,
+  help = "This setting specifies the scale of the addon button."
 };
 
 handlers.buttonscale = {
@@ -70,6 +76,7 @@ handlers.buttonscale = {
   get = function ()
     return options.buttonScale;
   end,
+  help = "This setting specifies the scale of the collected buttons."
 };
 
 handlers.autohide = {
@@ -88,6 +95,7 @@ handlers.autohide = {
 
     return true;
   end,
+  help = "This setting specifies the time in seconds after which the button should close automatically. Setting it to 0 disables automatic closing."
 };
 
 if (Enhancements.compartment) then
@@ -105,6 +113,7 @@ if (Enhancements.compartment) then
 
       return true;
     end,
+    help = "This setting specifies if the Blizzard addon compartment button should be hidden."
   };
 else
   unavailableHandlers.hidecompartment = function ()
@@ -115,6 +124,14 @@ end
 function module.printAvailableSettings ()
   for setting in pairs(handlers) do
     print(setting);
+  end
+end
+
+function module.printAvailableHelpers()
+  for setting, handler in pairs(handlers) do
+    if (handler.help ~= null) then
+      print(setting);
+    end
   end
 end
 
@@ -142,4 +159,8 @@ end
 
 function module.setSetting (setting, value)
   return handlers[setting].set(value);
+end
+
+function module.getHelp (setting)
+  return handlers[setting] and handlers[setting].help;
 end
