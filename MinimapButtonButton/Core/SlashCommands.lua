@@ -21,9 +21,7 @@ local function executeSlashCommand (command, ...)
 end
 
 local function printAvailableCommands ()
-  for command, handler in pairs(slashCommands) do
-    print(command);
-  end
+  Utils.printTableKeys(slashCommands);
 end
 
 local function slashHandler (input)

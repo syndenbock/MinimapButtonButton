@@ -2,6 +2,8 @@ local addonName, addon = ...;
 
 local strconcat = _G.strconcat;
 local strjoin = _G.strjoin;
+local sort = _G.sort;
+local tinsert = _G.tinsert;
 
 local IS_RETAIL = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE);
 local ADDON_MESSAGE_PREFIX = '|cff00ffff' .. addonName .. '|r ';
@@ -12,6 +14,26 @@ end
 
 local function printAddonMessage (...)
   print(strconcat(ADDON_MESSAGE_PREFIX, ...));
+end
+
+local function getSortedTableKeys(table)
+  local keys = {};
+
+  for key, value in pairs(table) do
+    tinsert(keys, key);
+  end
+
+  sort(keys);
+
+  return keys;
+end
+
+local function printTableKeys(table)
+  local keys = getSortedTableKeys(table);
+
+  for index, key in ipairs(keys) do
+    print(key);
+  end
 end
 
 local function printReloadMessage (...)
@@ -47,6 +69,8 @@ end
 
 addon.export('Core/Utils', {
   printAddonMessage = printAddonMessage,
+  getSortedTableKeys = getSortedTableKeys,
+  printTableKeys = printTableKeys,
   printReloadMessage = printReloadMessage,
   getFrameName = getFrameName,
   concatButtonName = concatButtonName,

@@ -24,9 +24,7 @@ function module.addHelper(commands, callback)
 end
 
 local function printAvailableHelpers ()
-  for key, value in pairs(helpers) do
-    print(key);
-  end
+  Utils.printTableKeys(helpers);
 end
 
 SlashCommands.addCommand('help', function (command, ...)

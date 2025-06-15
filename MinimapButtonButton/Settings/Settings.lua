@@ -3,6 +3,7 @@ local _, addon = ...;
 local floor = _G.floor;
 local strjoin = _G.strjoin;
 
+local Utils = addon.import('Core/Utils');
 local Main = addon.import('Logic/Main');
 local options = addon.import('Logic/Options').getAll();
 local Enhancements = addon.import('Features/Enhancements');
@@ -122,17 +123,7 @@ else
 end
 
 function module.printAvailableSettings ()
-  for setting in pairs(handlers) do
-    print(setting);
-  end
-end
-
-function module.printAvailableHelpers()
-  for setting, handler in pairs(handlers) do
-    if (handler.help ~= null) then
-      print(setting);
-    end
-  end
+  Utils.printTableKeys(handlers);
 end
 
 function module.doesSettingExist (setting)

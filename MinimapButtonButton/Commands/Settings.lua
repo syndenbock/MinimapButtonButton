@@ -13,7 +13,7 @@ local HelpCommands = addon.import('Core/HelpCommands');
 
 SlashCommands.addCommand('set', function (setting, value)
   if (setting == nil) then
-    Utils.printAddonMessage('Available settings:');
+    Utils.printAddonMessage('The available settings are:');
     Settings.printAvailableSettings();
     return;
   end
@@ -60,7 +60,7 @@ HelpCommands.addHelper('set', function (setting)
 
   if (help == nil) then
     Utils.printAddonMessage(format('Unknown setting: %s.\nHelp is available for these settings:', setting));
-    Settings.printAvailableHelpers();
+    Settings.printAvailableSettings();
     return;
   end
 
