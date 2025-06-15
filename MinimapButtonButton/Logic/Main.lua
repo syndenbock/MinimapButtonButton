@@ -474,7 +474,6 @@ end
 SlashCommands.addCommand('list', printButtonLists);
 HelpCommands.addHelper('list', 'This command lists all buttons that are currently being collected and ignored.')
 
-SlashCommands.addCommand('default', printButtonLists);
 SlashCommands.addCommand('reset', setDefaultPosition);
 HelpCommands.addHelper('reset', 'This command resets the main buttons position to the middle of the screen.');
 

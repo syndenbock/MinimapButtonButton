@@ -3,6 +3,8 @@ local addonName, addon = ...;
 local strlower = _G.strlower;
 local strsplit = _G.strsplit;
 
+local Utils = addon.import('Core/Utils');
+
 local module = addon.export('Core/SlashCommands', {});
 
 local slashCommands = {};
@@ -18,9 +20,17 @@ local function executeSlashCommand (command, ...)
   handler(...);
 end
 
+local function printAvailableCommands ()
+  for command, handler in pairs(slashCommands) do
+    print(command);
+  end
+end
+
 local function slashHandler (input)
   if (input == nil or input == '') then
-    return executeSlashCommand('default');
+    Utils.printAddonMessage('Available commands are:');
+    printAvailableCommands();
+    return;
   end
 
   executeSlashCommand(strsplit(' ', input));
