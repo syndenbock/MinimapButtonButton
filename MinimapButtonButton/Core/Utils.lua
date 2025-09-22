@@ -16,24 +16,26 @@ local function printAddonMessage (...)
   print(strconcat(ADDON_MESSAGE_PREFIX, ...));
 end
 
-local function getSortedTableKeys(table)
+local function getTableKeys(table)
   local keys = {};
 
   for key, value in pairs(table) do
     tinsert(keys, key);
   end
 
-  sort(keys);
-
   return keys;
 end
 
-local function printTableKeys(table)
-  local keys = getSortedTableKeys(table);
+local function sortAndPrintList (list)
+  sort(list);
 
-  for index, key in ipairs(keys) do
+  for _, key in ipairs(list) do
     print(key);
   end
+end
+
+local function printTableKeys(table)
+  sortAndPrintList(getTableKeys(table));
 end
 
 local function printReloadMessage (...)
@@ -69,7 +71,8 @@ end
 
 addon.export('Core/Utils', {
   printAddonMessage = printAddonMessage,
-  getSortedTableKeys = getSortedTableKeys,
+  getTableKeys = getTableKeys,
+  sortAndPrintList = sortAndPrintList,
   printTableKeys = printTableKeys,
   printReloadMessage = printReloadMessage,
   getFrameName = getFrameName,

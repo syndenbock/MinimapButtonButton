@@ -2,6 +2,8 @@ local addonName, addon = ...;
 
 local gmatch = _G.gmatch;
 local sort = _G.sort;
+local strfind = _G.strfind;
+local strlower = _G.strlower;
 local strmatch = _G.strmatch;
 local tinsert = _G.tinsert;
 local executeAfter = _G.C_Timer.After;
@@ -130,29 +132,56 @@ local function isValidFrame (frame)
     return false;
   end
 
-  if (not frame.IsObjectType or not frame:IsObjectType('Frame')) then
-    return false;
+  return (frame.IsObjectType and frame:IsObjectType('Frame'));
+end
+
+local function findFrameInParent(parent, name)
+  if (parent[name] ~= nil and type(parent[name]) == "table") then
+    return {{key = name, item = parent[name]}};
   end
 
-  return true;
+  local matches = {};
+
+  for key, child in pairs(parent) do
+    if (type(child) == "table" and strfind(strlower(key), strlower(name), 1, true)) then
+      tinsert(matches, {key = key, item = child });
+    end
+  end
+
+  return matches;
 end
 
 local function findButtonByName (name)
   local parent = _G;
+  local matches = nil;
+  local path = nil;
 
   for frameName in gmatch(name, '[^.]+') do
-    parent = parent[frameName];
+    matches = findFrameInParent(parent, frameName);
 
-    if (type(parent) ~= 'table') then
-      return nil;
+    if (#matches == 0 or #matches > 1) then
+      return matches, path;
     end
+
+    parent = matches[1].item;
+    path = path and path .. "." .. matches[1].key or matches[1].key;
   end
 
-  return parent;
+  return matches, path;
+end
+
+local function getFoundButtonPaths (path, matches)
+  local results = {};
+
+  for _, match in ipairs(matches) do
+    tinsert(results, path and path .. "." .. match.key or match.key);
+  end
+
+  return results;
 end
 
 local function scanButtonByName (buttonName)
-  local button = findButtonByName(buttonName);
+  local button = findButtonByName(buttonName)[1];
 
   if (isValidFrame(button) and not isButtonCollected(button)) then
     collectButton(button);
@@ -485,5 +514,6 @@ addon.export('Logic/Main', {
   applyButtonScale = applyButtonScale,
   collectMinimapButtonsAndUpdateLayout = collectMinimapButtonsAndUpdateLayout,
   findButtonByName = findButtonByName,
+  getFoundButtonPaths = getFoundButtonPaths,
   isValidFrame = isValidFrame,
 });
