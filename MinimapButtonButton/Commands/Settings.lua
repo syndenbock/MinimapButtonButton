@@ -74,9 +74,9 @@ SlashCommands.addCommand({'include', 'unignore'}, function (...)
   end
 
   local buttonName = Utils.concatButtonName(...);
+  local fullPath = Whitelist.addToWhitelist(buttonName);
 
-  Blacklist.removeFromBlacklist(buttonName);
-  Whitelist.addToWhitelist(buttonName);
+  Blacklist.removeFromBlacklist(fullPath or buttonName);
 end);
 
 HelpCommands.addHelper({'include', 'unignore'}, strjoin(' ',
@@ -91,9 +91,9 @@ SlashCommands.addCommand({'ignore', 'uninclude'}, function (...)
   end
 
   local buttonName = Utils.concatButtonName(...);
+  local fullPath = Blacklist.addToBlacklist(buttonName);
 
-  Whitelist.removeFromWhitelist(buttonName);
-  Blacklist.addToBlacklist(buttonName);
+  Whitelist.removeFromWhitelist(fullPath or buttonName);
 end);
 
 HelpCommands.addHelper({'ignore', 'uninclude'}, strjoin(' ',

@@ -17,13 +17,22 @@ function module.isButtonBlacklisted (frame)
 end
 
 function module.addToBlacklist (buttonName)
-  if (Main.findButtonByName(buttonName) == nil) then
+  local matches, path = Main.findButtonByName(buttonName);
+
+  if (#matches == 0) then
     Utils.printAddonMessage(format('No frame named "%s" was found.', buttonName));
-    return;
+    return nil;
   end
 
-  options.blacklist[buttonName] = true;
+  if (#matches > 1) then
+    Utils.printAddonMessage(format('More than one frame containing "%s" was found:', buttonName));
+    Utils.sortAndPrintList(Main.getFoundButtonPaths(path, matches));
+    return nil;
+  end
+
+  options.blacklist[path] = true;
   Utils.printReloadMessage(format('Button "%s" is now being ignored.', buttonName));
+  return path;
 end
 
 function module.removeFromBlacklist (buttonName)
