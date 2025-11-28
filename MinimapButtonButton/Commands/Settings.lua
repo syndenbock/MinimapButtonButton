@@ -5,11 +5,11 @@ local strlower = _G.strlower;
 local format = _G.format;
 
 local Utils = addon.import('Core/Utils');
-local Settings = addon.import('Settings/Settings');
-local Whitelist = addon.import('Logic/Whitelist');
-local Blacklist = addon.import('Logic/Blacklist');
 local SlashCommands = addon.import('Core/SlashCommands');
 local HelpCommands = addon.import('Core/HelpCommands');
+local Whitelist = addon.import('Logic/Whitelist');
+local Blacklist = addon.import('Logic/Blacklist');
+local Settings = addon.import('Settings/Settings');
 
 SlashCommands.addCommand('set', function (setting, value)
   if (setting == nil) then
@@ -74,9 +74,13 @@ SlashCommands.addCommand({'include', 'unignore'}, function (...)
   end
 
   local buttonName = Utils.concatButtonName(...);
-  local fullPath = Whitelist.addToWhitelist(buttonName);
+  local button, path = Whitelist.findButton(buttonName);
 
-  Blacklist.removeFromBlacklist(fullPath or buttonName);
+  Blacklist.removeFromBlacklist(path or buttonName);
+
+  if (button ~= nil) then
+    Whitelist.addToWhitelist(path);
+  end
 end);
 
 HelpCommands.addHelper({'include', 'unignore'}, strjoin(' ',
@@ -91,9 +95,13 @@ SlashCommands.addCommand({'ignore', 'uninclude'}, function (...)
   end
 
   local buttonName = Utils.concatButtonName(...);
-  local fullPath = Blacklist.addToBlacklist(buttonName);
+  local button, path = Blacklist.findButton(buttonName);
 
-  Whitelist.removeFromWhitelist(fullPath or buttonName);
+  Whitelist.removeFromWhitelist(path or buttonName);
+
+  if (button ~= nil) then
+    Blacklist.addToBlacklist(buttonName);
+  end
 end);
 
 HelpCommands.addHelper({'ignore', 'uninclude'}, strjoin(' ',

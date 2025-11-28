@@ -16,7 +16,7 @@ function module.isButtonBlacklisted (frame)
       options.blacklist[frameName] == true);
 end
 
-function module.addToBlacklist (buttonName)
+function module.findButton (buttonName)
   local matches, path, keys = Main.findButtonByName(buttonName);
 
   if (#matches == 0) then
@@ -30,9 +30,12 @@ function module.addToBlacklist (buttonName)
     return nil;
   end
 
+  return matches[1], path;
+end
+
+function module.addToBlacklist (path)
   options.blacklist[path] = true;
-  Utils.printReloadMessage(format('Button "%s" is now being ignored.', buttonName));
-  return path;
+  Utils.printReloadMessage(format('Button "%s" is now being ignored.', path));
 end
 
 function module.removeFromBlacklist (buttonName)

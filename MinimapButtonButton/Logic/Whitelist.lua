@@ -9,7 +9,7 @@ local options = addon.import('Logic/Options').getAll();
 
 local module = addon.export('Logic/Whitelist', {});
 
-function module.addToWhitelist (buttonName)
+function module.findButton (buttonName)
   local matches, path, keys = Main.findButtonByName(buttonName);
 
   if (#matches == 0) then
@@ -24,15 +24,18 @@ function module.addToWhitelist (buttonName)
   end
 
   if (not Main.isValidFrame(matches[1])) then
-    Utils.printAddonMessage(format('"%s" is not a valid frame.', buttonName));
+    Utils.printAddonMessage(format('"%s" is not a valid frame.', path));
     return nil;
   end
 
+  return matches[1], path;
+end
+
+function module.addToWhitelist (path)
   options.whitelist[path] = true;
   Main.collectMinimapButtonsAndUpdateLayout();
   Utils.printAddonMessage(format('Button "%s" is now manually being collected.',
-      buttonName));
-  return path;
+      path));
 end
 
 function module.removeFromWhitelist (buttonName)
