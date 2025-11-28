@@ -183,6 +183,12 @@ end
 local function scanButtonByName (buttonName)
   local button = findButtonByName(buttonName)[1];
 
+  if (button == nil) then
+    return;
+  end
+
+  button = button.item;
+
   if (isValidFrame(button) and not isButtonCollected(button)) then
     collectButton(button);
   end
