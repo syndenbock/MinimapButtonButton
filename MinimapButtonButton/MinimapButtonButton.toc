@@ -1,6 +1,4 @@
-## Interface: 110200
-## Interface-Mists: 50502
-## Interface-Classic: 11508
+## Interface: 11508, 38000, 50502, 110200
 ## Title: MinimapButtonButton
 ## Title-ruRU: Универсальная кнопка миникарты
 ## Version: 1.22.5
