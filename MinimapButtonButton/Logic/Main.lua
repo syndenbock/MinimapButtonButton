@@ -137,44 +137,47 @@ end
 
 local function findFrameInParent(parent, name)
   if (parent[name] ~= nil and type(parent[name]) == "table") then
-    return {{key = name, item = parent[name]}};
+    return {parent[name]}, {name};
   end
 
   local matches = {};
+  local keys = {};
 
   for key, child in pairs(parent) do
     if (type(child) == "table" and strfind(strlower(key), strlower(name), 1, true)) then
-      tinsert(matches, {key = key, item = child });
+      tinsert(matches, child);
+      tinsert(keys, key);
     end
   end
 
-  return matches;
+  return matches, keys;
 end
 
 local function findButtonByName (name)
   local parent = _G;
   local matches = nil;
+  local keys = nil;
   local path = nil;
 
   for frameName in gmatch(name, '[^.]+') do
-    matches = findFrameInParent(parent, frameName);
+    matches, keys = findFrameInParent(parent, frameName);
 
     if (#matches == 0 or #matches > 1) then
-      return matches, path;
+      return matches, path, keys;
     end
 
-    parent = matches[1].item;
-    path = path and path .. "." .. matches[1].key or matches[1].key;
+    parent = matches[1];
+    path = path and path .. "." .. keys[1] or keys[1];
   end
 
-  return matches, path;
+  return matches, path, keys;
 end
 
-local function getFoundButtonPaths (path, matches)
+local function getFoundButtonPaths (path, keys)
   local results = {};
 
-  for _, match in ipairs(matches) do
-    tinsert(results, path and path .. "." .. match.key or match.key);
+  for _, key in ipairs(keys) do
+    tinsert(results, path and path .. "." .. key or key);
   end
 
   return results;
@@ -182,12 +185,6 @@ end
 
 local function scanButtonByName (buttonName)
   local button = findButtonByName(buttonName)[1];
-
-  if (button == nil) then
-    return;
-  end
-
-  button = button.item;
 
   if (isValidFrame(button) and not isButtonCollected(button)) then
     collectButton(button);

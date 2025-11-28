@@ -10,7 +10,7 @@ local options = addon.import('Logic/Options').getAll();
 local module = addon.export('Logic/Whitelist', {});
 
 function module.addToWhitelist (buttonName)
-  local matches, path = Main.findButtonByName(buttonName);
+  local matches, path, keys = Main.findButtonByName(buttonName);
 
   if (#matches == 0) then
     Utils.printAddonMessage(format('No frame named "%s" was found.', buttonName));
@@ -19,11 +19,11 @@ function module.addToWhitelist (buttonName)
 
   if (#matches > 1) then
     Utils.printAddonMessage(format('More than one frame containing "%s" was found:', buttonName));
-    Utils.sortAndPrintList(Main.getFoundButtonPaths(path, matches));
+    Utils.sortAndPrintList(Main.getFoundButtonPaths(path, keys));
     return nil;
   end
 
-  if (not Main.isValidFrame(matches[1].item)) then
+  if (not Main.isValidFrame(matches[1])) then
     Utils.printAddonMessage(format('"%s" is not a valid frame.', buttonName));
     return nil;
   end
