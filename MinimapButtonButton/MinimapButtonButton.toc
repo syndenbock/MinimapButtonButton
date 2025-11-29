@@ -1,4 +1,4 @@
-## Interface: 11508, 38000, 50502, 110200
+## Interface: 11508, 20504, 30404, 38000, 40402, 50502, 110200
 ## Title: MinimapButtonButton
 ## Title-ruRU: Универсальная кнопка миникарты
 ## Version: 1.22.6
