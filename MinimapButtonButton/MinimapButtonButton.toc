@@ -1,4 +1,10 @@
-## Interface: 11508, 20504, 30404, 38000, 40402, 50502, 110200
+## Interface: 110200
+## Interface-Mists: 50502
+## Interface-Cata: 40402
+## Interface-Wrath: 30404, 38000
+## Interface-BCC: 20504
+## Interface-Classic: 11508
+
 ## Title: MinimapButtonButton
 ## Title-ruRU: Универсальная кнопка миникарты
 ## Version: 1.22.7
