@@ -153,7 +153,7 @@ local function findFrameInParent(parent, name)
   return matches, keys;
 end
 
-local function findButtonByName (name)
+local function searchButtonByName (name)
   local parent = _G;
   local matches = nil;
   local keys = nil;
@@ -184,7 +184,7 @@ local function getFoundButtonPaths (path, keys)
 end
 
 local function scanButtonByName (buttonName)
-  local button = findButtonByName(buttonName)[1];
+  local button = searchButtonByName(buttonName)[1];
 
   if (isValidFrame(button) and not isButtonCollected(button)) then
     collectButton(button);
@@ -516,7 +516,7 @@ addon.export('Logic/Main', {
   hideButtons = hideButtons,
   applyButtonScale = applyButtonScale,
   collectMinimapButtonsAndUpdateLayout = collectMinimapButtonsAndUpdateLayout,
-  findButtonByName = findButtonByName,
+  searchButtonByName = searchButtonByName,
   getFoundButtonPaths = getFoundButtonPaths,
   isValidFrame = isValidFrame,
 });

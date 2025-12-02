@@ -10,7 +10,7 @@ local options = addon.import('Logic/Options').getAll();
 local module = addon.export('Logic/Whitelist', {});
 
 function module.findButton (buttonName)
-  local matches, path, keys = Main.findButtonByName(buttonName);
+  local matches, path, keys = Main.searchButtonByName(buttonName);
 
   if (#matches == 0) then
     Utils.printAddonMessage(format('No frame named "%s" was found.', buttonName));
