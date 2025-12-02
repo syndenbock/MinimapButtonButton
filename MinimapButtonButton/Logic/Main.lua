@@ -183,17 +183,27 @@ local function getFoundButtonPaths (path, keys)
   return results;
 end
 
-local function scanButtonByName (buttonName)
-  local button = searchButtonByName(buttonName)[1];
+local function getButtonByName (buttonName)
+  local parent = _G;
 
-  if (isValidFrame(button) and not isButtonCollected(button)) then
-    collectButton(button);
+  for frameName in gmatch(buttonName, '[^.]+') do
+    parent = parent[frameName];
+
+    if (type(parent) ~= 'table') then
+      return nil;
+    end
   end
+
+  return parent;
 end
 
 local function collectWhitelistedButtons ()
   for buttonName in pairs(options.whitelist) do
-    scanButtonByName(buttonName);
+    local button = getButtonByName(buttonName);
+
+    if (isValidFrame(button) and not isButtonCollected(button)) then
+      collectButton(button);
+    end
   end
 end
 
