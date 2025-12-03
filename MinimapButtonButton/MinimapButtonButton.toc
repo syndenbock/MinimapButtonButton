@@ -8,7 +8,7 @@
 
 ## Title: MinimapButtonButton
 ## Title-ruRU: Универсальная кнопка миникарты
-## Version: 1.22.9
+## Version: 1.22.10
 ## Author: syndenbock
 ## Notes: Creates a button that collects all minimap buttons
 ## Notes-deDE: Erstellt einen Button, der alle Minimap-Buttons einsammelt
