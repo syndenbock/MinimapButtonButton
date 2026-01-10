@@ -3,7 +3,7 @@
 ## Interface-Cata: 40402
 ## Interface-Titan: 38000
 ## Interface-Wrath: 30404
-## Interface-BCC: 20504
+## Interface-BCC: 20505
 ## Interface-Classic: 11508
 
 ## Title: MinimapButtonButton
