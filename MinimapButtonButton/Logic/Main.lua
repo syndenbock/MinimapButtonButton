@@ -59,7 +59,7 @@ local function collectButton (button)
   button:SetScript('OnDragStart', nil);
   button:SetScript('OnDragStop', nil);
   button:SetIgnoreParentScale(false);
-  button:SetScale(options.buttonScale);
+  button:SetScale(options.buttonScale / 10);
 
   -- Hook the function on the frame itself instead of setting a script handler
   -- to execute only when the function is called and not when the frame changes
@@ -420,12 +420,12 @@ initFrames();
 --##############################################################################
 
 local function applyScale ()
-  mainButton:SetScale(options.scale);
+  mainButton:SetScale(options.scale / 10);
 end
 
 local function applyButtonScale ()
   for _, button in ipairs(collectedButtons) do
-    SetScale(button, options.buttonScale);
+    SetScale(button, options.buttonScale / 10);
   end
 
   Layout.updateLayout();

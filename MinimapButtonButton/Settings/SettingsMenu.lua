@@ -1,7 +1,7 @@
 local addonName, addon = ...;
 
 local Settings = _G.Settings;
-local MinimalSliderWithSteppersMixin = _G.MinimalSliderWithSteppersMixin;
+local SliderLabels = _G.MinimalSliderWithSteppersMixin.Label;
 
 local category = Settings.RegisterVerticalLayoutCategory(addonName);
 
@@ -41,7 +41,14 @@ local function registerSlider(key, defaultValue, options)
     end);
   end
 
-  sliderOptions:SetLabelFormatter(options.label or MinimalSliderWithSteppersMixin.Label.Right);
+  if (options.labels ~= nil) then
+    for label, formatter in pairs(options.labels) do
+      sliderOptions:SetLabelFormatter(label, formatter);
+    end
+  else
+    sliderOptions:SetLabelFormatter(options.label or SliderLabels.Right);
+  end
+
   Settings.CreateSlider(category, setting, sliderOptions, options.tooltip)
 end
 
@@ -88,20 +95,28 @@ local function registerSettingsMenu()
     setValue = Layout.updateLayout,
   });
 
-  registerSlider("scale", 1.0, {
+  registerSlider("scale", 10, {
     name = "Scale of the main button",
-    step = 0.01,
-    min = 0.01,
-    max = 10,
+    min = 1,
+    max = 50,
     setValue = Main.applyScale,
+    labels = {
+      [SliderLabels.Right] = function (value)
+        return value / 10;
+      end,
+    },
   });
 
-  registerSlider("buttonScale", 1.0, {
+  registerSlider("buttonScale", 10, {
     name = "Scale of the collected buttons",
-    step = 0.01,
-    min = 0.01,
-    max = 10,
+    min = 1,
+    max = 50,
     setValue = Main.applyButtonScale,
+    labels = {
+      [SliderLabels.Right] = function (value)
+        return value / 10;
+      end,
+    },
   });
 
   registerSlider("autohide", 0, {
