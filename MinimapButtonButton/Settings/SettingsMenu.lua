@@ -6,15 +6,26 @@ local category = Settings.RegisterVerticalLayoutCategory(addonName);
 local Options = addon.import('Logic/Options');
 local Layout = addon.import("Layouts/Main");
 
-local options = Options.getAll();
+local addonOptions = Options.getAll();
+
+local function registerDropdown (key, defaultValue, optionsGetter, options)
+  local name = options.name or key;
+  local variable = addonName .. '_' .. key;
+  local setValue = options.setValue;
+
+  local setting = Settings.RegisterAddOnSetting(category, variable, key, addonOptions, type(defaultValue), name, defaultValue);
+
+  setting:SetValueChangedCallback(function (self, value)
+    if (setValue ~= nil) then
+      setValue(value);
+    end
+  end);
+
+  Settings.CreateDropdown(category, setting, optionsGetter, options.tooltip);
+end
 
 local function registerSettingsMenu()
-  local name = "Direction";
-  local key = "direction";
-  local variable = addonName .. '_' .. key;
-	local defaultValue = "leftdown";
-
-  local function GetOptions ()
+  local function getOptions ()
     local container = Settings.CreateControlTextContainer();
 
     container:Add("leftdown", "Left > Down");
@@ -29,18 +40,12 @@ local function registerSettingsMenu()
     return container:GetData();
   end
 
-	local function GetValue()
-		return options[key] or defaultValue;
-	end
-
-	local function SetValue(value)
-    if (Layout.applyLayout(value)) then
-		  options[key] = value;
-    end
-	end
-
-	local setting = Settings.RegisterProxySetting(category, variable, type(defaultValue), name, defaultValue, GetValue, SetValue)
-  Settings.CreateDropdown(category, setting, GetOptions);
+  registerDropdown("direction", "leftdown", getOptions, {
+    name = "Direction",
+    setValue = function (value)
+      Layout.applyLayout(value);
+    end,
+  });
 
   Settings.RegisterAddOnCategory(category);
 end
