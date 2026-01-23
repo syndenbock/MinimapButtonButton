@@ -10,6 +10,7 @@ local executeAfter = _G.C_Timer.After;
 local hooksecurefunc = _G.hooksecurefunc;
 local IsAltKeyDown = _G.IsAltKeyDown;
 local issecurevariable = _G.issecurevariable;
+local C_Timer = _G.C_Timer;
 
 local SetScale = _G.UIParent.SetScale;
 
@@ -17,6 +18,7 @@ local Constants = addon.import('Logic/Constants');
 local SlashCommands = addon.import('Core/SlashCommands');
 local HelpCommands = addon.import('Core/HelpCommands');
 local Utils = addon.import('Core/Utils');
+local Tooltip = addon.import('Core/Tooltip');
 
 local anchors = Constants.anchors;
 
@@ -361,7 +363,7 @@ local function stopMovingMainButton ()
   storeMainButtonPosition();
 
   if (mainButton.hasTooltip) then
-    addon.import('Core/Tooltip').removeTooltip(mainButton);
+    Tooltip.removeTooltip(mainButton);
   end
 end
 
@@ -431,12 +433,16 @@ local function applyButtonScale ()
   Layout.updateLayout();
 end
 
-local function restoreOptions ()
-  if (options.position == nil) then
-    addon.import('Core/Tooltip').createTooltip(mainButton, {
+local function addDraggingTooltip ()
+  Tooltip.createTooltip(mainButton, {
       'You can drag the button using the middle mouse button',
       'or any mouse button while holding ALT.'
     });
+end
+
+local function restoreOptions ()
+  if (options.position == nil) then
+    addDraggingTooltip();
   else
     mainButton:ClearAllPoints();
     mainButton:SetPoint(unpack(options.position));
@@ -507,10 +513,15 @@ local function printButtonLists ()
   end
 end
 
+local function resetPosition ()
+  setDefaultPosition();
+  addDraggingTooltip();
+end
+
 SlashCommands.addCommand('list', printButtonLists);
 HelpCommands.addHelper('list', 'This command lists all buttons that are currently being collected and ignored.')
 
-SlashCommands.addCommand('reset', setDefaultPosition);
+SlashCommands.addCommand('reset', resetPosition);
 HelpCommands.addHelper('reset', 'This command resets the main buttons position to the middle of the screen.');
 
 --##############################################################################
@@ -522,6 +533,7 @@ addon.export('Logic/Main', {
   mainButton = mainButton,
   logo = logo,
   collectedButtons = collectedButtons,
+  resetPosition = resetPosition,
   applyScale = applyScale,
   hideButtons = hideButtons,
   applyButtonScale = applyButtonScale,

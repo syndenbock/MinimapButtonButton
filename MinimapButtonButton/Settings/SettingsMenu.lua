@@ -2,8 +2,9 @@ local addonName, addon = ...;
 
 local Settings = _G.Settings;
 local SliderLabels = _G.MinimalSliderWithSteppersMixin.Label;
+local CreateSettingsButtonInitializer = _G.CreateSettingsButtonInitializer;
 
-local category = Settings.RegisterVerticalLayoutCategory(addonName);
+local category, layout = Settings.RegisterVerticalLayoutCategory(addonName);
 
 local Main = addon.import('Logic/Main');
 local Options = addon.import('Logic/Options');
@@ -13,6 +14,8 @@ local Layout = addon.import('Layouts/Main');
 local addonOptions = Options.getAll();
 
 local function registerDropdown (key, defaultValue, optionsGetter, options)
+  options = options or {};
+
   local name = options.name or key;
   local variable = addonName .. '_' .. key;
   local setValue = options.setValue;
@@ -28,6 +31,8 @@ local function registerDropdown (key, defaultValue, optionsGetter, options)
 end
 
 local function registerSlider(key, defaultValue, options)
+  options = options or {};
+
   local name = options.name or key;
   local variable = addonName .. '_' .. key;
   local sliderOptions = Settings.CreateSliderOptions(options.min or 1,
@@ -53,6 +58,8 @@ local function registerSlider(key, defaultValue, options)
 end
 
 local function registerCheckbox (key, defaultValue, options)
+  options = options or {};
+
   local name = options.name or key;
   local variable = addonName .. '_' .. key;
   local setValue = options.setValue;
@@ -66,6 +73,15 @@ local function registerCheckbox (key, defaultValue, options)
 
   Settings.CreateCheckbox(category, setting, options.tooltip);
 end
+
+local function registerButton (name, onclick, options)
+  options = options or {};
+
+  local buttonInitializer = CreateSettingsButtonInitializer(name, name, onclick, options.tooltip, true);
+
+  layout:AddInitializer(buttonInitializer);
+end
+
 
 local function registerSettingsMenu()
   local function getOptions ()
@@ -142,6 +158,8 @@ local function registerSettingsMenu()
       end
     });
   end
+
+  registerButton("Reset position", Main.resetPosition);
 
   Settings.RegisterAddOnCategory(category);
 end
