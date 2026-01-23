@@ -5,8 +5,9 @@ local MinimalSliderWithSteppersMixin = _G.MinimalSliderWithSteppersMixin;
 
 local category = Settings.RegisterVerticalLayoutCategory(addonName);
 
+local Main = addon.import('Logic/Main');
 local Options = addon.import('Logic/Options');
-local Layout = addon.import("Layouts/Main");
+local Layout = addon.import('Layouts/Main');
 
 local addonOptions = Options.getAll();
 
@@ -69,6 +70,33 @@ local function registerSettingsMenu()
     min = 1,
     max = 50,
     setValue = Layout.updateLayout,
+  });
+
+  registerSlider("scale", 1.0, {
+    name = "Scale of the main button",
+    step = 0.01,
+    min = 0.01,
+    max = 10,
+    setValue = Main.applyScale,
+  });
+
+  registerSlider("buttonScale", 1.0, {
+    name = "Scale of the collected buttons",
+    step = 0.01,
+    min = 0.01,
+    max = 10,
+    setValue = Main.applyButtonScale,
+  });
+
+  registerSlider("autohide", 0, {
+    name = "Hide buttons after x seconds",
+    min = 0,
+    max = 50,
+    setValue = function (value)
+      if (value > 0) then
+        Main.hideButtons();
+      end
+    end
   });
 
   Settings.RegisterAddOnCategory(category);
