@@ -100,7 +100,7 @@ local function registerSettingsMenu()
   end
 
   registerDropdown("direction", "leftdown", getOptions, {
-    name = "Growth Layout",
+    name = "Growth layout",
     setValue = Layout.applyLayout,
   });
 
