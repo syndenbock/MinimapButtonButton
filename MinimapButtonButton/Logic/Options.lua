@@ -41,6 +41,7 @@ local function migrateOptions ()
   end
 
   if (options.version > 0 and options.version <= 5) then
+    options.direction = _G.strlower(options.direction);
     options.scale = _G.floor(options.scale * 10 + 0.5);
     options.buttonScale = _G.floor(options.buttonScale * 10 + 0.5);
   end
