@@ -1,3 +1,4 @@
 <UI>
   <script file="Settings.lua"/>
+  <script file="SettingsMenu.lua"/>
 </UI>

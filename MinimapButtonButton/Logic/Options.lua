@@ -3,7 +3,7 @@ local addonName, addon = ...;
 local Events = addon.import('Core/Events');
 local Utils = addon.import('Core/Utils');
 
-local VERSION_COUNTER = 5;
+local VERSION_COUNTER = 6;
 
 local module = addon.export('Logic/Options', {});
 local options = {};
@@ -39,6 +39,12 @@ local function migrateOptions ()
     options.whitelist['ExpansionLandingPageMinimapButton'] = true;
     options.whitelist['GarrisonLandingPageMinimapButton'] = nil;
   end
+
+  if (options.version > 0 and options.version <= 5) then
+    options.direction = _G.strlower(options.direction);
+    options.scale = _G.floor(options.scale * 10 + 0.5);
+    options.buttonScale = _G.floor(options.buttonScale * 10 + 0.5);
+  end
 end
 
 local function checkValues (loadedValues, defaults)
@@ -60,9 +66,9 @@ local function readValues (loadedValues)
     direction = 'leftdown',
     autohide = 0,
     buttonsPerRow = 5,
-    scale = 1,
+    scale = 10,
     hidecompartment = false,
-    buttonScale = 1,
+    buttonScale = 10,
     version = 0,
   };
 
@@ -79,8 +85,7 @@ local function readValues (loadedValues)
 end
 
 local function printVersionMessage ()
-  Utils.printAddonMessage('can now hide the addon compartment button!\n',
-      'Type "/mbb set hidecompartment <true/false>" to set if the button shall be hidden.');
+  Utils.printAddonMessage('now has a settings UI! Check it out in the games options menu.');
 end
 
 local function checkVersion ()
@@ -88,7 +93,7 @@ local function checkVersion ()
     printVersionMessage();
   end
 
-  --[[ alawys set version to handle rollbacks ]]
+  --[[ always set version to handle rollbacks ]]
   options.version = VERSION_COUNTER;
 end
 
