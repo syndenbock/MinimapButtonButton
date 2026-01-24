@@ -84,8 +84,7 @@ local function readValues (loadedValues)
 end
 
 local function printVersionMessage ()
-  Utils.printAddonMessage('can now hide the addon compartment button!\n',
-      'Type "/mbb set hidecompartment <true/false>" to set if the button shall be hidden.');
+  Utils.printAddonMessage('now has a settings UI! Check it out in the games options menu.');
 end
 
 local function checkVersion ()
