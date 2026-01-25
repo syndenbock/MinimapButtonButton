@@ -8,8 +8,12 @@
 
 ## Title: MinimapButtonButton
 ## Title-ruRU: Универсальная кнопка миникарты
-## Version: 1.23
+
 ## Author: syndenbock
+## X-Curse-Project-ID: 446096
+## X-Wago-ID: pkNM4QGz
+## Version: 1.23
+
 ## Notes: Creates a button that collects all minimap buttons
 ## Notes-deDE: Erstellt einen Button, der alle Minimap-Buttons einsammelt
 ## Notes-ruRU: Создает кнопку, которая собирает все значки миникарты воедино
@@ -17,11 +21,20 @@
 ## Notes-esMX: Crea un botón que recopila todos los botones del minimapa
 ## Notes-ptBR: Cria um botão que coleta todos os botões do minimapa
 ## Notes-frFR: Crée un bouton qui rassemble tous les boutons de la mini-carte
+
+## Category: User Interface
+## Category-deDE: Benutzerinterface
+## Category-esES: Interfaz de usuario
+## Category-esMX: Interfaz de usuario
+## Category-frFR: Interface utilisateur
+## Category-itIT: Interfaccia utente
+## Category-koKR: 사용자 인터페이스
+## Category-ptBR: Interface do usuário
+## Category-ruRU: Интерфейс пользователя
+## Category-zhCN: 用户界面
+## Category-zhTW: 使用者介面
+
 ## IconTexture: Interface\AddOns\MinimapButtonButton\Media\Logo.blp
-
-## X-Curse-Project-ID: 446096
-## X-Wago-ID: pkNM4QGz
-
 ## OptionalDeps: ElvUI, Tukui, Blizzard_Minimap
 ## SavedVariables: MinimapButtonButtonOptions
 ## SavedVariablesPerCharacter:
