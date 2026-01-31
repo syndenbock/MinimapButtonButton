@@ -109,10 +109,11 @@ SlashCommands.addCommand({'include', 'unignore'}, function (...)
   local buttonName = Utils.concatButtonName(...);
   local button, path = findAndValidateButton(buttonName);
 
-  Blacklist.removeFromBlacklist(path or buttonName);
-
   if (button ~= nil) then
+    Blacklist.removeFromBlacklist(Utils.getFrameName(button));
     Whitelist.addToWhitelist(path);
+  else
+    Blacklist.removeFromBlackListCaseInsensitive(buttonName);
   end
 end);
 
@@ -130,10 +131,11 @@ SlashCommands.addCommand({'ignore', 'uninclude'}, function (...)
   local buttonName = Utils.concatButtonName(...);
   local button, path = findButton(buttonName);
 
-  Whitelist.removeFromWhitelist(path or buttonName);
-
   if (button ~= nil) then
-    Blacklist.addToBlacklist(buttonName);
+    Whitelist.removeFromWhitelist(path);
+    Blacklist.addToBlacklist(Utils.getFrameName(button));
+  else
+    Whitelist.removeFromWhitelistCaseInsensitive(buttonName);
   end
 end);
 
