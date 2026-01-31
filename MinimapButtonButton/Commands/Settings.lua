@@ -7,6 +7,7 @@ local format = _G.format;
 local Utils = addon.import('Core/Utils');
 local SlashCommands = addon.import('Core/SlashCommands');
 local HelpCommands = addon.import('Core/HelpCommands');
+local Main = addon.import('Logic/Main');
 local Whitelist = addon.import('Logic/Whitelist');
 local Blacklist = addon.import('Logic/Blacklist');
 local Settings = addon.import('Settings/Settings');
@@ -67,6 +68,38 @@ HelpCommands.addHelper('set', function (setting)
   Utils.printAddonMessage(help);
 end);
 
+local function findButton (buttonName)
+  local matches, path, keys = Main.searchButtonByName(buttonName);
+
+  if (#matches == 0) then
+    Utils.printAddonMessage(format('No frame named "%s" was found.', buttonName));
+    return nil;
+  end
+
+  if (#matches > 1) then
+    Utils.printAddonMessage(format('More than one frame containing "%s" was found:', buttonName));
+    Utils.sortAndPrintList(Main.getFoundButtonPaths(path, keys));
+    return nil;
+  end
+
+  return matches[1], path;
+end
+
+local function findAndValidateButton (buttonName)
+  local button, path = findButton(buttonName);
+
+  if (button == nil) then
+    return nil;
+  end
+
+  if (not Main.isValidFrame(button)) then
+    Utils.printAddonMessage(format('"%s" is not a valid frame.', path));
+    return nil;
+  end
+
+  return button, path;
+end
+
 SlashCommands.addCommand({'include', 'unignore'}, function (...)
   if (... == nil) then
     Utils.printAddonMessage('Please add a button name');
@@ -74,7 +107,7 @@ SlashCommands.addCommand({'include', 'unignore'}, function (...)
   end
 
   local buttonName = Utils.concatButtonName(...);
-  local button, path = Whitelist.findButton(buttonName);
+  local button, path = findAndValidateButton(buttonName);
 
   Blacklist.removeFromBlacklist(path or buttonName);
 
@@ -95,7 +128,7 @@ SlashCommands.addCommand({'ignore', 'uninclude'}, function (...)
   end
 
   local buttonName = Utils.concatButtonName(...);
-  local button, path = Blacklist.findButton(buttonName);
+  local button, path = findButton(buttonName);
 
   Whitelist.removeFromWhitelist(path or buttonName);
 

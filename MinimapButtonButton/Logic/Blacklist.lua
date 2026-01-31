@@ -16,23 +16,6 @@ function module.isButtonBlacklisted (frame)
       options.blacklist[frameName] == true);
 end
 
-function module.findButton (buttonName)
-  local matches, path, keys = Main.searchButtonByName(buttonName);
-
-  if (#matches == 0) then
-    Utils.printAddonMessage(format('No frame named "%s" was found.', buttonName));
-    return nil;
-  end
-
-  if (#matches > 1) then
-    Utils.printAddonMessage(format('More than one frame containing "%s" was found:', buttonName));
-    Utils.sortAndPrintList(Main.getFoundButtonPaths(path, keys));
-    return nil;
-  end
-
-  return matches[1], path;
-end
-
 function module.addToBlacklist (path)
   options.blacklist[path] = true;
   Utils.printReloadMessage(format('Button "%s" is now being ignored.', path));
