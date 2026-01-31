@@ -12,7 +12,7 @@
 ## Author: syndenbock
 ## X-Curse-Project-ID: 446096
 ## X-Wago-ID: pkNM4QGz
-## Version: 1.23
+## Version: 1.23.1
 
 ## Notes: Creates a button that collects all minimap buttons
 ## Notes-deDE: Erstellt einen Button, der alle Minimap-Buttons einsammelt
