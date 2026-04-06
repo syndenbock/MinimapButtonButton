@@ -236,6 +236,26 @@ local function nameMatchesButtonPattern (frameName)
   return false;
 end
 
+local function nameMatchesPinPattern (frameName)
+  local patterns = {
+    "^HandyNotes",
+    "^TomTom",
+    "^HereBeDragons",
+    "^Questie",
+    "^GatherMate",
+    "^pin",
+    "^Pin",
+  };
+
+  for _, pattern in ipairs(patterns) do
+    if (strmatch(frameName, pattern) ~= nil) then
+      return true;
+    end
+  end
+
+  return false;
+end
+
 local function isMinimapButton (frame)
   local frameName = Utils.getFrameName(frame);
 
@@ -257,7 +277,7 @@ local function isMinimapButton (frame)
     return false;
   end
 
-  return (nameMatchesButtonPattern(frameName));
+  return (nameMatchesButtonPattern(frameName) and not nameMatchesPinPattern(frameName));
 end
 
 local function shouldButtonBeCollected (button)
