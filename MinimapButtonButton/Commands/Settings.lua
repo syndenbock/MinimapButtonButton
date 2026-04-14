@@ -32,7 +32,7 @@ SlashCommands.addCommand('set', function (setting, value)
   end
 
   if (value == nil) then
-    Utils.printAddonMessage(format('Current value of setting %s is %s', setting, Settings.getSetting(lowerCaseSetting)));
+    Utils.printAddonMessage(format('Current value of setting %s is %s', setting, tostring(Settings.getSetting(lowerCaseSetting))));
   else
     local status = Settings.setSetting(lowerCaseSetting, value);
 
