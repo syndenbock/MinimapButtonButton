@@ -7,6 +7,7 @@ local strlower = _G.strlower;
 local strmatch = _G.strmatch;
 local tinsert = _G.tinsert;
 local executeAfter = _G.C_Timer.After;
+local GetMouseFoci = _G.GetMouseFoci;
 local hooksecurefunc = _G.hooksecurefunc;
 local IsAltKeyDown = _G.IsAltKeyDown;
 local issecurevariable = _G.issecurevariable;
@@ -53,6 +54,34 @@ local function updateLayoutIfVisibilityChanged (frame)
   end
 end
 
+local function hideButtons ()
+  options.buttonsShown = false;
+  buttonContainer:Hide();
+end
+
+local function isDescendant (parent, child)
+  if (parent == child) then
+    return true;
+  end
+
+  local childParent = child.GetParent and child:GetParent();
+
+  return (childParent ~= nil and
+    (childParent == parent or isDescendant(parent, childParent)));
+end
+
+local function checkButtonHover()
+  if (options.autoClose == true) then
+    for x, frame in ipairs(GetMouseFoci()) do
+      if (isDescendant(buttonContainer, frame) or isDescendant(mainButton, frame)) then
+        return;
+      end
+    end
+
+    hideButtons();
+  end
+end
+
 local function collectButton (button)
   -- print('collecting button:', button:GetName());
 
@@ -76,6 +105,8 @@ local function collectButton (button)
   button.SetPoint = doNothing;
   button.SetParent = doNothing;
   button.SetScale = doNothing;
+
+  button:HookScript('OnLeave', checkButtonHover);
 
   tinsert(collectedButtons, button);
   collectedButtonMap[button] = button:IsShown();
@@ -324,36 +355,8 @@ end
 -- main button setup
 --##############################################################################
 
-local hideCallback = nil;
-
-local function hideButtons ()
-  options.buttonsShown = false;
-  buttonContainer:Hide();
-end
-
-local function hideButtonsAfterDelay (delay)
-  local function hider ()
-    if (hideCallback == hider) then
-      hideCallback = nil;
-
-      -- Make sure autohide wasn't disabled in the meantime
-      if (options.autohide > 0) then
-        hideButtons();
-      end
-    end
-  end
-
-  hideCallback = hider;
-  C_Timer.After(delay, hider);
-end
-
 local function showButtons ()
-  if (options.autohide > 0) then
-    hideButtonsAfterDelay(options.autohide);
-  else
-    options.buttonsShown = true;
-  end
-
+  options.buttonsShown = true;
   buttonContainer:Show();
 end
 
@@ -410,6 +413,8 @@ local function initMainButton ()
       toggleButtons();
     end
   end);
+
+  mainButton:SetScript('OnLeave', checkButtonHover);
 end
 
 local function initButtonContainer ()
@@ -418,6 +423,8 @@ local function initButtonContainer ()
   buttonContainer:SetParent(mainButton);
   buttonContainer:SetFrameLevel(Constants.FRAME_LEVEL);
   buttonContainer:Hide();
+
+  buttonContainer:SetScript('OnLeave', checkButtonHover);
 end
 
 local function initLogo ()
