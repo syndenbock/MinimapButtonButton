@@ -135,12 +135,11 @@ local function registerSettingsMenu()
     },
   });
 
-  registerSlider("autohide", 0, {
-    name = "Hide buttons after x seconds",
-    min = 0,
-    max = 50,
+  registerCheckbox("autoClose", false, {
+    name = "Auto-close button container",
+    tooltip = "Automatically closes the button container when it's no longer being hovered.",
     setValue = function (value)
-      if (value > 0) then
+      if (value) then
         Main.hideButtons();
       end
     end

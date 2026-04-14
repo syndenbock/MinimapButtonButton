@@ -80,23 +80,23 @@ handlers.buttonscale = {
   help = "This setting specifies the scale of the collected buttons."
 };
 
-handlers.autohide = {
+handlers.autoclose = {
   set = function (value)
-    local numberValue = tonumber(value);
-
-    if (numberValue == nil) then
-      return false;
-    end
-
-    options.autohide = numberValue;
-
-    if (numberValue > 0) then
+    if (value == 'true') then
+      options.autoClose = true;
       Main.hideButtons();
+    elseif (value == 'false') then
+      options.autoClose = false;
+    else
+      return false;
     end
 
     return true;
   end,
-  help = "This setting specifies the time in seconds after which the button should close automatically. Setting it to 0 disables automatic closing."
+  get = function ()
+    return options.autoClose;
+  end,
+  help = "This setting allows automatically closing the button container when it's no longer being hovered."
 };
 
 if (Enhancements.compartment) then

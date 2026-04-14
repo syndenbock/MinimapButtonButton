@@ -40,6 +40,13 @@ local function migrateOptions ()
     options.whitelist['GarrisonLandingPageMinimapButton'] = nil;
   end
 
+  if (options.autohide ~= nil) then
+    if (type(options.autohide) == "number") then
+      options.autoClose = (options.autohide > 0);
+    end
+    options.autohide = nil;
+  end
+
   if (options.version > 0 and options.version <= 5) then
     options.direction = _G.strlower(options.direction);
     options.scale = _G.floor(options.scale * 10 + 0.5);
@@ -64,7 +71,7 @@ local function readValues (loadedValues)
       CodexBrowserIcon = true,
     },
     direction = 'leftdown',
-    autohide = 0,
+    autoClose = false,
     buttonsPerRow = 5,
     scale = 10,
     hidecompartment = false,
