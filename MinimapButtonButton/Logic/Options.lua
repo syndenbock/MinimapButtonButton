@@ -3,7 +3,7 @@ local addonName, addon = ...;
 local Events = addon.import('Core/Events');
 local Utils = addon.import('Core/Utils');
 
-local VERSION_COUNTER = 6;
+local VERSION_COUNTER = 7;
 
 local module = addon.export('Logic/Options', {});
 local options = {};
@@ -92,7 +92,7 @@ local function readValues (loadedValues)
 end
 
 local function printVersionMessage ()
-  Utils.printAddonMessage('now has a settings UI! Check it out in the games options menu.');
+  Utils.printAddonMessage('now has an option to auto-close the button container!');
 end
 
 local function checkVersion ()
