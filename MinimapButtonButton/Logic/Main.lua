@@ -92,11 +92,17 @@ local function collectButton (button)
   button:SetIgnoreParentScale(false);
   button:SetScale(options.buttonScale / 10);
 
+  -- Track the button before hooking so it is never orphaned in the hidden
+  -- container if a hook call fails due to taint or other errors
+  tinsert(collectedButtons, button);
+  collectedButtonMap[button] = button:IsShown();
+
   -- Hook the function on the frame itself instead of setting a script handler
   -- to execute only when the function is called and not when the frame changes
-  -- visibility because the parent gets shown/hidden
-  hooksecurefunc(button, 'Show', updateLayoutIfVisibilityChanged);
-  hooksecurefunc(button, 'Hide', updateLayoutIfVisibilityChanged);
+  -- visibility because the parent gets shown/hidden.
+  -- pcall-guarded so a tainted or protected button does not abort collection.
+  pcall(hooksecurefunc, button, 'Show', updateLayoutIfVisibilityChanged);
+  pcall(hooksecurefunc, button, 'Hide', updateLayoutIfVisibilityChanged);
 
   -- There's still a ton of addons being coded like hot garbage moving their
   -- buttons on every single frame so to prevent a billion comments stating that
@@ -106,10 +112,7 @@ local function collectButton (button)
   button.SetParent = doNothing;
   button.SetScale = doNothing;
 
-  button:HookScript('OnLeave', checkButtonHover);
-
-  tinsert(collectedButtons, button);
-  collectedButtonMap[button] = button:IsShown();
+  pcall(button.HookScript, button, 'OnLeave', checkButtonHover);
 end
 
 local function isButtonCollected (button)
@@ -123,8 +126,13 @@ end
 local function collectLibIcon (button)
   if (not isButtonCollected(button) and
       not Blacklist.isButtonBlacklisted(button)) then
-    collectButton(button);
-    return true;
+    local ok, err = pcall(collectButton, button);
+    if (not ok) then
+      -- If collection failed, try to restore the button to the Minimap so it
+      -- is not orphaned inside the hidden container
+      pcall(button.SetParent, button, Minimap);
+    end
+    return ok;
   else
     return false;
   end
@@ -235,7 +243,10 @@ local function collectWhitelistedButtons ()
     local button = getButtonByName(buttonName);
 
     if (isValidFrame(button) and not isButtonCollected(button)) then
-      collectButton(button);
+      local ok = pcall(collectButton, button);
+      if (not ok) then
+        pcall(button.SetParent, button, Minimap);
+      end
     end
   end
 end
@@ -324,7 +335,10 @@ end
 local function scanMinimapChildren ()
   for _, child in ipairs({Minimap:GetChildren()}) do
     if (shouldButtonBeCollected(child)) then
-      collectButton(child);
+      local ok = pcall(collectButton, child);
+      if (not ok) then
+        pcall(child.SetParent, child, Minimap);
+      end
     end
   end
 end
