@@ -95,8 +95,10 @@ local function collectButton (button)
   -- Hook the function on the frame itself instead of setting a script handler
   -- to execute only when the function is called and not when the frame changes
   -- visibility because the parent gets shown/hidden
-  hooksecurefunc(button, 'Show', updateLayoutIfVisibilityChanged);
-  hooksecurefunc(button, 'Hide', updateLayoutIfVisibilityChanged);
+  if (type(button.Show) == "function" and type(button.Hide) == "function") then
+    hooksecurefunc(button, 'Show', updateLayoutIfVisibilityChanged);
+    hooksecurefunc(button, 'Hide', updateLayoutIfVisibilityChanged);
+  end
 
   -- There's still a ton of addons being coded like hot garbage moving their
   -- buttons on every single frame so to prevent a billion comments stating that
@@ -106,7 +108,9 @@ local function collectButton (button)
   button.SetParent = doNothing;
   button.SetScale = doNothing;
 
-  button:HookScript('OnLeave', checkButtonHover);
+  if (type(button.HookScript) == "function") then
+    button:HookScript('OnLeave', checkButtonHover);
+  end
 
   tinsert(collectedButtons, button);
   collectedButtonMap[button] = button:IsShown();
