@@ -1,4 +1,5 @@
 <UI>
   <script file="HideInPetBattles.lua"/>
   <script file="Enhancements.lua"/>
+  <script file="ButtonSelector.lua"/>
 </UI>

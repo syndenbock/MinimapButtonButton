@@ -413,6 +413,11 @@ local function initMainButton ()
   mainButton:SetScript('OnMouseDown', function (_, button)
     if (button == MIDDLEBUTTON or IsAltKeyDown()) then
       moveMainButton();
+    elseif (button == 'RightButton') then
+      local ButtonSelector = addon.import('Features/ButtonSelector');
+      if (ButtonSelector) then
+        ButtonSelector.ToggleWindow();
+      end
     elseif (button == LEFTBUTTON) then
       toggleButtons();
     end
