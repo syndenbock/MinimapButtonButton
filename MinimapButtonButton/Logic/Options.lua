@@ -65,6 +65,7 @@ end
 local function readValues (loadedValues)
   local defaults = {
     blacklist = {},
+    customOrder = {},
     whitelist = {
       ZygorGuidesViewerMapIcon = true,
       TrinketMenu_IconFrame = true,

@@ -36,8 +36,112 @@ local options;
 local buttonContainer;
 local mainButton;
 local logo;
+local filterBox;
+local noMatchLabel;
+local filterText = '';
 local collectedButtonMap = {};
 local collectedButtons = {};
+
+--##############################################################################
+-- filtering
+--##############################################################################
+
+local function getFilterText ()
+  return filterText;
+end
+
+local function passesFilter (button)
+  if (filterText == '') then return true; end
+  local name = strlower(button:GetName() or '');
+  for word in gmatch(filterText, '%S+') do
+    if (not strfind(name, strlower(word), 1, true)) then
+      return false;
+    end
+  end
+  return true;
+end
+
+--##############################################################################
+-- reordering
+--##############################################################################
+
+local reorderMode = false;
+local reorderToggle;
+local draggedButton = nil;
+local originalStrata = nil;
+local dragUpdateFrame = _G.CreateFrame("Frame");
+dragUpdateFrame:Hide();
+
+dragUpdateFrame:SetScript("OnUpdate", function()
+  if (not draggedButton) then return end
+  local cursorX, cursorY = _G.GetCursorPosition();
+  local scale = draggedButton:GetEffectiveScale();
+  _G.UIParent.ClearAllPoints(draggedButton);
+  _G.UIParent.SetPoint(draggedButton, "CENTER", nil, "BOTTOMLEFT", cursorX / scale, cursorY / scale);
+end);
+
+local function onButtonDragStart (self)
+  if (not reorderMode) then return end
+  draggedButton = self;
+  originalStrata = self:GetFrameStrata();
+  self:SetFrameStrata("TOOLTIP");
+  dragUpdateFrame:Show();
+end
+
+local function onButtonDragStop (self)
+  if (draggedButton ~= self) then return end
+  dragUpdateFrame:Hide();
+  self:SetFrameStrata(originalStrata or Constants.FRAME_STRATA);
+  
+  local targetButton = nil;
+  for _, b in ipairs(collectedButtons) do
+    if (b ~= self and b:IsShown() and b:IsMouseOver()) then
+      targetButton = b;
+      break;
+    end
+  end
+  
+  if (targetButton) then
+    local draggedIndex, targetIndex;
+    for i, b in ipairs(collectedButtons) do
+      if (b == self) then draggedIndex = i; end
+      if (b == targetButton) then targetIndex = i; end
+    end
+    
+    if (draggedIndex and targetIndex) then
+      local removed = table.remove(collectedButtons, draggedIndex);
+      table.insert(collectedButtons, targetIndex, removed);
+      
+      options.customOrder = options.customOrder or {};
+      for i, b in ipairs(collectedButtons) do
+        options.customOrder[b:GetName() or ''] = i;
+      end
+    end
+  end
+  
+  draggedButton = nil;
+  Layout.updateLayout();
+end
+
+local function setReorderMode (enabled)
+  reorderMode = enabled;
+  if (reorderMode) then
+    reorderToggle:LockHighlight();
+  else
+    reorderToggle:UnlockHighlight();
+  end
+  for _, button in ipairs(collectedButtons) do
+    if (reorderMode) then
+      button:RegisterForDrag("LeftButton");
+      button:SetScript("OnDragStart", onButtonDragStart);
+      button:SetScript("OnDragStop", onButtonDragStop);
+    else
+      button:RegisterForDrag();
+      button:SetScript("OnDragStart", nil);
+      button:SetScript("OnDragStop", nil);
+    end
+  end
+end
 
 --##############################################################################
 -- minimap button collecting
@@ -87,8 +191,15 @@ local function collectButton (button)
 
   button:SetParent(buttonContainer);
   button:SetFrameStrata(Constants.FRAME_STRATA);
-  button:SetScript('OnDragStart', nil);
-  button:SetScript('OnDragStop', nil);
+  button:SetFrameLevel(buttonContainer:GetFrameLevel() + 1);
+  if (reorderMode) then
+    button:RegisterForDrag("LeftButton");
+    button:SetScript("OnDragStart", onButtonDragStart);
+    button:SetScript("OnDragStop", onButtonDragStop);
+  else
+    button:SetScript('OnDragStart', nil);
+    button:SetScript('OnDragStop', nil);
+  end
   button:SetIgnoreParentScale(false);
   button:SetScale(options.buttonScale / 10);
 
@@ -348,7 +459,18 @@ local function scanMinimapChildren ()
 end
 
 local function buttonSortFunc (a, b)
-  return ((a:GetName() or '') < (b:GetName() or ''));
+  local nameA = a:GetName() or '';
+  local nameB = b:GetName() or '';
+  
+  if (options.customOrder) then
+    local orderA = options.customOrder[nameA] or 9999;
+    local orderB = options.customOrder[nameB] or 9999;
+    if (orderA ~= orderB) then
+      return orderA < orderB;
+    end
+  end
+  
+  return (nameA < nameB);
 end
 
 local function sortCollectedButtons ()
@@ -445,6 +567,53 @@ local function initButtonContainer ()
   buttonContainer:SetScript('OnLeave', checkButtonHover);
 end
 
+local function initFilterBox ()
+  local PADDING = 4;
+  local BORDER_OVERHANG = 5;
+  local TOGGLE_WIDTH = 22 + PADDING;
+
+  filterBox = _G.CreateFrame('EditBox', addonName .. 'FilterBox', buttonContainer,
+      'SearchBoxTemplate');
+  filterBox:SetHeight(Constants.FILTER_AREA_HEIGHT - PADDING * 2);
+  filterBox:SetPoint(anchors.TOPLEFT, buttonContainer, anchors.TOPLEFT,
+      PADDING + BORDER_OVERHANG, -PADDING);
+  filterBox:SetPoint(anchors.TOPRIGHT, buttonContainer, anchors.TOPRIGHT, -PADDING - TOGGLE_WIDTH, -PADDING);
+  filterBox:SetAutoFocus(false);
+  filterBox:SetMaxLetters(64);
+  filterBox:SetFrameLevel(Constants.FRAME_LEVEL + 1);
+
+  if (filterBox.Instructions) then
+    filterBox.Instructions:SetText('Filter');
+  end
+
+  filterBox:HookScript('OnTextChanged', function (self)
+    filterText = self:GetText();
+    Layout.updateLayout();
+  end);
+
+  noMatchLabel = buttonContainer:CreateFontString(nil, 'OVERLAY', 'GameFontNormal');
+  noMatchLabel:SetText('No buttons match this filter');
+  noMatchLabel:SetJustifyH('CENTER');
+  noMatchLabel:SetJustifyV('MIDDLE');
+  noMatchLabel:SetPoint(anchors.LEFT, buttonContainer, anchors.LEFT,
+      PADDING, -Constants.FILTER_AREA_HEIGHT / 2);
+  noMatchLabel:SetPoint(anchors.RIGHT, buttonContainer, anchors.RIGHT,
+      -PADDING, -Constants.FILTER_AREA_HEIGHT / 2);
+  noMatchLabel:Hide();
+end
+
+local function initReorderToggle ()
+  local PADDING = 4;
+  reorderToggle = _G.CreateFrame("Button", nil, buttonContainer, "UIPanelButtonTemplate");
+  reorderToggle:SetSize(22, 22);
+  reorderToggle:SetPoint(anchors.TOPRIGHT, buttonContainer, anchors.TOPRIGHT, -PADDING, -PADDING);
+  reorderToggle:SetText("R");
+  reorderToggle:SetScript("OnClick", function()
+    setReorderMode(not reorderMode);
+  end);
+  Tooltip.createTooltip(reorderToggle, 'Toggle drag and drop reordering');
+end
+
 local function initLogo ()
   logo = mainButton:CreateTexture(nil, 'ARTWORK');
   logo:SetTexture('Interface\\AddOns\\' .. addonName ..
@@ -457,6 +626,8 @@ end
 local function initFrames ()
   initMainButton();
   initButtonContainer();
+  initFilterBox();
+  initReorderToggle();
   initLogo();
 end
 
@@ -583,6 +754,9 @@ addon.export('Logic/Main', {
   mainButton = mainButton,
   logo = logo,
   collectedButtons = collectedButtons,
+  noMatchLabel = noMatchLabel,
+  passesFilter = passesFilter,
+  getFilterText = getFilterText,
   resetPosition = resetPosition,
   applyScale = applyScale,
   hideButtons = hideButtons,

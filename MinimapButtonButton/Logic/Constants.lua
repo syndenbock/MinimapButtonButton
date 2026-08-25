@@ -22,4 +22,7 @@ addon.export('Logic/Constants', {
   BUTTON_SPACING = 0,
   BUTTON_OFFSET_X = 0,
   BUTTON_OFFSET_Y = -1,
+  FILTER_AREA_HEIGHT = 28,
+  FILTER_MIN_WIDTH = 160,
+  FILTER_DIMMED_ALPHA = 0.15,
 });
