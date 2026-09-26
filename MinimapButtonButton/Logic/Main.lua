@@ -27,10 +27,12 @@ local Minimap = _G.Minimap;
 
 local LEFTBUTTON = 'LeftButton';
 local MIDDLEBUTTON = 'MiddleButton';
+local RIGHTBUTTON = 'RightButton';
 local ONMOUSEUP = 'OnMouseUp';
 
 local Layout = addon.importPending('Layouts/Main');
 local Blacklist = addon.importPending('Logic/Blacklist');
+local Reorder = addon.importPending('Logic/Reorder');
 local options;
 
 local buttonContainer;
@@ -38,6 +40,7 @@ local mainButton;
 local logo;
 local collectedButtonMap = {};
 local collectedButtons = {};
+local autoCloseSuppressed = false;
 
 --##############################################################################
 -- minimap button collecting
@@ -71,7 +74,7 @@ local function isDescendant (parent, child)
 end
 
 local function checkButtonHover()
-  if (options.autoClose == true) then
+  if (options.autoClose == true and not autoCloseSuppressed) then
     for x, frame in ipairs(GetMouseFoci()) do
       if (isDescendant(buttonContainer, frame) or isDescendant(mainButton, frame)) then
         return;
@@ -347,12 +350,51 @@ local function scanMinimapChildren ()
   end
 end
 
-local function buttonSortFunc (a, b)
-  return ((a:GetName() or '') < (b:GetName() or ''));
+local function buildOrderIndexMap ()
+  local map = {};
+
+  for index, name in ipairs(options.order) do
+    map[name] = index;
+  end
+
+  return map;
 end
 
 local function sortCollectedButtons ()
-  sort(collectedButtons, buttonSortFunc);
+  local orderMap = buildOrderIndexMap();
+
+  sort(collectedButtons, function (a, b)
+    local nameA = a:GetName() or '';
+    local nameB = b:GetName() or '';
+    local indexA = orderMap[nameA];
+    local indexB = orderMap[nameB];
+
+    -- Buttons with a stored position keep their saved order and come before
+    -- any button the user hasn't placed yet, which fall back to alphabetical.
+    if (indexA and indexB) then
+      return indexA < indexB;
+    end
+
+    if (indexA ~= indexB) then
+      return indexA ~= nil;
+    end
+
+    return nameA < nameB;
+  end);
+end
+
+local function persistCurrentOrder ()
+  local order = {};
+
+  for _, button in ipairs(collectedButtons) do
+    local name = button:GetName();
+
+    if (name) then
+      tinsert(order, name);
+    end
+  end
+
+  options.order = order;
 end
 
 local function collectMinimapButtonsAndUpdateLayout ()
@@ -429,6 +471,9 @@ local function initMainButton ()
       moveMainButton();
     elseif (button == LEFTBUTTON) then
       toggleButtons();
+    elseif (button == RIGHTBUTTON) then
+      -- Right-click toggles arrange mode (also available via /mbb arrange).
+      Reorder.toggle();
     end
   end);
 
@@ -481,7 +526,8 @@ end
 local function addDraggingTooltip ()
   Tooltip.createTooltip(mainButton, {
       'You can drag the button using the middle mouse button',
-      'or any mouse button while holding ALT.'
+      'or any mouse button while holding ALT.',
+      'Right-click to arrange the collected icons.'
     });
 end
 
@@ -586,6 +632,11 @@ addon.export('Logic/Main', {
   resetPosition = resetPosition,
   applyScale = applyScale,
   hideButtons = hideButtons,
+  showButtons = showButtons,
+  persistCurrentOrder = persistCurrentOrder,
+  setAutoCloseSuppressed = function (value)
+    autoCloseSuppressed = value;
+  end,
   applyButtonScale = applyButtonScale,
   collectMinimapButtonsAndUpdateLayout = collectMinimapButtonsAndUpdateLayout,
   searchButtonByName = searchButtonByName,

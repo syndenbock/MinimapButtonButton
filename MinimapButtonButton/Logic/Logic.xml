@@ -2,6 +2,7 @@
   <script file="Constants.lua"/>
   <script file="Options.lua"/>
   <script file="Main.lua"/>
+  <script file="Reorder.lua"/>
   <script file="Blacklist.lua"/>
   <script file="Whitelist.lua"/>
 </UI>

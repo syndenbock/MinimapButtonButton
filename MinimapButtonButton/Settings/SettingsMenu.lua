@@ -10,6 +10,7 @@ local Main = addon.import('Logic/Main');
 local Options = addon.import('Logic/Options');
 local Enhancements = addon.import('Features/Enhancements');
 local Layout = addon.import('Layouts/Main');
+local Reorder = addon.import('Logic/Reorder');
 
 local addonOptions = Options.getAll();
 
@@ -157,6 +158,10 @@ local function registerSettingsMenu()
       end
     });
   end
+
+  registerButton("Arrange icons", Reorder.toggle, {
+    tooltip = "Toggle arrange mode, then drag the collected icons to reposition them. Their order is saved.",
+  });
 
   registerButton("Reset position", Main.resetPosition);
 
