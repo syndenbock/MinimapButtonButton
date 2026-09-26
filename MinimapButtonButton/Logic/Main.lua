@@ -36,8 +36,30 @@ local options;
 local buttonContainer;
 local mainButton;
 local logo;
+local filterBox;
+local noMatchLabel;
+local filterText = '';
 local collectedButtonMap = {};
 local collectedButtons = {};
+
+--##############################################################################
+-- filtering
+--##############################################################################
+
+local function getFilterText ()
+  return filterText;
+end
+
+local function passesFilter (button)
+  if (filterText == '') then return true; end
+  local name = strlower(button:GetName() or '');
+  for word in gmatch(filterText, '%S+') do
+    if (not strfind(name, strlower(word), 1, true)) then
+      return false;
+    end
+  end
+  return true;
+end
 
 --##############################################################################
 -- minimap button collecting
@@ -445,6 +467,51 @@ local function initButtonContainer ()
   buttonContainer:SetScript('OnLeave', checkButtonHover);
 end
 
+local function initFilterBox ()
+  local PADDING = 4;
+
+  -- SearchBoxTemplate provides the input border, the magnifying-glass icon, the
+  -- instruction (placeholder) text, and the standard clear button, all managed
+  -- by Blizzard's SearchBoxTemplateMixin.
+  -- InputBoxTemplate (inherited by SearchBoxTemplate) anchors its left border
+  -- texture 5px outside the frame's left edge, so offset the left anchor by that
+  -- overhang to keep the visible border inside the window.
+  local BORDER_OVERHANG = 5;
+
+  filterBox = _G.CreateFrame('EditBox', addonName .. 'FilterBox', buttonContainer,
+      'SearchBoxTemplate');
+  filterBox:SetHeight(Constants.FILTER_AREA_HEIGHT - PADDING * 2);
+  filterBox:SetPoint(anchors.TOPLEFT, buttonContainer, anchors.TOPLEFT,
+      PADDING + BORDER_OVERHANG, -PADDING);
+  filterBox:SetPoint(anchors.TOPRIGHT, buttonContainer, anchors.TOPRIGHT, -PADDING, -PADDING);
+  filterBox:SetAutoFocus(false);
+  filterBox:SetMaxLetters(64);
+  filterBox:SetFrameLevel(Constants.FRAME_LEVEL + 1);
+
+  if (filterBox.Instructions) then
+    filterBox.Instructions:SetText('Filter');
+  end
+
+  -- Hooking instead of overriding so the template keeps managing the icon,
+  -- instruction text, and clear button.
+  filterBox:HookScript('OnTextChanged', function (self)
+    filterText = self:GetText();
+    Layout.updateLayout();
+  end);
+
+  noMatchLabel = buttonContainer:CreateFontString(nil, 'OVERLAY', 'GameFontNormal');
+  noMatchLabel:SetText('No buttons match this filter');
+  noMatchLabel:SetJustifyH('CENTER');
+  noMatchLabel:SetJustifyV('MIDDLE');
+  -- Centering within the button area below the filter box: the container center
+  -- is shifted down by half the filter area height to account for that top inset.
+  noMatchLabel:SetPoint(anchors.LEFT, buttonContainer, anchors.LEFT,
+      PADDING, -Constants.FILTER_AREA_HEIGHT / 2);
+  noMatchLabel:SetPoint(anchors.RIGHT, buttonContainer, anchors.RIGHT,
+      -PADDING, -Constants.FILTER_AREA_HEIGHT / 2);
+  noMatchLabel:Hide();
+end
+
 local function initLogo ()
   logo = mainButton:CreateTexture(nil, 'ARTWORK');
   logo:SetTexture('Interface\\AddOns\\' .. addonName ..
@@ -457,6 +524,7 @@ end
 local function initFrames ()
   initMainButton();
   initButtonContainer();
+  initFilterBox();
   initLogo();
 end
 
@@ -583,6 +651,9 @@ addon.export('Logic/Main', {
   mainButton = mainButton,
   logo = logo,
   collectedButtons = collectedButtons,
+  noMatchLabel = noMatchLabel,
+  passesFilter = passesFilter,
+  getFilterText = getFilterText,
   resetPosition = resetPosition,
   applyScale = applyScale,
   hideButtons = hideButtons,
