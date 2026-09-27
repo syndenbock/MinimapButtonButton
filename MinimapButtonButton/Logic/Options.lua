@@ -3,7 +3,7 @@ local addonName, addon = ...;
 local Events = addon.import('Core/Events');
 local Utils = addon.import('Core/Utils');
 
-local VERSION_COUNTER = 7;
+local VERSION_COUNTER = 8;
 
 local module = addon.export('Logic/Options', {});
 local options = {};
@@ -71,6 +71,7 @@ local function readValues (loadedValues)
       CodexBrowserIcon = true,
     },
     direction = 'leftdown',
+    order = {},
     autoClose = false,
     buttonsPerRow = 5,
     scale = 10,
@@ -92,7 +93,7 @@ local function readValues (loadedValues)
 end
 
 local function printVersionMessage ()
-  Utils.printAddonMessage('now has an option to auto-close the button container!');
+  Utils.printAddonMessage('now lets you rearrange collected icons! Use /mbb arrange to drag them into place.');
 end
 
 local function checkVersion ()
