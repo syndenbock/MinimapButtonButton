@@ -11,7 +11,6 @@ local GetMouseFoci = _G.GetMouseFoci;
 local hooksecurefunc = _G.hooksecurefunc;
 local IsAltKeyDown = _G.IsAltKeyDown;
 local issecurevariable = _G.issecurevariable;
-local C_Timer = _G.C_Timer;
 
 local SetScale = _G.UIParent.SetScale;
 
@@ -510,20 +509,18 @@ local function hookLibDBIconButtons ()
   end);
 end
 
-local function init ()
+addon.import('Core/Events').registerEvent('PLAYER_LOGIN', function ()
   options = addon.import('Logic/Options').getAll();
   restoreOptions();
 
-  collectMinimapButtonsAndUpdateLayout();
   hookLibDBIconButtons();
-end
 
-addon.import('Core/Events').registerEvent('PLAYER_LOGIN', function ()
   --[[ executing on next frame to wait for addons that create minimap buttons
        on PLAYER_LOGIN ]]
-  executeAfter(0, init);
+  executeAfter(0, collectMinimapButtonsAndUpdateLayout);
   -- rescanning buttons after a second for special candidates like Questie
   executeAfter(1, collectMinimapButtonsAndUpdateLayout);
+
   return true;
 end);
 
