@@ -70,7 +70,7 @@ local function isDescendant (parent, child)
 end
 
 local function checkButtonHover()
-  if (options.autoClose == true) then
+  if (options ~= nil and options.autoClose == true) then
     for x, frame in ipairs(GetMouseFoci()) do
       if (isDescendant(buttonContainer, frame) or isDescendant(mainButton, frame)) then
         return;
@@ -540,12 +540,12 @@ local function printButtonLists ()
     end
   end
 
-  if (next(options.whitelist) ~= nil) then
+  if (options ~= nil and next(options.whitelist) ~= nil) then
     Utils.printAddonMessage('Buttons currently being manually collected:');
     Utils.printTableKeys(options.whitelist);
   end
 
-  if (next(options.blacklist) ~= nil) then
+  if (options ~= nil and next(options.blacklist) ~= nil) then
     Utils.printAddonMessage('Buttons currently being ignored:');
     Utils.printTableKeys(options.blacklist);
   end
