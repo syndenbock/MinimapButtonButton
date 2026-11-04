@@ -284,6 +284,7 @@ local function nameMatchesPinPattern (frameName)
     "^GatherMate",
     "^pin",
     "^Pin",
+    "^EasyFind",
   };
 
   for _, pattern in ipairs(patterns) do
