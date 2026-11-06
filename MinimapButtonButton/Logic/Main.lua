@@ -323,7 +323,9 @@ end
 local function shouldButtonBeCollected (button)
   if (isButtonCollected(button) or
       not isValidFrame(button) or
-      Blacklist.isButtonBlacklisted(button)) then
+      Blacklist.isButtonBlacklisted(button) or
+      button:IsForbidden() or
+      button:IsProtected()) then
     return false;
   end
 
