@@ -77,7 +77,7 @@ end
 local function registerButton (name, onclick, options)
   options = options or {};
 
-  local buttonInitializer = CreateSettingsButtonInitializer(name, name, onclick, options.tooltip, true);
+  local buttonInitializer = CreateSettingsButtonInitializer(name, name, onclick, options.tooltip, false);
 
   layout:AddInitializer(buttonInitializer);
 end
