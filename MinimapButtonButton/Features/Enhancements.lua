@@ -17,14 +17,10 @@ if (compartmentFrame ~= nil) then
   end);
 
   function module.hideCompartmentFrame ()
-    if (Utils.isRetail()) then
-      compartmentFrame:Hide();
-    end
+    compartmentFrame:Hide();
   end
 
   function module.showCompartmentFrame ()
-    if (Utils.isRetail()) then
-      compartmentFrame:Show();
-    end
+    compartmentFrame:Show();
   end
 end
