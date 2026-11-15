@@ -1,6 +1,10 @@
 local _, addon = ...;
 
-if (not addon.import('Core/Utils').isRetail()) then return end
+if (not C_EventUtils or
+    not C_EventUtils.IsEventValid("PET_BATTLE_OPENING_START") or
+    not C_EventUtils.IsEventValid("PET_BATTLE_CLOSE")) then
+  return;
+end
 
 local Events = addon.import('Core/Events');
 local mainButton = addon.import('Logic/Main').mainButton;
