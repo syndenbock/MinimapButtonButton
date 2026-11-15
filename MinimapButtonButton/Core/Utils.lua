@@ -5,12 +5,7 @@ local strjoin = _G.strjoin;
 local sort = _G.sort;
 local tinsert = _G.tinsert;
 
-local IS_RETAIL = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE);
 local ADDON_MESSAGE_PREFIX = '|cff00ffff' .. addonName .. '|r ';
-
-local function isRetail ()
-  return IS_RETAIL;
-end
 
 local function printAddonMessage (...)
   print(strconcat(ADDON_MESSAGE_PREFIX, ...));
@@ -79,5 +74,4 @@ addon.export('Core/Utils', {
   concatButtonName = concatButtonName,
   getUnitColor = getUnitColor,
   getPlayerColor = getPlayerColor,
-  isRetail = isRetail,
 });
