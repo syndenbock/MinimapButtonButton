@@ -17,7 +17,15 @@ function Layout:New (options)
 end
 
 function Layout:isButtonDisplayed (button)
-  return button.IsShown and button:IsShown();
+  local isShown = (button.IsShown and button:IsShown());
+  if not isShown then return false; end
+  
+  local filterActive = Main.getFilterText() ~= '';
+  if filterActive and not Main.passesFilter(button) then
+    return false;
+  end
+  
+  return true;
 end
 
 function Layout:iterateDisplayedButtons (callback)
