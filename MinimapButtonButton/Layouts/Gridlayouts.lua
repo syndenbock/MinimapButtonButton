@@ -1,6 +1,7 @@
 local _, addon = ...;
 
 local ceil = _G.ceil;
+local max = _G.max;
 local min = _G.min;
 local CreateFromMixins = _G.CreateFromMixins;
 
@@ -18,6 +19,25 @@ function GridLayout:updateLayout ()
   self:updateMainButton();
   self:updateButtonContainer();
   self:anchorDisplayedButtons();
+  self:applyFilterVisibility();
+end
+
+function GridLayout:applyFilterVisibility ()
+  local filterActive = Main.getFilterText() ~= '';
+  local anyVisible = false;
+
+  for _, button in ipairs(Main.collectedButtons) do
+    if (button:IsShown()) then
+      local passes = (not filterActive) or Main.passesFilter(button);
+      button:SetAlpha(passes and 1 or Constants.FILTER_DIMMED_ALPHA);
+      if (passes) then anyVisible = true; end
+    end
+  end
+
+  local noMatchLabel = Main.noMatchLabel;
+  if (noMatchLabel) then
+    noMatchLabel:SetShown(filterActive and not anyVisible);
+  end
 end
 
 function GridLayout:updateButtonSizes ()
@@ -67,9 +87,9 @@ end
 
 function GridLayout:calculateButtonContainerSize ()
   local columns, rows = self:calculateGridSize();
-
-  return self:calculateButtonAreaWidth(columns),
-      self:calculateButtonAreaHeight(rows);
+  local width = max(self:calculateButtonAreaWidth(columns), Constants.FILTER_MIN_WIDTH);
+  local height = self:calculateButtonAreaHeight(rows) + Constants.FILTER_AREA_HEIGHT;
+  return width, height;
 end
 
 function GridLayout:anchorDisplayedButtons ()
@@ -101,8 +121,12 @@ function GridLayout:calculateButtonXOffset (column)
 end
 
 function GridLayout:calculateButtonYOffset (row)
-  return (self.buttonHeight + Constants.BUTTON_SPACING) * row +
+  local offset = (self.buttonHeight + Constants.BUTTON_SPACING) * row +
       self.options.innerOffset + self.buttonHeight / 2;
+  if (self.filterAreaOffset) then
+    offset = offset + Constants.FILTER_AREA_HEIGHT;
+  end
+  return offset;
 end
 
 --##############################################################################
@@ -156,6 +180,7 @@ function LeftDownLayout:getButtonAnchor (row, column)
       -self:calculateButtonYOffset(row);
 end
 
+LeftDownLayout.filterAreaOffset = true;
 Layouts.registerLayout('leftdown', LeftDownLayout);
 
 local LeftUpLayout = CreateFromMixins(HorizontalLayout);
@@ -186,6 +211,7 @@ function RightDownLayout:getButtonAnchor (row, column)
       -self:calculateButtonYOffset(row);
 end
 
+RightDownLayout.filterAreaOffset = true;
 Layouts.registerLayout('rightdown', RightDownLayout);
 
 local RightUpLayout = CreateFromMixins(HorizontalLayout);
@@ -246,6 +272,7 @@ function DownLeftLayout:getButtonAnchor (row, column)
       -self:calculateButtonYOffset(column);
 end
 
+DownLeftLayout.filterAreaOffset = true;
 Layouts.registerLayout('downleft', DownLeftLayout);
 
 local DownRightLayout = CreateFromMixins(VerticalLayout);
@@ -261,4 +288,5 @@ function DownRightLayout:getButtonAnchor (row, column)
       -self:calculateButtonYOffset(column);
 end
 
+DownRightLayout.filterAreaOffset = true;
 Layouts.registerLayout('downright', DownRightLayout);

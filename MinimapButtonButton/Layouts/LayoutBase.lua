@@ -17,7 +17,7 @@ function Layout:New (options)
 end
 
 function Layout:isButtonDisplayed (button)
-  return button.IsShown and button:IsShown();
+  return (button.IsShown and button:IsShown());
 end
 
 function Layout:iterateDisplayedButtons (callback)
